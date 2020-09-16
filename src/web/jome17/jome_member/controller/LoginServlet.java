@@ -17,7 +17,7 @@ import web.jome17.jome_member.bean.JomeMember;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.main.ImageUtil;
 
-@WebServlet("/")
+@WebServlet("/jome_member/LoginServlet")
 public class LoginServlet extends HttpServlet{
 
 
@@ -41,17 +41,29 @@ public class LoginServlet extends HttpServlet{
 		JomeMemberService mService = new JomeMemberService();
 		switch (action) {
 		
+		case "checkIsValid":
+			boolean isAccountValid = false;
+			String accountLogin = jsonIn.get("account").getAsString();
+			String passwordLogin = jsonIn.get("password").getAsString();
+			if(mService.login(accountLogin, passwordLogin) == 1) {
+				isAccountValid = true;
+			}
+			jsonOut.addProperty("isAccountValid", isAccountValid);
+			outStr = jsonOut.toString();
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+			
 		case "login":
 			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
-			//System.out.println(member.getAccount()+member.getPassword());
 			int resultCode = mService.login(member.getAccount(), member.getPassword());
-//			int resultCode =memService.login(member.getAccount(), member.getPassword());
 			jsonOut.addProperty("resultCode", resultCode);
 			outStr = jsonOut.toString();
 			System.out.println("jsonOut:" + outStr);
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
+			
 		case "loginGet":
 			member = new JomeMemberService().selectMemberOne(member.getAccount());
 //			jsonOut.addProperty("FragmentCode", 1);
@@ -61,6 +73,7 @@ public class LoginServlet extends HttpServlet{
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
+			
 		case "getImage":
 			byte[] image = null;
 			OutputStream ops = resp.getOutputStream();
@@ -76,6 +89,7 @@ public class LoginServlet extends HttpServlet{
 				ops.write(image);
 			}
 			break;
+			
 		default:
 			break;
 		}

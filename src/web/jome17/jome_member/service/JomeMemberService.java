@@ -30,8 +30,6 @@ public class JomeMemberService {
 	public int login(String account, String password) {
 		int loginSuccess = 1;
 		int loginFalse = -1;
-//		int LoginNoAccount = 2;
-//		int LoginErrorPassword = 3;
 		System.out.println("account:"+account);
 		System.out.println("password:"+password);
 		
