@@ -3,8 +3,9 @@ package web.jome17.jome_notify.friend_invitation;
 import java.util.Date;
 
 public class FriendInvitation {
-	private int friendListId, InviteMId, AcceptMId, FreindStatus;
-	private Date ModifyDate;
+    private int uId, inviteMId, acceptMId, friendStatus;
+    private String acceptMName;
+    private Date motifyDate;
 	
 	
 	public FriendInvitation() {
@@ -12,46 +13,60 @@ public class FriendInvitation {
 	}
 	
 	
-	public FriendInvitation(int friendListId, int inviteMId, int acceptMId, int freindStatus, Date modifyDate) {
-		super();
-		this.friendListId = friendListId;
-		InviteMId = inviteMId;
-		AcceptMId = acceptMId;
-		FreindStatus = freindStatus;
-		ModifyDate = modifyDate;
-	}
-	
-	
-	public int getFriendListId() {
-		return friendListId;
-	}
-	public void setFriendListId(int friendListId) {
-		this.friendListId = friendListId;
-	}
-	public int getInviteMId() {
-		return InviteMId;
-	}
-	public void setInviteMId(int inviteMId) {
-		InviteMId = inviteMId;
-	}
-	public int getAcceptMId() {
-		return AcceptMId;
-	}
-	public void setAcceptMId(int acceptMId) {
-		AcceptMId = acceptMId;
-	}
-	public int getFreindStatus() {
-		return FreindStatus;
-	}
-	public void setFreindStatus(int freindStatus) {
-		FreindStatus = freindStatus;
-	}
-	public Date getModifyDate() {
-		return ModifyDate;
-	}
-	public void setModifyDate(Date modifyDate) {
-		ModifyDate = modifyDate;
-	}
+	public FriendInvitation(int uId, int acceptMId, int friendStatus, String acceptMName) {
+        this.uId = uId;
+        this.acceptMId = acceptMId;
+        this.friendStatus = friendStatus;
+        this.acceptMName = acceptMName;
+    }
+
+    public int getuId() {
+        return uId;
+    }
+
+    public void setuId(int uId) {
+        this.uId = uId;
+    }
+
+    public int getInviteMId() {
+        return inviteMId;
+    }
+
+    public void setInviteMId(int inviteMId) {
+        this.inviteMId = inviteMId;
+    }
+
+    public int getAcceptMId() {
+        return acceptMId;
+    }
+
+    public void setAcceptMId(int acceptMId) {
+        this.acceptMId = acceptMId;
+    }
+
+    public int getFriendStatus() {
+        return friendStatus;
+    }
+
+    public void setFriendStatus(int friendStatus) {
+        this.friendStatus = friendStatus;
+    }
+
+    public Date getMotifyDate() {
+        return motifyDate;
+    }
+
+    public void setMotifyDate(Date motifyDate) {
+        this.motifyDate = motifyDate;
+    }
+
+    public String getAcceptMName() {
+        return acceptMName;
+    }
+
+    public void setAcceptMName(String acceptMName) {
+        this.acceptMName = acceptMName;
+    }
 
 	
 	
