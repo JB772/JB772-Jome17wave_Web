@@ -15,8 +15,8 @@ public interface JomeMemberDao<B, K> {
 	//刪除
 	int deletaByKey(K key);
 	
-	//loginByAc&Pw
-	B login(K account, K password);
+//	//loginByAc&Pw
+//	B login(K account, K password);
 	
 	//查圖片
 	byte[] getImage(K acconut);

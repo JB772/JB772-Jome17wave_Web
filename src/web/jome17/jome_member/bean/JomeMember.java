@@ -3,7 +3,7 @@ package web.jome17.jome_member.bean;
 import java.util.Date;
 
 public class JomeMember {
-	private long member_id;
+	private String member_id;
 	private Date build_date;
 	private Date modify_date;
 	private int account_status;
@@ -36,7 +36,12 @@ public class JomeMember {
 		this.password = password;
 	}
 	
-	
+
+	public JomeMember() {
+//		super();
+	}
+
+
 
 	public byte[] getImage() {
 		return image;
@@ -46,11 +51,11 @@ public class JomeMember {
 		this.image = image;
 	}
 
-	public long getMember_id() {
+	public String getMember_id() {
 		return member_id;
 	}
 
-	public void setMember_id(long member_id) {
+	public void setMember_id(String member_id) {
 		this.member_id = member_id;
 	}
 

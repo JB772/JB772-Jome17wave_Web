@@ -2,13 +2,16 @@ package web.jome17.jome_member.service;
 
 import java.util.List;
 
+import org.apache.tomcat.jni.Mmap;
+
 import web.jome17.jome_member.bean.JomeMember;
 import web.jome17.jome_member.dao.JomeMemberDao;
 import web.jome17.jome_member.dao.MemberDaoimpl;
 
 public class JomeMemberService {
-	private JomeMemberDao<JomeMember, String>dao;
-
+	private JomeMemberDao<JomeMember, String> dao;
+	private JomeMember member;
+	
 	public JomeMemberService() {
 		dao = new MemberDaoimpl();
 	}
@@ -27,16 +30,14 @@ public class JomeMemberService {
 	//登入
 	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
 	//若回傳的Member物件!=null，再檢查password是否 ==。
-	public int login(String account, String password) {
-		int loginSuccess = 1;
-		int loginFalse = -1;
+	public JomeMember login(String account, String password) {
 		System.out.println("account:"+account);
 		System.out.println("password:"+password);
-		
-		if (dao.selectByKey(account) == null) {
-			return loginFalse;
+		member = dao.selectByKey(account);
+		if (member == null) {
+			return null;
 		}else {
-			return loginSuccess;
+			return member;
 		}
 	}
 	//修改會員資料

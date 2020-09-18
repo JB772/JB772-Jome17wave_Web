@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -19,7 +23,6 @@ import web.jome17.main.ImageUtil;
 
 @WebServlet("/jome_member/LoginServlet")
 public class LoginServlet extends HttpServlet{
-
 
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -42,27 +45,37 @@ public class LoginServlet extends HttpServlet{
 		switch (action) {
 		
 		case "checkIsValid":
-			boolean isAccountValid = false;
+			int loginResultCode = 2;
 			String accountLogin = jsonIn.get("account").getAsString();
 			String passwordLogin = jsonIn.get("password").getAsString();
-			if(mService.login(accountLogin, passwordLogin) == 1) {
-				isAccountValid = true;
-			}
-			jsonOut.addProperty("isAccountValid", isAccountValid);
+			member = mService.login(accountLogin, passwordLogin);
+			System.out.println("time: " + String.valueOf(new Date().getTime()));
+			if(member == null) {
+				loginResultCode = 0;			//accountNotExist
+			}else {
+				if(member.getPassword().equals(passwordLogin)) {
+					loginResultCode = 1;		//account & password correct
+					jsonOut.addProperty("loginMember", GSON.toJson(member));
+				}else {
+					loginResultCode = -1;		//passwordIsError
+				}
+			}  
+			jsonOut.addProperty("loginResultCode", loginResultCode);
 			outStr = jsonOut.toString();
+			System.out.println(outStr);
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
 			
-		case "login":
-			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
-			int resultCode = mService.login(member.getAccount(), member.getPassword());
-			jsonOut.addProperty("resultCode", resultCode);
-			outStr = jsonOut.toString();
-			System.out.println("jsonOut:" + outStr);
-			resp.setContentType(CONTENT_TYPE);
-			writeJson(resp, outStr);
-			break;
+//		case "login":
+//			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
+//			int resultCode = mService.login(member.getAccount(), member.getPassword());
+//			jsonOut.addProperty("resultCode", resultCode);
+//			outStr = jsonOut.toString();
+//			System.out.println("jsonOut:" + outStr);
+//			resp.setContentType(CONTENT_TYPE);
+//			writeJson(resp, outStr);
+//			break;
 			
 		case "loginGet":
 			member = new JomeMemberService().selectMemberOne(member.getAccount());
@@ -94,8 +107,6 @@ public class LoginServlet extends HttpServlet{
 			break;
 		}
 	}
-	
-	
 	
 	private JsonObject json2In(HttpServletRequest req) {
 		StringBuilder jsonIn = new StringBuilder();
