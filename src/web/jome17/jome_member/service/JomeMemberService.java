@@ -5,11 +5,11 @@ import java.util.List;
 import org.apache.tomcat.jni.Mmap;
 
 import web.jome17.jome_member.bean.JomeMember;
-import web.jome17.jome_member.dao.JomeMemberDao;
+import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.MemberDaoimpl;
 
 public class JomeMemberService {
-	private JomeMemberDao<JomeMember, String> dao;
+	private CommonDao<JomeMember, String> dao;
 	private JomeMember member;
 	
 	public JomeMemberService() {

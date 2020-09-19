@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Source;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,7 +21,6 @@ import web.jome17.main.ImageUtil;
 
 @WebServlet("/jome_member/LoginServlet")
 public class LoginServlet extends HttpServlet{
-
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
@@ -130,6 +127,5 @@ public class LoginServlet extends HttpServlet{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 }

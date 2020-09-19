@@ -3,15 +3,13 @@ package web.jome17.jome_member.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import web.jome17.jome_member.bean.JomeMember;
 import web.jome17.main.ServiceLocator;
 
-public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
+public class MemberDaoimpl implements CommonDao<JomeMember, String>{
 	public DataSource dataSource;
-	
 	
 	public MemberDaoimpl() {
 		dataSource = ServiceLocator.getInstance().getDataSource();
@@ -29,7 +27,7 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
 			pstmt.setObject(6, bean.getPhone_number());
-			System.out.println("# insert sql: " + pstmt.toString());
+//			System.out.println("# insert sql: " + pstmt.toString());
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

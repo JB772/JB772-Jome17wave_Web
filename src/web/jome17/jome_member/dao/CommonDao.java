@@ -2,7 +2,7 @@ package web.jome17.jome_member.dao;
 
 import java.util.List;
 
-public interface JomeMemberDao<B, K> {
+public interface CommonDao<B, K> {
 	
 	//新增
 	int insert(B bean);
