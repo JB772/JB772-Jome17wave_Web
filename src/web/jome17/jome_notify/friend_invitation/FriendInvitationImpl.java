@@ -31,7 +31,7 @@ public class FriendInvitationImpl implements FriendInvitationDao{
 	}
 
 	@Override
-	public List<FriendInvitation> findById() {
+	public List<FriendInvitation> findById(int id) {
 		FriendInvitation friendInvitation = new FriendInvitation();
 		String sql = "SELECT * FROM Tep101_Jome17.FRIEND_LIST "
 				+ "WHERE INVITE_M_ID =? and ACCEPT_M_ID =? or INVITE_M_ID =? and ACCEPT_M_ID =?;";

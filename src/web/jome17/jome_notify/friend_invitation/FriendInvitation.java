@@ -13,14 +13,21 @@ public class FriendInvitation {
 	}
 	
 	
-	public FriendInvitation(int uId, int acceptMId, int friendStatus, String acceptMName) {
-        this.uId = uId;
-        this.acceptMId = acceptMId;
-        this.friendStatus = friendStatus;
-        this.acceptMName = acceptMName;
-    }
 
-    public int getuId() {
+
+    public FriendInvitation(int uId, int inviteMId, int acceptMId, int friendStatus, String acceptMName) {
+		super();
+		this.uId = uId;
+		this.inviteMId = inviteMId;
+		this.acceptMId = acceptMId;
+		this.friendStatus = friendStatus;
+		this.acceptMName = acceptMName;
+	}
+
+    	
+
+
+	public int getuId() {
         return uId;
     }
 
