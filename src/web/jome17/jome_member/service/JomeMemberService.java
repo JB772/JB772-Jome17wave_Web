@@ -65,6 +65,8 @@ public class JomeMemberService {
 	
 	//拿圖片
 	public byte[] getImage(String account) {
-		return dao.getImage(account);
+		byte[] image = null;
+		image = dao.getImage(account);
+		return image;
 	}
 }

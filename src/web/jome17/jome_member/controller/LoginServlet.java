@@ -49,7 +49,6 @@ public class LoginServlet extends HttpServlet{
 			String accountLogin = jsonIn.get("account").getAsString();
 			String passwordLogin = jsonIn.get("password").getAsString();
 			member = mService.login(accountLogin, passwordLogin);
-			System.out.println("time: " + String.valueOf(new Date().getTime()));
 			if(member == null) {
 				loginResultCode = 0;			//accountNotExist
 			}else {
@@ -89,17 +88,21 @@ public class LoginServlet extends HttpServlet{
 			
 		case "getImage":
 			byte[] image = null;
-			OutputStream ops = resp.getOutputStream();
-			String account =jsonIn.get("account").getAsString();
+			String member_Id =jsonIn.get("MEMBER_ID").getAsString();
 			int imageSize = jsonIn.get("imageSize").getAsInt();
-			image = mService.getImage(account);
+			image = mService.getImage(member_Id);
 			System.out.println("image:"+image);
+			
 			if(image != null) {
+				OutputStream ops = resp.getOutputStream();
 				image = ImageUtil.shrink(image, imageSize);
 				//						image/jpeg
 				resp.setContentType("image/*");
 				resp.setContentLength(image.length);
 				ops.write(image);
+			}else {
+				
+				writeJson(resp, outStr);
 			}
 			break;
 			

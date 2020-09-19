@@ -45,12 +45,14 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
-			
 			if(rs.next()) {
 				member = new JomeMember();
+				member.setMember_id(rs.getString("ID"));
 				member.setAccount(rs.getString("ACCOUNT"));
 				member.setPassword(rs.getString("PASSWORD"));
 				member.setNickname(rs.getString("NICKNAME"));
+				member.setGender(rs.getInt("GENDER"));
+				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				return member;
 			} 
 		} catch (Exception e) {
