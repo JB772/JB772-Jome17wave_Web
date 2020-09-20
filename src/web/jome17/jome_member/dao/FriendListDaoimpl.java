@@ -20,7 +20,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	@Override
 	public int insert(FriendListBean friendList) {
 		String sql = "insert into Tep101_Jome17.FRIEND_LIST(INVITE_M_ID, ACCEPT_M_ID) "
-					+ "values	(?,?)";
+					+ "values	(?,?) ;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, friendList.getInvite_M_ID());
@@ -39,7 +39,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 					+ "INVITE_M_ID = ?, "
 					+ "ACCEPT_M_ID = ? "
 					+ "FRIEND_STATUS = ?"
-					+ "WHERE UID = ?";
+					+ "WHERE UID = ? ;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);){
 			pstmt.setString(1, bean.getInvite_M_ID());
@@ -100,8 +100,10 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	
 	//查詢(確認兩id之間是否有建立關係)
 	@Override
-	public FriendListBean selectRelation(String Id1, String Id2) {
+	public FriendListBean selectRelation(FriendListBean checkList) {
 		FriendListBean friendList = null;
+		String Id1 = checkList.getInvite_M_ID();
+		String Id2 = checkList.getAccept_M_ID();
 		String sql = "select *" 
 					+ "from Tep101_Jome17.FRIEND_LIST"
 					+ "where"  

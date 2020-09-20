@@ -9,7 +9,7 @@ public interface CommonDao<B, K> {
 	
 	//查詢 by key
 	B selectByKey(K key);
-	B selectRelation(K key1, K key2);
+	B selectRelation(B bean);
 	
 	//查詢ALL
 	List<B>selectAll();
