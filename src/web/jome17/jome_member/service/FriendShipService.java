@@ -21,7 +21,9 @@ public class FriendShipService {
 		int ResultInvite = -1;
 		friListBean = dao.selectRelation(inviteList);
 		if(friListBean == null) {
-			ResultInvite = dao.insert(inviteList);
+			if(dao.insert(friListBean) == 1) {
+				ResultInvite = 3;					//待審
+			}
 		}else {
 			int friendStatus = friListBean.getFriend_Status();
 			friListBean.setInvite_M_ID(inviteList.getInvite_M_ID());
