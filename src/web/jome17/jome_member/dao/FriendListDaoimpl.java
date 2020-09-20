@@ -155,4 +155,10 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return 0;
 	}
 
+	@Override
+	public FriendListBean login(String account, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

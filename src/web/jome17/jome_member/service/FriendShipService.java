@@ -1,8 +1,10 @@
 package web.jome17.jome_member.service;
 
 import web.jome17.jome_member.bean.FriendListBean;
+import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.FriendListDaoimpl;
+import web.jome17.jome_member.dao.MemberDaoimpl;
 
 public class FriendShipService {
 	private CommonDao<FriendListBean, String> dao;
@@ -11,10 +13,20 @@ public class FriendShipService {
 		dao = new FriendListDaoimpl();
 	}
 	
-	/*	新增好友
-	 * 	1.檢查兩者在表上是否有過關係
-	 * 		false	: 新增;
-	 * 		true	: 檢查 FRIEND_STATUS 更新;
+	/*
+	 * 	搜尋陌生人
+	 */
+	public MemberBean searchStranger(FriendListBean checkList) {
+		MemberDaoimpl memberDao = new MemberDaoimpl();
+		MemberBean theStranger = null;
+		if(dao.selectRelation(checkList) == null) {
+			theStranger = memberDao.selectByKey(checkList.getInvite_M_ID());
+		}
+		return theStranger;
+	}
+	
+	/*	
+	 * 	變更好友關係(含新增)		
 	 */
 	public int changeFriendShip(FriendListBean inviteList) {
 		FriendListBean friListBean = null;
@@ -53,5 +65,14 @@ public class FriendShipService {
 			}
 		}
 		return ResultInvite;
+	}
+	
+	/*
+	 * 	查詢好友列表
+	 */
+	public FriendListBean selectMyFriend(String memberId) {
+		FriendListBean urFriendList = null;
+		urFriendList = dao.selectByKey(memberId);
+		return urFriendList;
 	}
 }	

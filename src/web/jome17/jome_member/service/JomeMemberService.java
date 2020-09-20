@@ -4,20 +4,24 @@ import java.util.List;
 
 import org.apache.tomcat.jni.Mmap;
 
-import web.jome17.jome_member.bean.JomeMember;
+import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.MemberDaoimpl;
 
 public class JomeMemberService {
-	private CommonDao<JomeMember, String> dao;
-	private JomeMember member;
+	private CommonDao<MemberBean, String> dao;
+	private MemberBean member;
 	
 	public JomeMemberService() {
 		dao = new MemberDaoimpl();
 	}
 	
+	public String account2Id(String account) {
+		return dao.selectByKey(account).getMember_id();
+	}
+	
 	//註冊，拿到Member物件，檢查account是否存在，存在return，不存在就insert
-	public int register(JomeMember member) {
+	public int register(MemberBean member) {
 		int acoountExist = 2;
 		//int registerSuccess = 1;
 		String registrAccount = member.getAccount();
@@ -30,10 +34,10 @@ public class JomeMemberService {
 	//登入
 	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
 	//若回傳的Member物件!=null，再檢查password是否 ==。
-	public JomeMember login(String account, String password) {
+	public MemberBean login(String account, String password) {
 		System.out.println("account:"+account);
 		System.out.println("password:"+password);
-		member = dao.selectByKey(account);
+		member = dao.login(account, password);
 		if (member == null) {
 			return null;
 		}else {
@@ -41,7 +45,7 @@ public class JomeMemberService {
 		}
 	}
 	//修改會員資料
-	public int updateMember(JomeMember member) {
+	public int updateMember(MemberBean member) {
 		int updateFalse = -1;
 		if (dao.selectByKey(member.getAccount()) == null) {
 			return updateFalse;
@@ -54,13 +58,15 @@ public class JomeMemberService {
 		return dao.deletaByKey(account);
 	}
 	//查詢MEMBER資料表
-	public List<JomeMember> selectMemberAll() {
+	public List<MemberBean> selectMemberAll() {
 		return dao.selectAll();
 	}
 	
 	//查詢單一帳號
-	public JomeMember selectMemberOne(String account) {
-		return dao.selectByKey(account);
+	public MemberBean selectMemberOne(String account) {
+		MemberBean selecMember = null;
+		selecMember = dao.selectByKey(account);
+		return selecMember;
 	}
 	
 	//拿圖片

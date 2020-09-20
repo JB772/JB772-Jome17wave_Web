@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import web.jome17.jome_member.bean.JomeMember;
+import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.service.JomeMemberService;
 
 
@@ -42,10 +42,10 @@ public class RegisterServlet extends HttpServlet{
 		JsonObject jsonOut = new JsonObject();
 		String outStr = "";
 		int resultCode = 0;
-		JomeMember member;
+		MemberBean member;
 		switch(action){
 			case "register":
-				member = GSON.fromJson(jsonIn.get("jomeMember").getAsString(), JomeMember.class);
+				member = GSON.fromJson(jsonIn.get("jomeMember").getAsString(), MemberBean.class);
 				resultCode = new JomeMemberService().register(member);
 				jsonOut.addProperty("resultCode", resultCode);
 				outStr = jsonOut.toString();
