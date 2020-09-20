@@ -5,7 +5,9 @@ import java.util.Date;
 public class FriendListBean {
     private int uId = 0;
     private String invite_M_ID = "";
+    private String inviteName = "";
     private String accept_M_ID = "";
+    private String acceptName = "";
     private int friend_Status = -1;
     private Date modify_Date = new Date();
     
@@ -40,12 +42,28 @@ public class FriendListBean {
 		this.invite_M_ID = invite_M_ID;
 	}
 
+	public String getInviteName() {
+		return inviteName;
+	}
+
+	public void setInviteName(String inviteName) {
+		this.inviteName = inviteName;
+	}
+
 	public String getAccept_M_ID() {
 		return accept_M_ID;
 	}
 
 	public void setAccept_M_ID(String accept_M_ID) {
 		this.accept_M_ID = accept_M_ID;
+	}
+
+	public String getAcceptName() {
+		return acceptName;
+	}
+
+	public void setAcceptName(String acceptName) {
+		this.acceptName = acceptName;
 	}
 
 	public int getFriend_Status() {

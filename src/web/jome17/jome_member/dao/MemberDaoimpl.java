@@ -70,7 +70,7 @@ public class MemberDaoimpl implements CommonDao<JomeMember, String>{
 		String sql = "update Member set "
 				+ "PASSWORD = ?, "
 				+ "NICKNAME = ? "
-			+"where ACCOUNT = ?";
+				+"where ACCOUNT = ?";
 
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -128,6 +128,12 @@ public class MemberDaoimpl implements CommonDao<JomeMember, String>{
 			 e.printStackTrace();
 		}
 		return image;
+	}
+
+	@Override
+	public JomeMember selectRelation(String key1, String key2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

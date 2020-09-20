@@ -53,18 +53,69 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return -1;
 	}
 	
-	//查詢(查個人好友列表)
+	//查詢(查個人好友列表含名字)
 	@Override
 	public FriendListBean selectByKey(String memberId) {
-		String sql = "SELECT * from Tep101_Jome17.FRIEND_LIST"
-					+ "WHERE INVITE_M_ID = ? OR ACCEPT_M_ID = ?";
+		FriendListBean friendList = null;
+		String sql = "select " 
+						+ "f.UID,"  
+						+ "f.INVITE_M_ID,"
+						+ "m.NICKNAME,"
+						+ "f.ACCEPT_M_ID,"
+						+ "m1.NICKNAME," 
+						+ "f.FRIEND_STATUS," 
+						+ "f.MODIFY_DATE"
+					+ "from" 
+						+ "FRIEND_LIST f" 
+						+ "left join MEMBERINFO m" 
+						+ "on f.INVITE_M_ID = m.ID" 
+							+ "join MEMBERINFO m1" 
+							+ "on f.ACCEPT_M_ID = m1.ID" 
+					+ "where" 
+						+ "f.INVITE_M_ID = ? or" 
+						+ "f.ACCEPT_M_ID = ?" 
+					+ "order by" 
+						+ "MODIFY_DATE desc;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, memberId);
 			pstmt.setString(2, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
-				FriendListBean friendList = new FriendListBean();
+				friendList = new FriendListBean();
+				friendList.setuId(rs.getInt(1));
+				friendList.setInvite_M_ID(rs.getString(2));
+				friendList.setInviteName(rs.getString(3));
+				friendList.setAccept_M_ID(rs.getString(4));
+				friendList.setAcceptName(rs.getString(5));
+				friendList.setFriend_Status(rs.getInt(6));
+				friendList.setModify_Date(rs.getDate(7));
+				return friendList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return friendList;
+	}
+	
+	//查詢(確認兩id之間是否有建立關係)
+	@Override
+	public FriendListBean selectRelation(String Id1, String Id2) {
+		FriendListBean friendList = null;
+		String sql = "select *" 
+					+ "from Tep101_Jome17.FRIEND_LIST"
+					+ "where"  
+					+ "INVITE_M_ID in(?, ?) and" 
+					+ "ACCEPT_M_ID in(?, ?);" ;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, Id1);
+			pstmt.setString(2, Id2);
+			pstmt.setString(3, Id1);
+			pstmt.setString(4, Id2);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				friendList = new FriendListBean();
 				friendList.setuId(rs.getInt("UID"));
 				friendList.setInvite_M_ID(rs.getString("INVITE_M_ID"));
 				friendList.setAccept_M_ID(rs.getString("ACCEPT_M_ID"));
@@ -75,7 +126,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return friendList;
 	}
 	
 
@@ -101,4 +152,5 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 }

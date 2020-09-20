@@ -6,8 +6,11 @@ public interface CommonDao<B, K> {
 	
 	//新增
 	int insert(B bean);
+	
 	//查詢 by key
 	B selectByKey(K key);
+	B selectRelation(K key1, K key2);
+	
 	//查詢ALL
 	List<B>selectAll();
 	//修改
@@ -20,4 +23,5 @@ public interface CommonDao<B, K> {
 	
 	//查圖片
 	byte[] getImage(K acconut);
+	
 }
