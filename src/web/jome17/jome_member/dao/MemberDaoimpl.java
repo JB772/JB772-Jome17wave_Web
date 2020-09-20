@@ -131,7 +131,7 @@ public class MemberDaoimpl implements CommonDao<JomeMember, String>{
 	}
 
 	@Override
-	public JomeMember selectRelation(String key1, String key2) {
+	public JomeMember selectRelation(JomeMember bean) {
 		// TODO Auto-generated method stub
 		return null;
 	}
