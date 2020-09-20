@@ -14,9 +14,9 @@ public class FriendShipService {
 	/*	新增好友
 	 * 	1.檢查兩者在表上是否有過關係
 	 * 		false	: 新增;
-	 * 		true	: 檢查FRIEND_STATUS 更新;
+	 * 		true	: 檢查 FRIEND_STATUS 更新;
 	 */
-	public int beMyFriend(FriendListBean inviteList) {
+	public int changeFriendShip(FriendListBean inviteList) {
 		FriendListBean friListBean = null;
 		int ResultInvite = -1;
 		friListBean = dao.selectRelation(inviteList);
@@ -27,10 +27,16 @@ public class FriendShipService {
 			friListBean.setInvite_M_ID(inviteList.getInvite_M_ID());
 			friListBean.setAccept_M_ID(inviteList.getAccept_M_ID());
 			switch(friendStatus){
-				case 2:
-					friListBean.setFriend_Status(3);		//拒絕→邀請：待審
+				case 1:
+					friListBean.setFriend_Status(2);
 					if(dao.update(friListBean) == 1) {
-						ResultInvite = 2;					//邀請為好友
+						ResultInvite = 2;					//同意→拒絕
+					}
+					break;
+				case 2:
+					friListBean.setFriend_Status(3);		//拒絕→待審
+					if(dao.update(friListBean) == 1) {
+						ResultInvite = 3;					//邀請為好友
 					}
 					break;
 				case 3:
@@ -40,10 +46,10 @@ public class FriendShipService {
 					}
 					break;
 				default:
-					ResultInvite = 0;						//本來就是好友
+					ResultInvite = 0;						//維持原狀
 					break;
 			}
 		}
 		return ResultInvite;
 	}
-}
+}	
