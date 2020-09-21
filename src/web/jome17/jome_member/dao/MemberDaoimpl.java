@@ -3,22 +3,20 @@ package web.jome17.jome_member.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
-import web.jome17.jome_member.bean.JomeMember;
+import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.main.ServiceLocator;
 
-public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
+public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	public DataSource dataSource;
-	
 	
 	public MemberDaoimpl() {
 		dataSource = ServiceLocator.getInstance().getDataSource();
 	}
 
 	@Override
-	public int insert(JomeMember bean) {
+	public int insert(MemberBean bean) {
 		String sql = "insert into MEMBERINFO(ID, ACCOUNT, PASSWORD, NICKNAME, GENDER, PHONE_NUMBER) "
 				+ "values	(?,?,?,?,?,?)";
 		try(Connection conn = dataSource.getConnection();
@@ -29,28 +27,30 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
 			pstmt.setObject(6, bean.getPhone_number());
-			System.out.println("# insert sql: " + pstmt.toString());
+//			System.out.println("# insert sql: " + pstmt.toString());
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return -1;
 	}
-
+//										keyword = ID or ACCOUNT
 	@Override
-	public JomeMember selectByKey(String key) {
-		String sql = "select * from MEMBERINFO where ACCOUNT = ?";
-		JomeMember member = null;
+	public MemberBean selectByKey(String keyword, String key) {
+		String sql = "select * from MEMBERINFO where "+ keyword +" = ?";
+		MemberBean member = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
-			
 			if(rs.next()) {
-				member = new JomeMember();
+				member = new MemberBean();
+				member.setMember_id(rs.getString("ID"));
 				member.setAccount(rs.getString("ACCOUNT"));
 				member.setPassword(rs.getString("PASSWORD"));
 				member.setNickname(rs.getString("NICKNAME"));
+				member.setGender(rs.getInt("GENDER"));
+				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				return member;
 			} 
 		} catch (Exception e) {
@@ -60,17 +60,17 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 	}
 
 	@Override
-	public List<JomeMember> selectAll() {
+	public List<MemberBean> selectAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int update(JomeMember bean) {
+	public int update(MemberBean bean) {
 		String sql = "update Member set "
 				+ "PASSWORD = ?, "
 				+ "NICKNAME = ? "
-			+"where ACCOUNT = ?";
+				+"where ACCOUNT = ?";
 
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -114,12 +114,37 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 //	}
 
 	@Override
-	public byte[] getImage(String acconut) {
-		String sql = "select image from EXAMPLE.MEMBER where ACCOUNT= ?";
+	public MemberBean login(String account, String password) {
+		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
+		MemberBean member = null;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, account);
+			pstmt.setString(2, password);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				member = new MemberBean();
+				member.setMember_id(rs.getString("ID"));
+				member.setAccount(rs.getString("ACCOUNT"));
+				member.setPassword(rs.getString("PASSWORD"));
+				member.setNickname(rs.getString("NICKNAME"));
+				member.setGender(rs.getInt("GENDER"));
+				member.setPhone_number(rs.getString("PHONE_NUMBER"));
+				return member;
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return member;
+	}
+	
+	@Override
+	public byte[] getImage(String memberId) {
+		String sql = "select IMAGE from Tep101_Jome17.MEMBERINFO where ID = ?;";
 		byte[] image = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, acconut);
+			pstmt.setString(1, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				image = rs.getBytes("image");
@@ -129,5 +154,14 @@ public class MemberDaoimpl implements JomeMemberDao<JomeMember, String>{
 		}
 		return image;
 	}
+
+	@Override
+	public MemberBean selectRelation(MemberBean bean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 
 }

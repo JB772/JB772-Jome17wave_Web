@@ -2,7 +2,7 @@ package web.jome17.jome_member.bean;
 
 import java.util.Date;
 
-public class JomeMember {
+public class MemberBean {
 	private String member_id;
 	private Date build_date;
 	private Date modify_date;
@@ -16,8 +16,11 @@ public class JomeMember {
 	private double longitude;
 	private String token_id;
 	private byte[] image;
+    private Integer friendCount = 0;
+    private Double scoreAverage = 0.0;
+    private Integer groupCount = 0;
 	
-	public JomeMember(String phone_number, String nickname, String account, String password, int gender,
+	public MemberBean(String phone_number, String nickname, String account, String password, int gender,
 			double latitude, double longitude, String token_id) {
 		super();
 		this.phone_number = phone_number;
@@ -30,14 +33,14 @@ public class JomeMember {
 		this.token_id = token_id;
 	}
 
-	public JomeMember(String account, String password) {
+	public MemberBean(String account, String password) {
 		super();
 		this.account = account;
 		this.password = password;
 	}
 	
 
-	public JomeMember() {
+	public MemberBean() {
 //		super();
 	}
 
@@ -145,6 +148,30 @@ public class JomeMember {
 
 	public void setToken_id(String token_id) {
 		this.token_id = token_id;
+	}
+
+	public Integer getFriendCount() {
+		return friendCount;
+	}
+
+	public void setFriendCount(Integer friendCount) {
+		this.friendCount = friendCount;
+	}
+
+	public Double getScoreAverage() {
+		return scoreAverage;
+	}
+
+	public void setScoreAverage(Double scoreAverage) {
+		this.scoreAverage = scoreAverage;
+	}
+
+	public Integer getGroupCount() {
+		return groupCount;
+	}
+
+	public void setGroupCount(Integer groupCount) {
+		this.groupCount = groupCount;
 	}
 	
 	

@@ -4,31 +4,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Source;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import web.jome17.jome_member.bean.JomeMember;
+import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.main.ImageUtil;
 
 @WebServlet("/jome_member/LoginServlet")
 public class LoginServlet extends HttpServlet{
-
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
 	private JsonObject jsonIn;
-	private JomeMember member;
+	private MemberBean member;
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
@@ -44,38 +41,23 @@ public class LoginServlet extends HttpServlet{
 		JomeMemberService mService = new JomeMemberService();
 		switch (action) {
 		
+
+//		
 		case "checkIsValid":
-			int loginResultCode = 2;
+			int loginResultCode = -1;
 			String accountLogin = jsonIn.get("account").getAsString();
 			String passwordLogin = jsonIn.get("password").getAsString();
 			member = mService.login(accountLogin, passwordLogin);
-			System.out.println("time: " + String.valueOf(new Date().getTime()));
-			if(member == null) {
-				loginResultCode = 0;			//accountNotExist
-			}else {
-				if(member.getPassword().equals(passwordLogin)) {
-					loginResultCode = 1;		//account & password correct
-					jsonOut.addProperty("loginMember", GSON.toJson(member));
-				}else {
-					loginResultCode = -1;		//passwordIsError
-				}
-			}  
+			if(member != null) {
+				loginResultCode = 1;		//account & password correct
+				jsonOut.addProperty("loginMember", GSON.toJson(member));
+			}
 			jsonOut.addProperty("loginResultCode", loginResultCode);
 			outStr = jsonOut.toString();
 			System.out.println(outStr);
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
-			
-//		case "login":
-//			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
-//			int resultCode = mService.login(member.getAccount(), member.getPassword());
-//			jsonOut.addProperty("resultCode", resultCode);
-//			outStr = jsonOut.toString();
-//			System.out.println("jsonOut:" + outStr);
-//			resp.setContentType(CONTENT_TYPE);
-//			writeJson(resp, outStr);
-//			break;
 			
 		case "loginGet":
 			member = new JomeMemberService().selectMemberOne(member.getAccount());
@@ -89,19 +71,33 @@ public class LoginServlet extends HttpServlet{
 			
 		case "getImage":
 			byte[] image = null;
-			OutputStream ops = resp.getOutputStream();
-			String account =jsonIn.get("account").getAsString();
+			String memberId = jsonIn.get("MEMBER_ID").getAsString();
 			int imageSize = jsonIn.get("imageSize").getAsInt();
-			image = mService.getImage(account);
+			image = mService.getImage(memberId);
 			System.out.println("image:"+image);
+			
 			if(image != null) {
+				OutputStream ops = resp.getOutputStream();
 				image = ImageUtil.shrink(image, imageSize);
 				//						image/jpeg
 				resp.setContentType("image/*");
 				resp.setContentLength(image.length);
 				ops.write(image);
+			}else {
+				
+				writeJson(resp, outStr);
 			}
 			break;
+			
+//		case "login":
+//			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
+//			int resultCode = mService.login(member.getAccount(), member.getPassword());
+//			jsonOut.addProperty("resultCode", resultCode);
+//			outStr = jsonOut.toString();
+//			System.out.println("jsonOut:" + outStr);
+//			resp.setContentType(CONTENT_TYPE);
+//			writeJson(resp, outStr);
+//			break;
 			
 		default:
 			break;
@@ -127,6 +123,5 @@ public class LoginServlet extends HttpServlet{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 }

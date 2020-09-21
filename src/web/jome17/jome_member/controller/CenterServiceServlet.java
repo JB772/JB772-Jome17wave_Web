@@ -14,16 +14,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.MemberBean;
+import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_member.service.JomeMemberService;
 
-
-@WebServlet("/jome_member/RegisterServlet")
-public class RegisterServlet extends HttpServlet{
-
-	/**
-	 * 
-	 */
+@WebServlet("/jome_member/CenterServiceServlet")
+public class CenterServiceServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
@@ -31,50 +28,73 @@ public class RegisterServlet extends HttpServlet{
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
+		try{
 			req.setCharacterEncoding("UTF-8");
 			jsonIn = json2In(req);
-			System.out.println("jsonIn:" + jsonIn.toString());
+			System.out.println("jsonIn:"+jsonIn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		String action = jsonIn.get("action").getAsString();
-		JsonObject jsonOut = new JsonObject();
 		String outStr = "";
-		int resultCode = 0;
-		MemberBean member;
-		switch(action){
-			case "register":
-				member = GSON.fromJson(jsonIn.get("jomeMember").getAsString(), MemberBean.class);
-				resultCode = new JomeMemberService().register(member);
-				jsonOut.addProperty("resultCode", resultCode);
+		JsonObject jsonOut = new JsonObject();
+		switch(action) {
+				//搜尋帳號
+			case "searchMember":
+				MemberBean searchMember = null;
+				JomeMemberService jMemberService = new JomeMemberService();
+				searchMember = jMemberService.selectMemberOne(jsonIn.get("account").getAsString());
+				int searchResult = -1;		//查無此帳號
+				if(searchMember != null) {
+					searchResult = 1;		//找到此帳號
+					jsonOut.addProperty("searchMember", GSON.toJson(searchMember));
+				}
+				jsonOut.addProperty("searchResult", searchResult);
 				outStr = jsonOut.toString();
-				System.out.println("jsonOut:" + outStr);
+				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
+				break;
+				
+				//取得朋友列表
+			case "getFriendList":
+				FriendListBean friendList = null;
+				String memberId = jsonIn.get("memberId").getAsString();
+				FriendShipService fsService = new FriendShipService();
+				friendList = fsService.selectMyFriend(memberId);
+				int listResult = -1;		//沒有朋友
+				if(friendList != null) {
+					jsonOut.addProperty("friendList", GSON.toJson(friendList));
+					listResult = 1;			//有朋友
+				}
+				jsonOut.addProperty("listResult", listResult);
+				outStr = jsonOut.toString();
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+			default:
 				break;
 		}
 	}
 	
 	private void writeJson(HttpServletResponse resp, String outStr) {
-		resp.setContentType(CONTENT_TYPE);
 		try(PrintWriter pw = resp.getWriter()) {
 			pw.print(outStr);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
-
+	
 	private JsonObject json2In(HttpServletRequest req) {
-		StringBuilder json = new StringBuilder();
+		StringBuilder jsonIn = new StringBuilder();
 		try (BufferedReader br = req.getReader()){
 			String line;
 			while ((line = br.readLine()) != null) {
-				json.append(line);
+				jsonIn.append(line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return GSON.fromJson(json.toString(), JsonObject.class);
+		return GSON.fromJson(jsonIn.toString(), JsonObject.class);
 	}
+
 }
