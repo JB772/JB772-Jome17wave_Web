@@ -8,7 +8,7 @@ public interface CommonDao<B, K> {
 	int insert(B bean);
 	
 	//查詢 by key
-	B selectByKey(K key);
+	B selectByKey(K keyword, K key);
 	B selectRelation(B bean);
 	
 	//查詢ALL

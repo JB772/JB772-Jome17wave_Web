@@ -71,9 +71,9 @@ public class LoginServlet extends HttpServlet{
 			
 		case "getImage":
 			byte[] image = null;
-			String member_Id =jsonIn.get("MEMBER_ID").getAsString();
+			String memberId = jsonIn.get("MEMBER_ID").getAsString();
 			int imageSize = jsonIn.get("imageSize").getAsInt();
-			image = mService.getImage(member_Id);
+			image = mService.getImage(memberId);
 			System.out.println("image:"+image);
 			
 			if(image != null) {

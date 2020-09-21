@@ -34,10 +34,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		}
 		return -1;
 	}
-
+//										keyword = ID or ACCOUNT
 	@Override
-	public MemberBean selectByKey(String key) {
-		String sql = "select * from MEMBERINFO where ACCOUNT = ?";
+	public MemberBean selectByKey(String keyword, String key) {
+		String sql = "select * from MEMBERINFO where "+ keyword +" = ?";
 		MemberBean member = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -115,10 +115,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public MemberBean login(String account, String password) {
-		String sql = "select * "
-					+ "from MEMBERINFO"
-					+ "where ACCOUNT = ?"
-					+ 	"AND PASSWORD = ?";
+		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
 		MemberBean member = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -143,7 +140,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	
 	@Override
 	public byte[] getImage(String memberId) {
-		String sql = "select image from EXAMPLE.MEMBER where ID= ?";
+		String sql = "select IMAGE from Tep101_Jome17.MEMBERINFO where ID = ?;";
 		byte[] image = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {

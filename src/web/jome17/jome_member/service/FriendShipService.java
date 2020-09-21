@@ -20,7 +20,7 @@ public class FriendShipService {
 		MemberDaoimpl memberDao = new MemberDaoimpl();
 		MemberBean theStranger = null;
 		if(dao.selectRelation(checkList) == null) {
-			theStranger = memberDao.selectByKey(checkList.getInvite_M_ID());
+			theStranger = memberDao.selectByKey("memberId", checkList.getInvite_M_ID());
 		}
 		return theStranger;
 	}
@@ -72,7 +72,7 @@ public class FriendShipService {
 	 */
 	public FriendListBean selectMyFriend(String memberId) {
 		FriendListBean urFriendList = null;
-		urFriendList = dao.selectByKey(memberId);
+		urFriendList = dao.selectByKey("memberId", memberId);
 		return urFriendList;
 	}
 }	

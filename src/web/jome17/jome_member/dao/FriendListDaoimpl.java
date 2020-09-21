@@ -55,7 +55,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	
 	//查詢(查個人好友列表含名字)
 	@Override
-	public FriendListBean selectByKey(String memberId) {
+	public FriendListBean selectByKey(String keyword, String memberId) {
 		FriendListBean friendList = null;
 		String sql = "select " 
 						+ "f.UID,"  

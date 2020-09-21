@@ -16,16 +16,13 @@ public class JomeMemberService {
 		dao = new MemberDaoimpl();
 	}
 	
-	public String account2Id(String account) {
-		return dao.selectByKey(account).getMember_id();
-	}
 	
 	//註冊，拿到Member物件，檢查account是否存在，存在return，不存在就insert
 	public int register(MemberBean member) {
 		int acoountExist = 2;
 		//int registerSuccess = 1;
 		String registrAccount = member.getAccount();
-		if (dao.selectByKey(registrAccount) == null) {
+		if (dao.selectByKey("ACCOUNT", registrAccount) == null) {
 			return dao.insert(member);
 		}else {
 			return acoountExist;
@@ -47,7 +44,7 @@ public class JomeMemberService {
 	//修改會員資料
 	public int updateMember(MemberBean member) {
 		int updateFalse = -1;
-		if (dao.selectByKey(member.getAccount()) == null) {
+		if (dao.selectByKey("ACCOUNT", member.getAccount()) == null) {
 			return updateFalse;
 		}else {
 			return dao.update(member);
@@ -65,7 +62,7 @@ public class JomeMemberService {
 	//查詢單一帳號
 	public MemberBean selectMemberOne(String account) {
 		MemberBean selecMember = null;
-		selecMember = dao.selectByKey(account);
+		selecMember = dao.selectByKey("ACCOUNT", account);
 		return selecMember;
 	}
 	
