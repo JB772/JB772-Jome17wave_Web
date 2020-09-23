@@ -3,6 +3,8 @@ package web.jome17.jome_member.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import web.jome17.jome_member.bean.MemberBean;
@@ -57,12 +59,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			e.printStackTrace();
 		}
 		return member;
-	}
-
-	@Override
-	public List<MemberBean> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -161,7 +157,25 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		return null;
 	}
 
-
-
-
+	@Override
+	public List<MemberBean> selectAll(String memberId) {
+		String sql = "";
+		List<MemberBean> members = new ArrayList<MemberBean>();
+		try(Connection conn = dataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery();) {
+				while(rs.next()) {
+					MemberBean member = new MemberBean();
+					member.setMember_id(rs.getString("ID"));
+					member.setModify_date(rs.getDate("MODIFY_DATE"));
+					member.setLatitude(rs.getDouble("LATITUDE"));
+					member.setLongitude(rs.getDouble("LONGITUDE"));
+					members.add(member);
+				}
+				return members;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return members;
+	}
 }

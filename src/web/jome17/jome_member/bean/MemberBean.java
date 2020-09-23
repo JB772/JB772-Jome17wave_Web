@@ -39,6 +39,7 @@ public class MemberBean {
 		this.password = password;
 	}
 	
+	
 
 	public MemberBean() {
 //		super();
