@@ -3,6 +3,7 @@ package web.jome17.jome_member.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -75,16 +76,17 @@ public class CenterServiceServlet extends HttpServlet{
 				
 			case "getAllMember":
 				List<MemberBean> members = null;
-				String mId = jsonIn.get("memberId").getAsString();
+				String mId = jsonIn.get("ID").getAsString();
 				JomeMemberService memberService = new JomeMemberService();
 				members = memberService.searchNearBy(mId);
 				int membersResult = -1;		//沒有member
 				if(members != null) {
-					jsonOut.addProperty("friends", GSON.toJson(members));
-					friendsResult = 1;			//有member
+					jsonOut.addProperty("users", GSON.toJson(members));
+					membersResult = 1;			//有member
 				}
-				jsonOut.addProperty("friendsResult", membersResult);
+				jsonOut.addProperty("membersResult", membersResult);
 				outStr = jsonOut.toString();
+				System.out.println(outStr);
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
 				break;
