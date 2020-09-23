@@ -34,10 +34,8 @@ public class FindFriendService {
 		String friendRelation = null;
 		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
 		if (relation == null) {
-			System.out.println("relation == null");
 			friendRelation = "insert";
 		}else {
-			System.out.println("relation != null");
 			int friendStatus = relation.getFriend_Status();
 			switch (friendStatus) {
 			case 1:	//已經是好友
@@ -49,11 +47,18 @@ public class FindFriendService {
 			case 3: //好友狀態待審中
 				String intvitId = checkList.getInvite_M_ID();
 				String relationInviteId = relation.getInvite_M_ID();
-				if (intvitId == relationInviteId) {
+				
+//				System.out.println("intvitId: " + intvitId);
+//				System.out.println("relationInviteId: " + relationInviteId);
+				
+				if (intvitId.equals(relationInviteId) ) {
+//					System.out.println("intvitId == relationInviteId");
 					friendRelation = "pedding";
 				}else {
+//					System.out.println(intvitId != relationInviteId);
 					friendRelation = "response";
 				}
+				break;
 			default:
 				break;
 			}
@@ -62,42 +67,29 @@ public class FindFriendService {
 		return friendRelation;
 	}
 	
-	public int changeFriendList(FriendListBean checkList) {
-		int changeRelationCode = 0;
-		FriendListBean relation = dao.selectRelation(checkList);
-		if (relation == null) {
-			if (dao.insert(checkList) == 1) {
-				changeRelationCode = 3;
-			}else {
-				changeRelationCode = -1;
-			}
-		}else {
-			int friendStatus = relation.getFriend_Status();
-			switch (friendStatus) {
-			case 1:	//已經是好友
-				changeRelationCode = 1;
-				break;
-			case 2: //曾經拒絕過
-				int result = dao.update(relation);
-				if (result == 1) {
-					changeRelationCode = 4;
-				}else {
-					changeRelationCode = -2;
-				}
-				break;
-			case 3: //好友狀態待審中
-				String intvitId = new FriendListBean().getInvite_M_ID();
-				String relationInviteId = relation.getInvite_M_ID();
-				if (intvitId == relationInviteId) {
-					changeRelationCode = 2;
-				}else {
-					changeRelationCode = 5;
-				}
-			default:
-				break;
-			}
+	
+	/*
+	 * 	同意/拒絕 FriendStatus
+	 */
+	public int changeFriendList(FriendListBean bean, String action) {
+		int resultCode = 0;
+		FriendListBean relation = new FriendListDaoimpl().selectRelation(bean);
+		bean.setuId(relation.getuId());
+		switch (action) {
+		case "clickAgree":
+			bean.setFriend_Status(1);
+			break;
+		case "clickDecline":
+			bean.setFriend_Status(2);
+			break;
+		default:
+			bean.setFriend_Status(-1);
+			break;
 		}
-		return changeRelationCode;
+		resultCode = new FriendListDaoimpl().update(bean);
+		return resultCode;
 	}
+	
+
 
 }

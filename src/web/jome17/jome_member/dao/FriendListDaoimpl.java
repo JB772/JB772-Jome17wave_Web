@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.main.ServiceLocator;
 
@@ -38,11 +36,9 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	//更新
 	@Override
 	public int update(FriendListBean bean) {
-		String sql = "update Tep101_Jome17.FRIEND_LIST SET "
-					+ "INVITE_M_ID = ?, "
-					+ "ACCEPT_M_ID = ? "
-					+ "FRIEND_STATUS = ?"
-					+ "WHERE UID = ? ;";
+		String sql = "update Tep101_Jome17.FRIEND_LIST "
+				+ "SET INVITE_M_ID = ?, ACCEPT_M_ID = ?, FRIEND_STATUS = ? "
+				+ "WHERE UID = ? ;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);){
 			pstmt.setString(1, bean.getInvite_M_ID());
@@ -131,6 +127,8 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return friendList;
 	}
 	
+<<<<<<< HEAD
+=======
 	
 	//查出memberId的朋友列表
 	@Override
@@ -199,12 +197,19 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				}
 				return null;
 	}
+>>>>>>> c96d6483bce07be1c11488859c98f267792b0117
 
 
 /*
  * 以下為目前不需要實作的方法
  */
-		
+	
+	@Override
+	public List<FriendListBean> selectAll(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub
@@ -222,6 +227,5 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
