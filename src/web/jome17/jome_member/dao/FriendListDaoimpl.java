@@ -3,6 +3,7 @@ package web.jome17.jome_member.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -137,28 +138,49 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	//查出memberId的朋友列表
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
-		String sql = "select " 
-				+ "f.UID,"  
-				+ "f.INVITE_M_ID,"
-				+ "m.NICKNAME,"
-				+ "f.ACCEPT_M_ID,"
-				+ "m1.NICKNAME," 
-				+ "f.FRIEND_STATUS," 
-				+ "f.MODIFY_DATE"
-			+ "from" 
-				+ "FRIEND_LIST f" 
-				+ "left join MEMBERINFO m" 
-				+ "on f.INVITE_M_ID = m.ID" 
-					+ "join MEMBERINFO m1" 
-					+ "on f.ACCEPT_M_ID = m1.ID" 
-			+ "where" 
-				+ "f.INVITE_M_ID = ? or" 
-				+ "f.ACCEPT_M_ID = ?" 
-			+ "order by" 
-				+ "MODIFY_DATE desc;";
+//		String sql =
+//				"select" 
+//				+ "	f.UID,"  
+//				+ "	f.INVITE_M_ID,"
+//				+ "	m.NICKNAME,"
+//				+ "	f.ACCEPT_M_ID,"
+//				+ "	m1.NICKNAME," 
+//				+ "	f.FRIEND_STATUS," 
+//				+ "	f.MODIFY_DATE"
+//			+ "	from" 
+//				+ "	Tep101_Jome17.FRIEND_LIST f" 
+//				+ "	left join MEMBERINFO m" 
+//				+ "	on f.INVITE_M_ID = m.ID" 
+//					+ "join MEMBERINFO m1" 
+//					+ "on f.ACCEPT_M_ID = m1.ID" 
+//			+ "	where" 
+//				+ "	f.INVITE_M_ID = ? or" 
+//				+ "	f.ACCEPT_M_ID = ?" 
+//			+ "	order by" 
+//				+ "	MODIFY_DATE desc;";
+		String sql = 
+				"select "
+					+ "f.UID, "
+					+ "f.INVITE_M_ID, "
+					+ "m.NICKNAME, "
+					+ "f.ACCEPT_M_ID, "
+					+ "m1.NICKNAME, "
+					+ "f.FRIEND_STATUS, "
+					+ "f.MODIFY_DATE "
+				+ "from "
+					+ "Tep101_Jome17.FRIEND_LIST f "
+					+ "left join MEMBERINFO m "
+						+ "on f.INVITE_M_ID = m.ID "
+							+ "join MEMBERINFO m1 "
+							+ "on f.ACCEPT_M_ID = m1.ID "
+				+ "where "
+					+ "f.INVITE_M_ID = ? or "
+					+ "f.ACCEPT_M_ID = ? "
+				+ "order by "
+					+ "MODIFY_DATE desc;";
 		try(Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
-				List<FriendListBean> friends = null;
+				List<FriendListBean> friends = new ArrayList<FriendListBean>();
 				FriendListBean friend = null;
 				pstmt.setString(1, memberId);
 				pstmt.setString(2, memberId);
