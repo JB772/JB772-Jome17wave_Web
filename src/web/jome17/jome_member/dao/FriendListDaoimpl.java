@@ -127,9 +127,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return friendList;
 	}
 	
-<<<<<<< HEAD
-=======
-	
+
 	//查出memberId的朋友列表
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
@@ -153,8 +151,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 //				+ "	f.ACCEPT_M_ID = ?" 
 //			+ "	order by" 
 //				+ "	MODIFY_DATE desc;";
-		String sql = 
-				"select "
+		String sql = "select "
 					+ "f.UID, "
 					+ "f.INVITE_M_ID, "
 					+ "m.NICKNAME, "
@@ -197,18 +194,12 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				}
 				return null;
 	}
->>>>>>> c96d6483bce07be1c11488859c98f267792b0117
 
 
 /*
  * 以下為目前不需要實作的方法
  */
 	
-	@Override
-	public List<FriendListBean> selectAll(String memberId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public byte[] getImage(String acconut) {
@@ -228,4 +219,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return null;
 	}
 
+	
+	
+	
 }
