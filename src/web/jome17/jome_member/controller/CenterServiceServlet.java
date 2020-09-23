@@ -69,6 +69,7 @@ public class CenterServiceServlet extends HttpServlet{
 				}
 				jsonOut.addProperty("friendsResult", friendsResult);
 				outStr = jsonOut.toString();
+				System.out.println(outStr);
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
 				break;

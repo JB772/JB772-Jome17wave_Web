@@ -23,20 +23,19 @@ public class FriendShipService {
 		List<MemberBean> friends = new ArrayList<MemberBean>();
 		List<FriendListBean> friendShips  = null;
 		friendShips = dao.selectAll(memberId);
+		
 		for(FriendListBean friendShip : friendShips) {
 			if(friendShip.getFriend_Status() == 1) {
 				MemberBean friend = new MemberBean();
 				if(friendShip.getInvite_M_ID().equals(memberId)) {
 					friend.setMember_id(friendShip.getAccept_M_ID());
 					friend.setNickname(friendShip.getAcceptName());
-					friends.add(friend);
 				}
 				if(friendShip.getAccept_M_ID().equals(memberId)) {
 					friend.setMember_id(friendShip.getInvite_M_ID());
-					friend.setMember_id(friendShip.getInviteName());
-					friends.add(friend);
+					friend.setNickname(friendShip.getInviteName());
 				}
-				return friends;
+				friends.add(friend);
 			}
 		}
 		return friends;
