@@ -1,3 +1,4 @@
+
 package web.jome17.jome_member.dao;
 
 import java.sql.Connection;
@@ -159,7 +160,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public List<MemberBean> selectAll(String memberId) {
-		String sql = "";
+		String sql = "SELECT ID, MODIFY_DATE, LATITUDE, LONTITUDE FROM Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
 		try(Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -169,7 +170,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					member.setMember_id(rs.getString("ID"));
 					member.setModify_date(rs.getDate("MODIFY_DATE"));
 					member.setLatitude(rs.getDouble("LATITUDE"));
-					member.setLongitude(rs.getDouble("LONGITUDE"));
+					member.setLongitude(rs.getDouble("LONTITUDE"));
 					members.add(member);
 				}
 				return members;
