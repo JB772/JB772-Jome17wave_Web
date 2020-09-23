@@ -32,6 +32,8 @@ public class FindNewFriendServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		int resultCode = 0;
+		FindFriendService ffs = new FindFriendService();
 		try{
 			req.setCharacterEncoding("UTF-8");
 			jsonIn = json2In(req);
@@ -49,7 +51,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				 * 			   帳號錯誤，找不到物件
 				 * friendList true 判斷狀態 1,2,3
 				 * 			  false 帳號存在(陌人)，建立好友連結
-				 * 包裝Json：member物件, friendList物件
+				 * 包裝Json：member物件, friendRelation
 				 */
 			case "searchMember":
 				String memberAccount = null;
@@ -63,27 +65,11 @@ public class FindNewFriendServlet extends HttpServlet {
 				
 				if (theStranger != null) {
 					FriendListBean checkList = new FriendListBean();
-					System.out.println("AcceptId: " + theStranger.getMember_id());	//Log
-					System.out.println("InviteId: " + jsonIn.get("inviteId").getAsString()); //Log
+//					System.out.println("AcceptId: " + theStranger.getMember_id());	//Log
+//					System.out.println("InviteId: " + jsonIn.get("inviteId").getAsString()); //Log
 					checkList.setAccept_M_ID(theStranger.getMember_id());
 					checkList.setInvite_M_ID(jsonIn.get("inviteId").getAsString());
 					String friendRelation = new FindFriendService().getFriendRelation(checkList);
-//					switch (friendRelation) {
-//					case "insert": 		// 非好友
-//						checkList.setFriend_Status(1);
-//						break;
-//					case "wasFriend":	// 已成為好友
-//						checkList.setFriend_Status(2);
-//						break;
-//					case "pedding":		// 等待對方回覆中
-//						checkList.setFriend_Status(3);
-//						break;
-//					case "response":	// 好友邀請待審中
-//						checkList.setFriend_Status(4);
-//						break;
-//					default:
-//						break;
-//					}
 					jsonOut.addProperty("theStranger", GSON.toJson(theStranger));
 					jsonOut.addProperty("friendRelation", friendRelation);
 				}
@@ -102,12 +88,8 @@ public class FindNewFriendServlet extends HttpServlet {
 				 * 					 包裝Json:{結果代碼, FriendList物件}
 				 */
 			case "addNewFriend":
-//				FriendListBean checkList = new FriendListBean();
-				int resultCode = 0;
+//				int resultCode = 0;
 				FriendListBean checkList = new Gson().fromJson(jsonIn.get("addNewFriend").getAsString(), FriendListBean.class);
-				
-//				checkList.setInvite_M_ID(jsonIn.get("inviteId").getAsString());
-//				checkList.setAccept_M_ID(jsonIn.get("acceptId").getAsString());
 				FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
 				if (relation == null) {
 					resultCode = new FriendListDaoimpl().insert(checkList);
@@ -119,6 +101,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				case 0:
 					break;
 				case 1:
+					checkList.setuId(relation.getuId());
 					checkList.setFriend_Status(3);
 				default:
 					break;
@@ -131,8 +114,62 @@ public class FindNewFriendServlet extends HttpServlet {
 				writeJson(resp, outStr);
 				break;
 				
+				/*
+				 *  按“同意”按鈕
+				 *  收到Json:{ FriendListBean物件 }
+				 *  以FrienListBean物件，取出uId，用uId去找出資料並修改其FriendStatus為1 (成功)
+				 *  							update成功 結果代碼1
+				 *  							update失敗 結果代碼0
+				 *  							包裝Json:{結果代碼, FriendList物件}
+				 */
+			case "clickAgree":
+//				int resultCode = 0;
+				FriendListBean agreeBean = new Gson().fromJson(jsonIn.get("agreeBean").getAsString(), FriendListBean.class);
+//				FriendListBean agreeRelation = new FriendListDaoimpl().selectRelation(agreeBean);
+//				agreeBean.setuId(agreeRelation.getuId());
+//				agreeBean.setFriend_Status(1);
+//				resultCode = new FriendListDaoimpl().update(agreeBean);
+				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
+				jsonOut.addProperty("resultCode", resultCode);
+				outStr = jsonOut.toString();
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+				
+				/*
+				 *  按“拒絕”按鈕
+				 *  收到Json:{ FriendListBean物件 }
+				 *  以FrienListBean物件，取出uId，用uId去找出資料並修改其FriendStatus為2 (拒絕！)
+				 *  							update成功 結果代碼1
+				 *  							update失敗 結果代碼0
+				 *  							包裝Json:{結果代碼, FriendList物件}
+				 *  
+				 */
+			case "clickDecline":
+				FriendListBean declineBean = new Gson().fromJson(jsonIn.get("declineBean").getAsString(), FriendListBean.class);
+//				FriendListBean declineRelation = new FriendListDaoimpl().selectRelation(declineBean);
+//				declineBean.setuId(declineRelation.getuId());
+//				declineBean.setFriend_Status(2);
+//				resultCode = new FriendListDaoimpl().update(declineBean);
+				resultCode = ffs.changeFriendList(declineBean, "clickDecline");
+				jsonOut.addProperty("resultCode", resultCode);
+				outStr = jsonOut.toString();
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+				
+				/*
+				 *  取得照片
+				 *  
+				 */
+			case "getImage":
+				break;
+			
 			default:
 				break;
+				
+			
+				
 		}
 	}
 	
