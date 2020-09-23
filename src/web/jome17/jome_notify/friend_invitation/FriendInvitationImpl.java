@@ -12,17 +12,17 @@ public class FriendInvitationImpl implements FriendInvitationDao{
 	DataSource  dataSource;
 	
 
-	@Override
-	public int insert(FriendInvitation friendInvitation) {
-		
-		return 0;
-	}
-
-	@Override
-	public int update(FriendInvitation friendInvitation) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+//	@Override
+//	public int insert(FriendInvitation friendInvitation) {
+//		
+//		return 0;
+//	}
+//
+//	@Override
+//	public int update(FriendInvitation friendInvitation) {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
 
 	@Override
 	public List<FriendInvitation> getAll() {
@@ -31,7 +31,7 @@ public class FriendInvitationImpl implements FriendInvitationDao{
 	}
 
 	@Override
-	public List<FriendInvitation> findById(int id) {
+	public List<FriendInvitation> findById(String id) {
 		FriendInvitation friendInvitation = new FriendInvitation();
 		String sql = "SELECT * FROM Tep101_Jome17.FRIEND_LIST "
 				+ "WHERE INVITE_M_ID =? and ACCEPT_M_ID =? or INVITE_M_ID =? and ACCEPT_M_ID =?;";
@@ -51,6 +51,12 @@ public class FriendInvitationImpl implements FriendInvitationDao{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public byte[] getImage(String id) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
