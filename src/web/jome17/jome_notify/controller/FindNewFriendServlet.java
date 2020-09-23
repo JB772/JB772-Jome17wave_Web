@@ -157,14 +157,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
 				break;
-				
-				/*
-				 *  取得照片
-				 *  
-				 */
-			case "getImage":
-				break;
-			
+					
 			default:
 				break;
 				
