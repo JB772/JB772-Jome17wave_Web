@@ -104,17 +104,14 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		FriendListBean friendList = null;
 		String Id1 = checkList.getInvite_M_ID();
 		String Id2 = checkList.getAccept_M_ID();
-		String sql = "select *" 
-					+ "from Tep101_Jome17.FRIEND_LIST"
-					+ "where"  
-					+ "INVITE_M_ID in(?, ?) and" 
-					+ "ACCEPT_M_ID in(?, ?);" ;
+		String sql = "SELECT * FROM Tep101_Jome17.FRIEND_LIST "
+				+ "WHERE INVITE_M_ID = ? and ACCEPT_M_ID = ? or INVITE_M_ID = ? and ACCEPT_M_ID = ?;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, Id1);
 			pstmt.setString(2, Id2);
-			pstmt.setString(3, Id1);
-			pstmt.setString(4, Id2);
+			pstmt.setString(3, Id2);
+			pstmt.setString(4, Id1);
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
 				friendList = new FriendListBean();

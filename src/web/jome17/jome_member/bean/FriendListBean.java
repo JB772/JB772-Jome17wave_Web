@@ -20,6 +20,7 @@ public class FriendListBean {
 	
 	
 
+
 	public FriendListBean() {
 		super();
 	}
@@ -81,5 +82,7 @@ public class FriendListBean {
 	public void setModify_Date(Date modify_Date) {
 		this.modify_Date = modify_Date;
 	}
+	
+	
     
 }
