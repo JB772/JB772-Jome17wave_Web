@@ -1,5 +1,8 @@
 package web.jome17.jome_member.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.CommonDao;
@@ -11,6 +14,32 @@ public class FriendShipService {
 
 	public FriendShipService() {
 		dao = new FriendListDaoimpl();
+	}
+	
+	/*
+	 * 	查詢好友列表
+	 */
+	public List<MemberBean> selectMyFriend(String memberId) {
+		List<MemberBean> friends = new ArrayList<MemberBean>();
+		List<FriendListBean> friendShips  = null;
+		friendShips = dao.selectAll(memberId);
+		for(FriendListBean friendShip : friendShips) {
+			if(friendShip.getFriend_Status() == 1) {
+				MemberBean friend = new MemberBean();
+				if(friendShip.getInvite_M_ID().equals(memberId)) {
+					friend.setMember_id(friendShip.getAccept_M_ID());
+					friend.setNickname(friendShip.getAcceptName());
+					friends.add(friend);
+				}
+				if(friendShip.getAccept_M_ID().equals(memberId)) {
+					friend.setMember_id(friendShip.getInvite_M_ID());
+					friend.setMember_id(friendShip.getInviteName());
+					friends.add(friend);
+				}
+				return friends;
+			}
+		}
+		return friends;
 	}
 	
 	/*
@@ -67,12 +96,4 @@ public class FriendShipService {
 		return ResultInvite;
 	}
 	
-	/*
-	 * 	查詢好友列表
-	 */
-	public FriendListBean selectMyFriend(String memberId) {
-		FriendListBean urFriendList = null;
-		urFriendList = dao.selectByKey("memberId", memberId);
-		return urFriendList;
-	}
 }	

@@ -1,9 +1,6 @@
 package web.jome17.jome_member.service;
 
 import java.util.List;
-
-import org.apache.tomcat.jni.Mmap;
-
 import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.MemberDaoimpl;
@@ -50,14 +47,6 @@ public class JomeMemberService {
 			return dao.update(member);
 		}
 	}
-	//刪除會員資料
-	public int deletaMember(String account) {
-		return dao.deletaByKey(account);
-	}
-	//查詢MEMBER資料表
-	public List<MemberBean> selectMemberAll() {
-		return dao.selectAll();
-	}
 	
 	//查詢單一帳號
 	public MemberBean selectMemberOne(String account) {
@@ -72,4 +61,25 @@ public class JomeMemberService {
 		image = dao.getImage(account);
 		return image;
 	}
+	
+	
+	//查詢附近用戶
+	public List<MemberBean> searchNearBy(String memberId){
+		List<MemberBean> members = null;
+		members = dao.selectAll(memberId);
+		return members;
+	}
+	
+	
+	
+	/*
+	 * 前台用不到的方法
+	 */
+	//刪除會員資料
+	public int deletaMember(String account) {
+		return dao.deletaByKey(account);
+	}
+
+	
+
 }

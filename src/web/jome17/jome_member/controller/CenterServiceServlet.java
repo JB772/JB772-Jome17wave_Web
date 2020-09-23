@@ -3,6 +3,7 @@ package web.jome17.jome_member.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -57,20 +58,37 @@ public class CenterServiceServlet extends HttpServlet{
 				
 				//取得朋友列表
 			case "getFriendList":
-				FriendListBean friendList = null;
+				List<MemberBean> friends = null;
 				String memberId = jsonIn.get("memberId").getAsString();
 				FriendShipService fsService = new FriendShipService();
-				friendList = fsService.selectMyFriend(memberId);
-				int listResult = -1;		//沒有朋友
-				if(friendList != null) {
-					jsonOut.addProperty("friendList", GSON.toJson(friendList));
-					listResult = 1;			//有朋友
+				friends = fsService.selectMyFriend(memberId);
+				int friendsResult = -1;		//沒有朋友
+				if(friends != null) {
+					jsonOut.addProperty("friends", GSON.toJson(friends));
+					friendsResult = 1;			//有朋友
 				}
-				jsonOut.addProperty("listResult", listResult);
+				jsonOut.addProperty("friendsResult", friendsResult);
 				outStr = jsonOut.toString();
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
 				break;
+				
+			case "getAllMember":
+				List<MemberBean> members = null;
+				String mId = jsonIn.get("memberId").getAsString();
+				JomeMemberService memberService = new JomeMemberService();
+				members = memberService.searchNearBy(mId);
+				int membersResult = -1;		//沒有member
+				if(members != null) {
+					jsonOut.addProperty("friends", GSON.toJson(members));
+					friendsResult = 1;			//有member
+				}
+				jsonOut.addProperty("friendsResult", membersResult);
+				outStr = jsonOut.toString();
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+				
 			default:
 				break;
 		}

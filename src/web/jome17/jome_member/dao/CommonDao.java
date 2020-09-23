@@ -12,7 +12,7 @@ public interface CommonDao<B, K> {
 	B selectRelation(B bean);
 	
 	//查詢ALL
-	List<B>selectAll();
+	List<B>selectAll(K key);
 	//修改
 	int update(B bean);
 	//刪除
