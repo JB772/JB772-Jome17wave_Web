@@ -50,6 +50,8 @@ public class LoginServlet extends HttpServlet{
 			member = mService.login(accountLogin, passwordLogin);
 			if(member != null) {
 				loginResultCode = 1;		//account & password correct
+				member.setFriendCount(mService.getFriendCount(member.getMember_id())); 
+				member.setScoreAverage(mService.getScoreAverage(member.getMember_id()));
 				jsonOut.addProperty("loginMember", GSON.toJson(member));
 			}
 			jsonOut.addProperty("loginResultCode", loginResultCode);

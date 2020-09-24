@@ -21,7 +21,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	@Override
 	public int insert(MemberBean bean) {
 		String sql = "insert into MEMBERINFO(ID, ACCOUNT, PASSWORD, NICKNAME, GENDER, PHONE_NUMBER) "
-				+ "values	(?,?,?,?,?,?)";
+					+ "values	(?,?,?,?,?,?)";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setObject(1, bean.getMember_id());

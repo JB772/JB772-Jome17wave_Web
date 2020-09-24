@@ -3,6 +3,7 @@ package web.jome17.jome_member.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -16,7 +17,30 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	public FriendListDaoimpl() {
 		dataSource = ServiceLocator.getInstance().getDataSource();
 	}
-
+	
+	//查詢筆數
+	@Override
+	public String getCount(String memberId) {
+		String sql = "select count(*) "
+					+ "from Tep101_Jome17.FRIEND_LIST "
+					+ "where (INVITE_M_ID = ? or ACCEPT_M_ID = ?) "
+						+ "and FRIEND_STATUS = 1;";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, memberId);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				String countResult = "";
+				countResult = String.valueOf(rs.getInt(1));
+				return countResult;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//新增
 	@Override
 	public int insert(FriendListBean friendList) {
@@ -55,7 +79,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	//查詢(查個人好友列表含名字)
 	@Override
 	public FriendListBean selectByKey(String keyword, String memberId) {
-		FriendListBean friendList = null;
 		String sql = "select " 
 						+ "f.UID,"  
 						+ "f.INVITE_M_ID,"
@@ -75,6 +98,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 						+ "f.ACCEPT_M_ID = ?" 
 					+ "order by" 
 						+ "MODIFY_DATE desc;";
+		FriendListBean friendList = null;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, memberId);
@@ -131,26 +155,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	//查出memberId的朋友列表
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
-//		String sql =
-//				"select" 
-//				+ "	f.UID,"  
-//				+ "	f.INVITE_M_ID,"
-//				+ "	m.NICKNAME,"
-//				+ "	f.ACCEPT_M_ID,"
-//				+ "	m1.NICKNAME," 
-//				+ "	f.FRIEND_STATUS," 
-//				+ "	f.MODIFY_DATE"
-//			+ "	from" 
-//				+ "	Tep101_Jome17.FRIEND_LIST f" 
-//				+ "	left join MEMBERINFO m" 
-//				+ "	on f.INVITE_M_ID = m.ID" 
-//					+ "join MEMBERINFO m1" 
-//					+ "on f.ACCEPT_M_ID = m1.ID" 
-//			+ "	where" 
-//				+ "	f.INVITE_M_ID = ? or" 
-//				+ "	f.ACCEPT_M_ID = ?" 
-//			+ "	order by" 
-//				+ "	MODIFY_DATE desc;";
 		String sql = "select "
 					+ "f.UID, "
 					+ "f.INVITE_M_ID, "
@@ -220,14 +224,5 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public String getCount(String memberId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	
 	
 }
