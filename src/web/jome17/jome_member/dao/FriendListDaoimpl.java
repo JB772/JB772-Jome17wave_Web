@@ -222,7 +222,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	}
 
 	@Override
-	public String getCount(String tableName, String column1, String column2, String memberId) {
+	public String getCount(String memberId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

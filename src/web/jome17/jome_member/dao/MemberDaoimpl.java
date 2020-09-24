@@ -81,12 +81,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	}
 
 	@Override
-	public int deletaByKey(String key) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public MemberBean login(String account, String password) {
 		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
 		MemberBean member = null;
@@ -151,28 +145,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	}
 
 	@Override
-	public String getCount(String tableName, String column1, String column2, String memberId) {
-		String sql = "select"
-						+ "?"				//avg(RATING_SCORE)
-					+ "from"
-						+ "Tep101_Jome17.?"	//SCORE
-					+ "where"
-						+ "? = ?;";			//BE_RATED_ID
-		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			pstmt.setString(1, column1);
-			pstmt.setString(2, tableName);
-			pstmt.setString(3, column2);
-			pstmt.setString(4, memberId);
-			ResultSet rs = pstmt.executeQuery();
-			if(rs.next()) {
-				String selectResult = "";
-				selectResult = String.valueOf(rs.getObject(1));
-				return selectResult;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public String getCount(String memberId) {
 		return null;
 	}
 	
@@ -184,5 +157,11 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	public MemberBean selectRelation(MemberBean bean) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public int deletaByKey(String key) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
