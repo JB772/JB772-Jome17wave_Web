@@ -24,4 +24,7 @@ public interface CommonDao<B, K> {
 	//查圖片
 	byte[] getImage(K acconut);
 	
+	//記算count(*)
+	K getCount(K tableName, K column1, K column2,K memberId);
+	
 }

@@ -68,7 +68,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				+ "PASSWORD = ?, "
 				+ "NICKNAME = ? "
 				+"where ACCOUNT = ?";
-
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
 		pstmt.setString(1, bean.getPassword());
@@ -86,29 +85,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-//	@Override
-//	public JomeMember login(String account, String password) {
-//		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
-//		try(Connection conn = dataSource.getConnection();) {
-//			PreparedStatement pstmt = conn.prepareStatement(sql);
-//			ResultSet rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				member.setAccount(rs.getString("ACCOUNT"));
-//				member.setPassword("PASSWORD");
-//				member.setNickname(rs.getString("NICKNAME"));
-//				rs.close();
-//				
-//				System.out.println("memberNickName"+member.getNickname());
-//				return member;
-//			}else {
-//				return null;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 
 	@Override
 	public MemberBean login(String account, String password) {
@@ -153,12 +129,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	}
 
 	@Override
-	public MemberBean selectRelation(MemberBean bean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<MemberBean> selectAll(String memberId) {
 		String sql = "SELECT ID, MODIFY_DATE, LATITUDE, LONTITUDE FROM Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
@@ -178,5 +148,41 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				e.printStackTrace();
 			}
 			return members;
+	}
+
+	@Override
+	public String getCount(String tableName, String column1, String column2, String memberId) {
+		String sql = "select"
+						+ "?"				//avg(RATING_SCORE)
+					+ "from"
+						+ "Tep101_Jome17.?"	//SCORE
+					+ "where"
+						+ "? = ?;";			//BE_RATED_ID
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, column1);
+			pstmt.setString(2, tableName);
+			pstmt.setString(3, column2);
+			pstmt.setString(4, memberId);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				String selectResult = "";
+				selectResult = String.valueOf(rs.getObject(1));
+				return selectResult;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	/*
+	 * 暫不需實作方法
+	 */
+	@Override
+	public MemberBean selectRelation(MemberBean bean) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

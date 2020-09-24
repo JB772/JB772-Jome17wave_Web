@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet{
 		switch (action) {
 		
 
-//		
+//			確認account, password
 		case "checkIsValid":
 			int loginResultCode = -1;
 			String accountLogin = jsonIn.get("account").getAsString();
@@ -59,16 +59,16 @@ public class LoginServlet extends HttpServlet{
 			writeJson(resp, outStr);
 			break;
 			
+//			得到member物件
 		case "loginGet":
 			member = new JomeMemberService().selectMemberOne(member.getAccount());
-//			jsonOut.addProperty("FragmentCode", 1);
-//			jsonOut.addProperty("member", GSON.toJson(member));
 			outStr = GSON.toJson(member);
 			System.out.println("jsonOut:" + outStr);
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
 			
+//			拿大頭圖
 		case "getImage":
 			byte[] image = null;
 			String memberId = jsonIn.get("MEMBER_ID").getAsString();
@@ -88,17 +88,7 @@ public class LoginServlet extends HttpServlet{
 				writeJson(resp, outStr);
 			}
 			break;
-			
-//		case "login":
-//			member = GSON.fromJson(jsonIn.get("member").getAsString(), JomeMember.class);
-//			int resultCode = mService.login(member.getAccount(), member.getPassword());
-//			jsonOut.addProperty("resultCode", resultCode);
-//			outStr = jsonOut.toString();
-//			System.out.println("jsonOut:" + outStr);
-//			resp.setContentType(CONTENT_TYPE);
-//			writeJson(resp, outStr);
-//			break;
-			
+						
 		default:
 			break;
 		}
