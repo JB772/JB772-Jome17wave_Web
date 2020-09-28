@@ -2,8 +2,6 @@ package web.jome17.jome_notify.friend_invitation;
 
 import java.util.List;
 
-import org.apache.jasper.tagplugins.jstl.core.ForEach;
-
 public interface FriendInvitationDao {
 //	//新增好友名單
 //	int insert(FriendInvitation friendInvitation);

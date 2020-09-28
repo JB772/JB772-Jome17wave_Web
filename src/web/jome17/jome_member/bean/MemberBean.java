@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class MemberBean {
 	private String member_id;
-	private Date build_date;
-	private Date modify_date;
+	private String build_date;
+	private String modify_date;
 	private int account_status;
 	private String phone_number;
 	private String nickname;
@@ -63,19 +63,21 @@ public class MemberBean {
 		this.member_id = member_id;
 	}
 
-	public Date getBuild_date() {
+	
+
+	public String getBuild_date() {
 		return build_date;
 	}
 
-	public void setBuild_date(Date build_date) {
+	public void setBuild_date(String build_date) {
 		this.build_date = build_date;
 	}
 
-	public Date getModify_date() {
+	public String getModify_date() {
 		return modify_date;
 	}
 
-	public void setModify_date(Date modify_date) {
+	public void setModify_date(String modify_date) {
 		this.modify_date = modify_date;
 	}
 
