@@ -152,12 +152,9 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	}
 	
 
-<<<<<<< HEAD
+
 	
 	//查出memberId的朋友列表（好友列表）
-=======
-	//查出memberId的朋友列表
->>>>>>> 29c476a9dd36c8d04f02a096efdbd32959d4f4d0
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
 		String sql = "select "

@@ -103,4 +103,11 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 		return null;
 	}
 
+
+	@Override
+	public String getCount(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
