@@ -21,7 +21,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	@Override
 	public int insert(MemberBean bean) {
 		String sql = "insert into MEMBERINFO(ID, ACCOUNT, PASSWORD, NICKNAME, GENDER, PHONE_NUMBER) "
-				+ "values	(?,?,?,?,?,?)";
+					+ "values	(?,?,?,?,?,?)";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setObject(1, bean.getMember_id());
@@ -68,7 +68,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				+ "PASSWORD = ?, "
 				+ "NICKNAME = ? "
 				+"where ACCOUNT = ?";
-
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
 		pstmt.setString(1, bean.getPassword());
@@ -80,35 +79,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	}
 	return -1;
 	}
-
-	@Override
-	public int deletaByKey(String key) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-//	@Override
-//	public JomeMember login(String account, String password) {
-//		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
-//		try(Connection conn = dataSource.getConnection();) {
-//			PreparedStatement pstmt = conn.prepareStatement(sql);
-//			ResultSet rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				member.setAccount(rs.getString("ACCOUNT"));
-//				member.setPassword("PASSWORD");
-//				member.setNickname(rs.getString("NICKNAME"));
-//				rs.close();
-//				
-//				System.out.println("memberNickName"+member.getNickname());
-//				return member;
-//			}else {
-//				return null;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 
 	@Override
 	public MemberBean login(String account, String password) {
@@ -153,12 +123,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	}
 
 	@Override
-	public MemberBean selectRelation(MemberBean bean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<MemberBean> selectAll(String memberId) {
 		String sql = "SELECT ID, MODIFY_DATE, LATITUDE, LONTITUDE FROM Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
@@ -178,5 +142,26 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				e.printStackTrace();
 			}
 			return members;
+	}
+
+	@Override
+	public String getCount(String memberId) {
+		return null;
+	}
+	
+	
+	/*
+	 * 暫不需實作方法
+	 */
+	@Override
+	public MemberBean selectRelation(MemberBean bean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public int deletaByKey(String key) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

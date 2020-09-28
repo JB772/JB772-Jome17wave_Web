@@ -1,9 +1,14 @@
 package web.jome17.jome_member.service;
 
 import java.util.List;
+
+import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.MemberBean;
+import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_member.dao.CommonDao;
+import web.jome17.jome_member.dao.FriendListDaoimpl;
 import web.jome17.jome_member.dao.MemberDaoimpl;
+import web.jome17.jome_member.dao.ScoreDaoimpl;
 
 public class JomeMemberService {
 	private CommonDao<MemberBean, String> dao;
@@ -63,14 +68,41 @@ public class JomeMemberService {
 	}
 	
 	
+	//查詢好朋友數量
+	public String getFriendCount(String memberId) {
+		CommonDao<FriendListBean, String> friendListDaoimpl = new FriendListDaoimpl();
+		String friendCount = friendListDaoimpl.getCount(memberId);;
+		if(friendCount.isEmpty()) {
+			friendCount = "";
+		}
+		return friendCount;
+	}
+	
+	//查詢評價平均
+	public String getScoreAverage(String memberId) {
+		CommonDao<ScoreBean, String> scoreDaoimpl = new ScoreDaoimpl();
+		String scoreAverage = scoreDaoimpl.getCount(memberId);
+		if(scoreAverage.isEmpty()) {
+			scoreAverage = "";
+		}
+		return scoreAverage;
+		
+	}
+	
+	public String getGroupCount(String memberId) {
+		
+		String groupCount ="";
+		
+		return groupCount;
+		
+	}
+	
 	//查詢附近用戶
 	public List<MemberBean> searchNearBy(String memberId){
 		List<MemberBean> members = null;
 		members = dao.selectAll(memberId);
 		return members;
 	}
-	
-	
 	
 	/*
 	 * 前台用不到的方法
