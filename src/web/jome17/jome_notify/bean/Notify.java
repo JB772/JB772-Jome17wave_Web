@@ -1,4 +1,4 @@
-package web.jome17.jome_notify;
+package web.jome17.jome_notify.bean;
 
 import java.io.Serializable;
 import java.util.Date;

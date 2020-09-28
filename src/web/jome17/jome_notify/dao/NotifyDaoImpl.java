@@ -1,4 +1,4 @@
-package web.jome17.jome_notify;
+package web.jome17.jome_notify.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import com.sun.org.apache.regexp.internal.recompile;
 
+import web.jome17.jome_notify.bean.Notify;
 import web.jome17.main.ServiceLocator;
 
 public class NotifyDaoImpl implements NotifyDao{

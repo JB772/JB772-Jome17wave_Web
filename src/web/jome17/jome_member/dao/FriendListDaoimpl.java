@@ -129,7 +129,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	
 
 	
-	//查出memberId的朋友列表
+	//查出memberId的朋友列表（好友列表）
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
 //		String sql =
@@ -196,6 +196,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				}
 				return null;
 	}
+
 
 
 
