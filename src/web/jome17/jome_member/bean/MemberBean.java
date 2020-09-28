@@ -16,22 +16,25 @@ public class MemberBean {
 	private double longitude;
 	private String token_id;
 	private byte[] image;
-    private Integer friendCount = 0;
-    private Double scoreAverage = 0.0;
-    private Integer groupCount = 0;
+    private String friendCount = "";
+    private String scoreAverage = "";
+    private String groupCount = "";
+    private String createGroupCount = "";
 	
+    
+
 	public MemberBean(String phone_number, String nickname, String account, String password, int gender,
-			double latitude, double longitude, String token_id) {
+			String token_id) {
 		super();
 		this.phone_number = phone_number;
 		this.nickname = nickname;
 		this.account = account;
 		this.password = password;
 		this.gender = gender;
-		this.latitude = latitude;
-		this.longitude = longitude;
 		this.token_id = token_id;
 	}
+
+
 
 	public MemberBean(String account, String password) {
 		super();
@@ -153,34 +156,40 @@ public class MemberBean {
 		this.token_id = token_id;
 	}
 
-	public Integer getFriendCount() {
+	public String getFriendCount() {
 		return friendCount;
 	}
 
-	public void setFriendCount(Integer friendCount) {
+	public void setFriendCount(String friendCount) {
 		this.friendCount = friendCount;
 	}
 
-	public Double getScoreAverage() {
+	public String getScoreAverage() {
 		return scoreAverage;
 	}
 
-	public void setScoreAverage(Double scoreAverage) {
+	public void setScoreAverage(String scoreAverage) {
 		this.scoreAverage = scoreAverage;
 	}
 
-	public Integer getGroupCount() {
+	public String getGroupCount() {
 		return groupCount;
 	}
 
-	public void setGroupCount(Integer groupCount) {
+	public void setGroupCount(String groupCount) {
 		this.groupCount = groupCount;
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+	public String getCreateGroupCount() {
+		return createGroupCount;
+	}
+
+
+
+	public void setCreateGroupCount(String createGroupCount) {
+		this.createGroupCount = createGroupCount;
+	}
 	
 }

@@ -1,4 +1,4 @@
-package web.jome17.jome_notify.friend_invitation.find_new_friend;
+package web.jome17.jome_notify.bean;
 
 import java.util.Date;
 
