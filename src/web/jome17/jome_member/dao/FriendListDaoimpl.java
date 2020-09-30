@@ -82,11 +82,10 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		String sql = "select " 
 						+ "f.UID,"  
 						+ "f.INVITE_M_ID,"
-						+ "m.NICKNAME,"
+						+ "m.NICKNAME,"				//3
 						+ "f.ACCEPT_M_ID,"
 						+ "m1.NICKNAME," 
-						+ "f.FRIEND_STATUS," 
-						+ "f.MODIFY_DATE"
+						+ "f.FRIEND_STATUS "		//6 
 					+ "from" 
 						+ "FRIEND_LIST f" 
 						+ "left join MEMBERINFO m" 
@@ -112,7 +111,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				friendList.setAccept_M_ID(rs.getString(4));
 				friendList.setAcceptName(rs.getString(5));
 				friendList.setFriend_Status(rs.getInt(6));
-				friendList.setModify_Date(rs.getDate(7));
 				return friendList;
 			}
 		} catch (Exception e) {
@@ -127,8 +125,12 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		FriendListBean friendList = null;
 		String Id1 = checkList.getInvite_M_ID();
 		String Id2 = checkList.getAccept_M_ID();
-		String sql = "SELECT * FROM Tep101_Jome17.FRIEND_LIST "
-				+ "WHERE INVITE_M_ID = ? and ACCEPT_M_ID = ? or INVITE_M_ID = ? and ACCEPT_M_ID = ?;";
+		String sql = "SELECT * "
+					+ "FROM Tep101_Jome17.FRIEND_LIST "
+					+ "WHERE "
+						+ "INVITE_M_ID = ? and ACCEPT_M_ID = ? "
+							+ "or "
+						+ "INVITE_M_ID = ? and ACCEPT_M_ID = ?;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, Id1);
@@ -142,7 +144,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				friendList.setInvite_M_ID(rs.getString("INVITE_M_ID"));
 				friendList.setAccept_M_ID(rs.getString("ACCEPT_M_ID"));
 				friendList.setFriend_Status(rs.getInt("FRIEND_STATUS"));
-				friendList.setModify_Date(rs.getDate("MODIFY_DATE"));
 				return friendList;
 			}
 		} catch (Exception e) {
@@ -151,29 +152,31 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return friendList;
 	}
 	
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 10db181a103a3a8003b5fd55140aa0067e3a47e3
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
 		String sql = "select "
-					+ "f.UID, "
-					+ "f.INVITE_M_ID, "
-					+ "m.NICKNAME, "
-					+ "f.ACCEPT_M_ID, "
-					+ "m1.NICKNAME, "
-					+ "f.FRIEND_STATUS, "
-					+ "f.MODIFY_DATE "
-				+ "from "
-					+ "Tep101_Jome17.FRIEND_LIST f "
-					+ "left join MEMBERINFO m "
-						+ "on f.INVITE_M_ID = m.ID "
-							+ "join MEMBERINFO m1 "
-							+ "on f.ACCEPT_M_ID = m1.ID "
-				+ "where "
-					+ "f.INVITE_M_ID = ? or "
-					+ "f.ACCEPT_M_ID = ? "
-				+ "order by "
-					+ "MODIFY_DATE desc;";
+						+ "f.UID, "
+						+ "f.INVITE_M_ID, "
+						+ "m.NICKNAME, "			//3
+						+ "f.ACCEPT_M_ID, "
+						+ "m1.NICKNAME, "
+						+ "f.FRIEND_STATUS "		//6
+					+ "from "
+						+ "Tep101_Jome17.FRIEND_LIST f "
+							+ "left join MEMBERINFO m "
+							+ "on f.INVITE_M_ID = m.ID "
+								+ "join MEMBERINFO m1 "
+								+ "on f.ACCEPT_M_ID = m1.ID "
+					+ "where "
+						+ "f.INVITE_M_ID = ? or "
+						+ "f.ACCEPT_M_ID = ? "
+					+ "order by "
+						+ "f.MODIFY_DATE desc; ";
 		try(Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);) {
 				List<FriendListBean> friends = new ArrayList<FriendListBean>();
@@ -189,7 +192,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 					friend.setAccept_M_ID(rs.getString(4));
 					friend.setAcceptName(rs.getString(5));
 					friend.setFriend_Status(rs.getInt(6));
-					friend.setModify_Date(rs.getDate(7));
 					friends.add(friend);
 				}
 				return friends;
@@ -206,7 +208,10 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
  * 以下為目前不需要實作的方法
  */
 	
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 10db181a103a3a8003b5fd55140aa0067e3a47e3
 	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub

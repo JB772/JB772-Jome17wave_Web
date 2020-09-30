@@ -38,10 +38,12 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		return -1;
 	}
 	
+	//取得平均分
 	@Override
 	public String getCount(String memberId) {
 		String sql ="select "
-						+ "avg(RATING_SCORE) "
+						+ "avg(RATING_SCORE), "
+						+ "COUNT(*) "
 					+ "from "
 						+ "Tep101_Jome17.SCORE "
 					+ "where "
@@ -52,10 +54,12 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				String selectResult = "";
-				selectResult = String.valueOf(rs.getDouble(1));
+				selectResult = String.valueOf(rs.getDouble(1))
+								+ "分"
+								+ String.valueOf(rs.getInt(2));
 				return selectResult;
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {	
 			e.printStackTrace();
 		}
 		return null;
