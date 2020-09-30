@@ -1,7 +1,10 @@
-package web.jome17.jome_group;
+package web.jome17.jome_member.bean;
 
-
-public class Group {
+public class PersonalGroup {
+	private String memberId = "";
+	private int attenderId = -1;
+	private int attenderStatus = -1;
+	private int role = -1;
 	private String groupId = "";
 	private String groupName = "";
 	private String assembleTime = "";
@@ -14,34 +17,54 @@ public class Group {
 	private String notice = "";
 	private byte[] gImage = null;
 	
-	
-
-	
-
-	public Group(String groupId, String groupName, String assembleTime, String groupEndTime, String signUpEnd,
-			int surfPointId, int groupLimit, int gender, int groupStatus, String notice) {
+	public PersonalGroup(String memberId, int attenderId, String groupId) {
 		super();
+		this.memberId = memberId;
+		this.attenderId = attenderId;
 		this.groupId = groupId;
-		this.groupName = groupName;
-		this.assembleTime = assembleTime;
-		this.groupEndTime = groupEndTime;
-		this.signUpEnd = signUpEnd;
-		this.surfPointId = surfPointId;
-		this.groupLimit = groupLimit;
-		this.gender = gender;
-		this.groupStatus = groupStatus;
-		this.notice = notice;
 	}
 
-	public Group() {
+	public PersonalGroup() {
 		super();
+	}
+
+	public String getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+
+	public int getAttenderId() {
+		return attenderId;
+	}
+
+	public void setAttenderId(int attenderId) {
+		this.attenderId = attenderId;
+	}
+
+	public int getAttenderStatus() {
+		return attenderStatus;
+	}
+
+	public void setAttenderStatus(int attenderStatus) {
+		this.attenderStatus = attenderStatus;
+	}
+
+	public int getRole() {
+		return role;
+	}
+
+	public void setRole(int role) {
+		this.role = role;
 	}
 
 	public String getGroupId() {
 		return groupId;
 	}
 
-	public void setGrouptId(String groupId) {
+	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
 

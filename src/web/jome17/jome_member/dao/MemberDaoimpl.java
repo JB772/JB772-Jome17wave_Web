@@ -65,9 +65,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	@Override
 	public int update(MemberBean bean) {
 		String sql = "update Member set "
-				+ "PASSWORD = ?, "
-				+ "NICKNAME = ? "
-				+"where ACCOUNT = ?";
+						+ "PASSWORD = ?, "
+						+ "NICKNAME = ? "
+					+"where "
+						+ "ACCOUNT = ?";
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
 		pstmt.setString(1, bean.getPassword());
@@ -124,7 +125,13 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public List<MemberBean> selectAll(String memberId) {
-		String sql = "SELECT ID, NICKNAME, MODIFY_DATE, LATITUDE, LONTITUDE FROM Tep101_Jome17.MEMBERINFO;";
+		String sql = "SELECT "
+						+ "ID, "
+						+ "NICKNAME, "
+						+ "LATITUDE, "
+						+ "LONTITUDE "
+					+ "FROM "
+						+ "Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
 		try(Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -133,7 +140,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					MemberBean member = new MemberBean();
 					member.setMember_id(rs.getString("ID"));
 					member.setNickname(rs.getString("NICKNAME"));
-					member.setModify_date(rs.getString("MODIFY_DATE"));
 					member.setLatitude(rs.getDouble("LATITUDE"));
 					member.setLongitude(rs.getDouble("LONTITUDE"));
 					members.add(member);

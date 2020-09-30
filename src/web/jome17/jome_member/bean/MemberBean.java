@@ -1,11 +1,8 @@
 package web.jome17.jome_member.bean;
 
-import java.util.Date;
 
 public class MemberBean {
 	private String member_id;
-	private String build_date;
-	private String modify_date;
 	private int account_status;
 	private String phone_number;
 	private String nickname;
@@ -64,24 +61,6 @@ public class MemberBean {
 
 	public void setMember_id(String member_id) {
 		this.member_id = member_id;
-	}
-
-	
-
-	public String getBuild_date() {
-		return build_date;
-	}
-
-	public void setBuild_date(String build_date) {
-		this.build_date = build_date;
-	}
-
-	public String getModify_date() {
-		return modify_date;
-	}
-
-	public void setModify_date(String modify_date) {
-		this.modify_date = modify_date;
 	}
 
 	public int getAccount_status() {
@@ -180,13 +159,9 @@ public class MemberBean {
 		this.groupCount = groupCount;
 	}
 
-
-
 	public String getCreateGroupCount() {
 		return createGroupCount;
 	}
-
-
 
 	public void setCreateGroupCount(String createGroupCount) {
 		this.createGroupCount = createGroupCount;
