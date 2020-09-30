@@ -105,7 +105,7 @@ public class NotifyDaoImpl implements NotifyDao{
 			bean.setInvite_M_ID(rs.getString(2));
 			bean.setInvite_M_ID(rs.getString(3));
 			bean.setFriend_Status(rs.getInt(4));
-			bean.setModify_Date(rs.getDate(5));
+//			bean.setModify_Date(rs.getDate(5));
 			String sqlName = "select NICKNAME from Tep101_Jome17.MEMBER_INFO Where MEMBER_ID = ?;";
 			try (
 				PreparedStatement psInvite = connection.prepareStatement(sqlName);
