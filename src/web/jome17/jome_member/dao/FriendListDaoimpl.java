@@ -152,11 +152,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return friendList;
 	}
 	
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 10db181a103a3a8003b5fd55140aa0067e3a47e3
 	@Override
 	public List<FriendListBean> selectAll(String memberId) {
 		String sql = "select "
@@ -208,10 +203,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
  * 以下為目前不需要實作的方法
  */
 	
-<<<<<<< HEAD
-	
-=======
->>>>>>> 10db181a103a3a8003b5fd55140aa0067e3a47e3
 	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub
