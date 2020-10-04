@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet{
 			writeJson(resp, outStr);
 			break;
 			
-//			得到member物件
+//			account得到member物件
 		case "loginGet":
 			member = new JomeMemberService().selectMemberOne(member.getAccount());
 			outStr = GSON.toJson(member);
@@ -70,10 +70,26 @@ public class LoginServlet extends HttpServlet{
 			writeJson(resp, outStr);
 			break;
 			
+//			id得到member物件
+		case "idGet":
+			int idGetResult = -1;
+			String mId = jsonIn.get("memberId").getAsString();
+			member = new JomeMemberService().selectMemberById(mId);
+			if(member != null) {
+				idGetResult = 1;
+				jsonOut.addProperty("idMember", GSON.toJson(member));
+			}
+			jsonOut.addProperty("idGetResult", idGetResult);
+			outStr = jsonOut.toString();
+			System.out.println(outStr);
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+			
 //			拿大頭圖
 		case "getImage":
 			byte[] image = null;
-			String memberId = jsonIn.get("MEMBER_ID").getAsString();
+			String memberId = jsonIn.get("memberId").getAsString();
 			int imageSize = jsonIn.get("imageSize").getAsInt();
 			image = mService.getImage(memberId);
 			System.out.println("image:"+image);
@@ -92,6 +108,11 @@ public class LoginServlet extends HttpServlet{
 			break;
 						
 		default:
+			member = new MemberBean();
+			outStr = GSON.toJson(member);
+			System.out.println(outStr);
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
 			break;
 		}
 	}

@@ -54,9 +54,10 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				String selectResult = "";
-				selectResult = String.valueOf(rs.getDouble(1))
-								+ "分"
-								+ String.valueOf(rs.getInt(2));
+				selectResult =String.valueOf(rs.getDouble(1))
+								+ "分，累積評分"
+								+ String.valueOf(rs.getInt(2))
+								+ "次";
 				return selectResult;
 			}
 		} catch (Exception e) {	
