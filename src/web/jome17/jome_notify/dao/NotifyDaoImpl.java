@@ -9,6 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import com.sun.org.apache.regexp.internal.recompile;
+import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import web.jome17.jome_group.Group;
 import web.jome17.jome_member.bean.FriendListBean;
@@ -62,7 +63,7 @@ public class NotifyDaoImpl implements NotifyDao{
 		){
 			pstmt.setString(1, memberId);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				Notify notify = new Notify();
 				notify.setNotificationId(rs.getInt(1));
 				notify.setType(rs.getInt(2));
@@ -101,11 +102,14 @@ public class NotifyDaoImpl implements NotifyDao{
 			pstmt.setInt(1, notificationBody);
 			ResultSet rs = pstmt.executeQuery();
 			FriendListBean bean = new FriendListBean();
-			bean.setuId(rs.getInt(1));
-			bean.setInvite_M_ID(rs.getString(2));
-			bean.setInvite_M_ID(rs.getString(3));
-			bean.setFriend_Status(rs.getInt(4));
-//			bean.setModify_Date(rs.getDate(5));
+			if (rs.next()) {
+				bean.setuId(rs.getInt(1));
+				bean.setInvite_M_ID(rs.getString(2));
+				bean.setInvite_M_ID(rs.getString(3));
+				bean.setFriend_Status(rs.getInt(4));
+//				bean.setModify_Date(rs.getDate(5));
+			}
+
 			String sqlName = "select NICKNAME from Tep101_Jome17.MEMBER_INFO Where MEMBER_ID = ?;";
 			try (
 				PreparedStatement psInvite = connection.prepareStatement(sqlName);
@@ -115,8 +119,12 @@ public class NotifyDaoImpl implements NotifyDao{
 				psAccept.setString(1, bean.getAccept_M_ID());
 				ResultSet rsInvite = psInvite.executeQuery();
 				ResultSet rsAccept = psAccept.executeQuery();
-				bean.setInviteName(rsInvite.getString("NICKNAME"));
-				bean.setAcceptName(rsAccept.getString("NICKNAME"));
+				if (rsInvite.next()) {
+					bean.setInviteName(rsInvite.getString("NICKNAME"));
+				}
+				if (rsAccept.next()) {
+					bean.setAcceptName(rsAccept.getString("NICKNAME"));
+				}
 				return bean;
 			} catch (Exception e) {
 				 e.printStackTrace();
@@ -150,15 +158,17 @@ public class NotifyDaoImpl implements NotifyDao{
 		){
 			pstmt.setInt(1, notificationBody);
 			ResultSet rs = pstmt.executeQuery();
-			AttenderBean bean = new AttenderBean();
-			bean.setGroupName(rs.getString(1));
-			bean.setAttenderNo(rs.getInt(2));
-			bean.setGroupId(rs.getInt(3));
-			bean.setAttendStatus(rs.getInt(4));
-			bean.setModifyDate(rs.getString(5));
-			bean.setRole(rs.getInt(6));
-			bean.setMemberId(rs.getString(7));
-			return bean;
+			if (rs.next()) {
+				AttenderBean bean = new AttenderBean();
+				bean.setGroupName(rs.getString(1));
+				bean.setAttenderNo(rs.getInt(2));
+				bean.setGroupId(rs.getInt(3));
+				bean.setAttendStatus(rs.getInt(4));
+				bean.setModifyDate(rs.getString(5));
+				bean.setRole(rs.getInt(6));
+				bean.setMemberId(rs.getString(7));
+				return bean;
+			}
 		} catch (Exception e) {
 			 e.printStackTrace();
 		}
@@ -199,7 +209,32 @@ public class NotifyDaoImpl implements NotifyDao{
 	 */
 	@Override
 	public List<ScoreBean> getScoreList(int notificationBody, String memberId) {
-		// TODO Auto-generated method stub
+		 String sql = "select s.*, g.GROUP_NAME "
+		 			+ "from Tep101_Jome17.SCORE s l"
+		 			+ "eft join Tep101_Jome17.JOIN_GROUP g on g.GROUP_ID = s.GROUP_ID "
+		 			+ "WHERE s.GROUP_ID = ? and s.MEMBER_ID = ?;";
+		 List<ScoreBean> scoreList = new ArrayList<>();
+		 try (
+			Connection connection = dataSource.getConnection();
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+		){
+			pstmt.setInt(1, notificationBody);
+			pstmt.setString(2, memberId);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ScoreBean bean = new ScoreBean();
+				bean.setScoreId(rs.getInt(1));
+				bean.setMemberId(rs.getString(2));
+				bean.setBeRatedId(rs.getString(3));
+				bean.setRatingScore(rs.getInt(4));
+				bean.setGroupId(rs.getString(5));
+				bean.setGroupName(rs.getString(7));
+				scoreList.add(bean);
+			}
+			return scoreList;
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
 		return null;
 	}
 	

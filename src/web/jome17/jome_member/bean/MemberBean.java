@@ -2,21 +2,21 @@ package web.jome17.jome_member.bean;
 
 
 public class MemberBean {
-	private String member_id;
-	private int account_status;
-	private String phone_number;
-	private String nickname;
-	private String account;
-	private String password;
-	private int gender;
-	private double latitude;
-	private double longitude;
-	private String token_id;
-	private byte[] image;
-    private String friendCount = "";
-    private String scoreAverage = "";
-    private String groupCount = "";
-    private String createGroupCount = "";
+	private String member_id = "null";
+	private int account_status = -1;
+	private String phone_number = "null";
+	private String nickname = "null";
+	private String account = "null";
+	private String password = "null";
+	private int gender = -1;
+	private double latitude = -1.0;
+	private double longitude = -1.0;
+	private String token_id = "null";
+	private byte[] image = null;
+    private String friendCount = "0";
+    private String scoreAverage = "0";
+    private String groupCount = "0";
+    private String createGroupCount = "0";
 	
     
 

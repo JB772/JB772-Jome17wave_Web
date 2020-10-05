@@ -5,6 +5,8 @@ public class ScoreBean {
 	private String beRatedId = "";
 	private String memberId = "";
 	private int ratingScore = -1;
+	private int scoreId;
+	private String groupName;
 	
 	public ScoreBean(String groupId, String beRatedId, String memberId, int ratingScore) {
 		super();
@@ -13,11 +15,25 @@ public class ScoreBean {
 		this.memberId = memberId;
 		this.ratingScore = ratingScore;
 	}
+	
+
+
+	public ScoreBean(String groupId, String beRatedId, String memberId, int ratingScore, int scoreId, String groupName) {
+		super();
+		this.groupId = groupId;
+		this.beRatedId = beRatedId;
+		this.memberId = memberId;
+		this.ratingScore = ratingScore;
+		this.scoreId = scoreId;
+		this.groupName = groupName;
+	}
+
 
 	public ScoreBean() {
 		super();
 	}
 
+	
 	public String getGroupId() {
 		return groupId;
 	}
@@ -49,6 +65,32 @@ public class ScoreBean {
 	public void setRatingScore(int ratingScore) {
 		this.ratingScore = ratingScore;
 	}
+
+
+
+	public int getScoreId() {
+		return scoreId;
+	}
+
+
+
+	public void setScoreId(int scoreId) {
+		this.scoreId = scoreId;
+	}
+
+
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+	
+	
 	
 	
 }
