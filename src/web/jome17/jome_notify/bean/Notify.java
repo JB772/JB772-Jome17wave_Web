@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Notify {
 	private int notificationId, type, notificationBody;
-	private String memberId;
+	private String memberId, notificationDetail;
 	private Date buildDate;
 	
 	public Notify() {
@@ -18,6 +18,29 @@ public class Notify {
 		this.type = type;
 		this.notificationBody = notificationBody;
 		this.memberId = memberId;
+	}
+	
+	
+
+	public Notify(int notificationId, int type, int notificationBody, String memberId, String notificationDetail,
+			Date buildDate) {
+		super();
+		this.notificationId = notificationId;
+		this.type = type;
+		this.notificationBody = notificationBody;
+		this.memberId = memberId;
+		this.notificationDetail = notificationDetail;
+		this.buildDate = buildDate;
+	}
+	
+
+	public Notify(int notificationId, int type, int notificationBody, String memberId, String notificationDetail) {
+		super();
+		this.notificationId = notificationId;
+		this.type = type;
+		this.notificationBody = notificationBody;
+		this.memberId = memberId;
+		this.notificationDetail = notificationDetail;
 	}
 
 	public int getNotificationId() {
@@ -58,6 +81,14 @@ public class Notify {
 
 	public void setBuildDate(Date buildDate) {
 		this.buildDate = buildDate;
+	}
+
+	public String getNotificationDetail() {
+		return notificationDetail;
+	}
+
+	public void setNotificationDetail(String notificationDetail) {
+		this.notificationDetail = notificationDetail;
 	}
 
 

@@ -3,6 +3,8 @@ package web.jome17.jome_notify.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
+import web.jome17.jome_member.bean.FriendListBean;
+import web.jome17.jome_notify.bean.Notify;
+import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
+import web.jome17.jome_notify.dao.NotifyDaoImpl;
+import web.jome17.jome_notify.service.NotifyService;
 
 
 @WebServlet("/NotificationServlet")
@@ -35,12 +43,32 @@ public class NotificationServlet extends HttpServlet {
 		String outStr = "";
 		JsonObject jsonOut = new JsonObject();
 		switch (action) {
-		case "getAllNotification":
-			
-			break;
-
-		default:
-			break;
+			/*
+			 * 取得通知訊息列表
+			 * 	收到Json:{ 自己的id }
+			 * 	在Ｎotify資料庫裡找出 id = memberId 的資料，並作 order by BUILD_DATE desc 排序
+			 * 	用通知列表裡的資料取得 其他材料(活動名稱或人名)
+			 * 	每筆資料材料找齊後，再包裝成List
+			 * 	包裝Json:{ 資料List }
+			 */
+			case "getAllNotification":
+				List<Notify> notifiesWordList = null;
+				String memberId = jsonIn.get("memberId").getAsString();
+				List<Notify> notifiesList = new NotifyDaoImpl().getAll(memberId);
+//System.out.println("notifiesList");
+				notifiesWordList = new NotifyService().getNotifiesWordList(notifiesList);
+//System.out.println("notifiesWordList");
+				if (notifiesWordList != null) {
+					jsonOut.addProperty("notifiesWordList", GSON.toJson(notifiesWordList));
+				}
+				outStr = jsonOut.toString();
+				System.out.println(outStr);
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+	
+			default:
+				break;
 		}
 		
 		
