@@ -103,6 +103,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				case 1:
 					checkList.setuId(relation.getuId());
 					checkList.setFriend_Status(3);
+					break;
 				default:
 					break;
 				}

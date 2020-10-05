@@ -122,7 +122,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	//查詢(確認兩id之間是否有建立關係)
 	@Override
 	public FriendListBean selectRelation(FriendListBean checkList) {
-		FriendListBean friendList = null;
 		String Id1 = checkList.getInvite_M_ID();
 		String Id2 = checkList.getAccept_M_ID();
 		String sql = "SELECT * "
@@ -139,7 +138,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 			pstmt.setString(4, Id1);
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
-				friendList = new FriendListBean();
+				FriendListBean friendList = new FriendListBean();
 				friendList.setuId(rs.getInt("UID"));
 				friendList.setInvite_M_ID(rs.getString("INVITE_M_ID"));
 				friendList.setAccept_M_ID(rs.getString("ACCEPT_M_ID"));
@@ -149,7 +148,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return friendList;
+		return null;
 	}
 	
 	@Override
@@ -203,10 +202,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
  * 以下為目前不需要實作的方法
  */
 	
-<<<<<<< HEAD
 
-=======
->>>>>>> f6443fde4916c81e5dce4b41a4bf45434e3949e3
 	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub

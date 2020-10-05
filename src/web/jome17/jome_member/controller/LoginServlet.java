@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.MemberBean;
+import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.main.ImageUtil;
 
@@ -70,13 +71,18 @@ public class LoginServlet extends HttpServlet{
 			writeJson(resp, outStr);
 			break;
 			
-//			id得到member物件
+//			id得到member物件(進入好友或陌生人頁面)
 		case "idGet":
 			int idGetResult = -1;
-			String mId = jsonIn.get("memberId").getAsString();
-			member = new JomeMemberService().selectMemberById(mId);
+			String friendId = jsonIn.get("friendId").getAsString();
+			String mainId = jsonIn.get("mainId").getAsString();
+			member = new JomeMemberService().selectMemberById(friendId);
 			if(member != null) {
 				idGetResult = 1;
+				int relationCode = new FriendShipService().identifyRelation(mainId, friendId);
+				member.setFriendCount(mService.getFriendCount(member.getMember_id())); 
+				member.setScoreAverage(mService.getScoreAverage(member.getMember_id()));
+				jsonOut.addProperty("relationCode", relationCode);
 				jsonOut.addProperty("idMember", GSON.toJson(member));
 			}
 			jsonOut.addProperty("idGetResult", idGetResult);
