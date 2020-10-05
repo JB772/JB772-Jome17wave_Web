@@ -53,11 +53,18 @@ public class JomeMemberService {
 		}
 	}
 	
-	//查詢單一帳號
+	//account查詢單一Member
 	public MemberBean selectMemberOne(String account) {
 		MemberBean selecMember = null;
 		selecMember = dao.selectByKey("ACCOUNT", account);
 		return selecMember;
+	}
+	
+	//memberID查詢單一Member
+	public MemberBean selectMemberById(String memberId) {
+		MemberBean idMember = null;
+		idMember = dao.selectByKey("ID", memberId);
+		return idMember;
 	}
 	
 	//拿圖片

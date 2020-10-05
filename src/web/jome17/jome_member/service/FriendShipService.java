@@ -53,6 +53,15 @@ public class FriendShipService {
 		return theStranger;
 	}
 	
+	/*
+	 * 確認關係
+	 */
+	public int identifyRelation(FriendListBean identifyBean) {
+		FriendListBean idFriendListBean = dao.selectRelation(identifyBean);
+		
+		return -1;
+	}
+	
 	/*	
 	 * 	變更好友關係(含新增)		
 	 */
