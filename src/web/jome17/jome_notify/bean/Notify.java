@@ -91,7 +91,7 @@ public class Notify {
 		this.notificationDetail = notificationDetail;
 	}
 
-
+	
 	
 	
 }
