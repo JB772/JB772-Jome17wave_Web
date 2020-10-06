@@ -203,10 +203,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
  * 以下為目前不需要實作的方法
  */
 	
-<<<<<<< HEAD
 
-=======
->>>>>>> f6443fde4916c81e5dce4b41a4bf45434e3949e3
 	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub
