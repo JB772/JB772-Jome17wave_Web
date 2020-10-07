@@ -1,6 +1,5 @@
 package web.jome17.jome_notify.bean;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class Notify {

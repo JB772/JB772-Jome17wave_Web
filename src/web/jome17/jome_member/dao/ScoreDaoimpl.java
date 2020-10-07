@@ -59,9 +59,9 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 				BigDecimal bd = new BigDecimal(d);
 				bd = bd.setScale(1, 4);
 				selectResult =String.valueOf(bd)
-								+ "分，"
-								+ String.valueOf(rs.getInt(2))
-								+ "次";
+								+ "/"
+								+ String.valueOf(rs.getInt(2));
+//								+ "次";
 				return selectResult;
 			}
 		} catch (Exception e) {	

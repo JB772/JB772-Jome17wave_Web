@@ -20,6 +20,7 @@ import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.main.ImageUtil;
 
+
 @WebServlet("/jome_member/LoginServlet")
 public class LoginServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
@@ -112,7 +113,16 @@ public class LoginServlet extends HttpServlet{
 				writeJson(resp, outStr);
 			}
 			break;
-						
+			
+		case "update":
+			member = GSON.fromJson(jsonIn.get("memberLatLng").getAsString(), MemberBean.class);
+			int resultCode = new JomeMemberService().updateMember(member);
+			jsonOut.addProperty("resultCode", resultCode);
+			outStr = jsonOut.toString();
+			System.out.println("jsonOut:" + outStr);
+			writeJson(resp, outStr);
+			break;
+			
 		default:
 			member = new MemberBean();
 			outStr = GSON.toJson(member);
