@@ -20,7 +20,10 @@ import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.FriendListDaoimpl;
 import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_member.service.JomeMemberService;
+import web.jome17.jome_notify.bean.Notify;
+import web.jome17.jome_notify.dao.NotifyDaoImpl;
 import web.jome17.jome_notify.service.FindFriendService;
+import web.jome17.jome_notify.service.NotifyService;
 
 
 @WebServlet("/FindNewFriendServlet")
@@ -93,18 +96,31 @@ public class FindNewFriendServlet extends HttpServlet {
 				FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
 				if (relation == null) {
 					resultCode = new FriendListDaoimpl().insert(checkList);
+//System.out.println("relation == null 且 resultCode: "+resultCode);
 				}else {
 					resultCode = new FriendListDaoimpl().update(checkList);
 				}
 				
 				switch (resultCode) {
-				case 0:
-					break;
-				case 1:
-					checkList.setuId(relation.getuId());
-					checkList.setFriend_Status(3);
-				default:
-					break;
+					case 0:
+						break;
+					case 1:
+						FriendListBean changeResult = new FriendListDaoimpl().selectRelation(checkList);
+//System.out.println("uid是"+changeResult.getuId());
+						checkList.setuId(changeResult.getuId());
+						checkList.setFriend_Status(3);
+						
+						//新增通知訊息
+						Notify notify = new Notify();
+						notify.setType(2);
+						notify.setNotificationBody(checkList.getuId());
+						notify.setBodyStatus(checkList.getFriend_Status());
+						notify.setMemberId(checkList.getAccept_M_ID());
+						resultCode = new NotifyDaoImpl().insert(notify);
+						
+						break;
+					default:
+						break;
 				}
 				
 				jsonOut.addProperty("resultCode", resultCode);
@@ -130,6 +146,28 @@ public class FindNewFriendServlet extends HttpServlet {
 //				agreeBean.setFriend_Status(1);
 //				resultCode = new FriendListDaoimpl().update(agreeBean);
 				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
+				
+				//新增通知訊息 給對方
+				Notify notify = new Notify();
+				notify.setType(2);
+				notify.setNotificationBody(agreeBean.getuId());
+				notify.setBodyStatus(1);
+				notify.setMemberId(agreeBean.getInvite_M_ID());
+				int notifyRC = new NotifyDaoImpl().insert(notify);
+				
+				//新增通知訊息 給自己
+				notify.setMemberId(agreeBean.getAccept_M_ID());
+				notifyRC = new NotifyDaoImpl().insert(notify);
+				
+				int deleteId = new NotifyDaoImpl().findNotificationId(notify);
+//System.out.println("deleteId: " + deleteId);
+				notifyRC = new NotifyDaoImpl().delete(deleteId);
+				if (notifyRC == 1) {
+				System.out.println("Notification Delete Successful");
+				}else {
+				System.out.println("Notification Delete Failed");
+				}
+				
 				jsonOut.addProperty("resultCode", resultCode);
 				outStr = jsonOut.toString();
 				resp.setContentType(CONTENT_TYPE);

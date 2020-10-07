@@ -16,7 +16,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.FriendListBean;
+import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
+import web.jome17.jome_notify.dao.NotifyDaoImpl;
 import web.jome17.jome_notify.service.FindFriendService;
 
 @WebServlet("/FriendInvitationServlet")
@@ -70,6 +72,28 @@ public class FriendInvitationServlet extends HttpServlet {
 			case "clickAgree":
 				FriendListBean agreeBean = new Gson().fromJson(jsonIn.get("agreeBean").getAsString(), FriendListBean.class);
 				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
+				
+				//新增通知訊息 給對方
+				Notify notify = new Notify();
+				notify.setType(2);
+				notify.setNotificationBody(agreeBean.getuId());
+				notify.setBodyStatus(1);
+				notify.setMemberId(agreeBean.getInvite_M_ID());
+				int notifyRC = new NotifyDaoImpl().insert(notify);
+				
+				//新增通知訊息 給自己
+				notify.setMemberId(agreeBean.getAccept_M_ID());
+				notifyRC = new NotifyDaoImpl().insert(notify);
+				
+				int deleteId = new NotifyDaoImpl().findNotificationId(notify);
+//System.out.println("deleteId: " + deleteId);
+				notifyRC = new NotifyDaoImpl().delete(deleteId);
+				if (notifyRC == 1) {
+				System.out.println("Notification Delete Successful");
+				}else {
+				System.out.println("Notification Delete Failed");
+				}
+				
 				jsonOut.addProperty("resultCode", resultCode);
 				outStr = jsonOut.toString();
 				resp.setContentType(CONTENT_TYPE);

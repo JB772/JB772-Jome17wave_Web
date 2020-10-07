@@ -56,7 +56,7 @@ public class NotificationServlet extends HttpServlet {
 				String memberId = jsonIn.get("memberId").getAsString();
 				List<Notify> notifiesList = new NotifyDaoImpl().getAll(memberId);
 //System.out.println("notifiesList");
-				notifiesWordList = new NotifyService().getNotifiesWordList(notifiesList);
+				notifiesWordList = new NotifyService().getNotifiesWordList(notifiesList, memberId);
 //System.out.println("notifiesWordList");
 				if (notifiesWordList != null) {
 					jsonOut.addProperty("notifiesWordList", GSON.toJson(notifiesWordList));

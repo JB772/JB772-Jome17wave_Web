@@ -34,14 +34,15 @@ public class NotifyDaoImpl implements NotifyDao{
 	@Override
 	public int insert(Notify bean) {
 		int count = 0;
-		String sql = "Insert into Tep101_Jome17.NOTIFY (TYPE, NOTIFICATION_BODY, MEMBER_ID) values(?, ?, ?);";
+		String sql = "Insert into Tep101_Jome17.NOTIFY (TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID) values(?, ?, ?, ?);";
 		try (
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
 			pstmt.setInt(1, bean.getType());
 			pstmt.setInt(2, bean.getNotificationBody());
-			pstmt.setString(3, bean.getMemberId());
+			pstmt.setInt(3, bean.getBodyStatus());
+			pstmt.setString(4, bean.getMemberId());
 			count = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +69,9 @@ public class NotifyDaoImpl implements NotifyDao{
 				notify.setNotificationId(rs.getInt(1));
 				notify.setType(rs.getInt(2));
 				notify.setNotificationBody(rs.getInt(3));
-				notify.setMemberId(rs.getString(4));
+				notify.setBodyStatus(rs.getInt(4));
+				notify.setMemberId(rs.getString(5));
+System.out.println("notify: " + notify.getMemberId());
 				notifiesList.add(notify);
 			}
 			return notifiesList;
@@ -83,9 +86,46 @@ public class NotifyDaoImpl implements NotifyDao{
 	 * 刪除
 	 */
 	@Override
-	public int deletaByKey(String buildDate) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(int notificationId) {
+		int count = 0;
+		String sql = "delete from Tep101_Jome17.NOTIFY where NOTIFICATION_ID = ?;";
+		try (
+			Connection connection = dataSource.getConnection();
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+		){
+			pstmt.setInt(1, notificationId);
+			count = pstmt.executeUpdate();
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
+		return count;
+	}
+	
+	/*
+	 * 找到要刪除的那筆資料
+	 */
+	@Override
+	public int findNotificationId(Notify bean) {
+		int notificationId = -1;
+		String sql = "select notification_ID "
+	 			+ "from Tep101_Jome17.NOTIFY "
+	 			+ "where type = ? and NOTIFICATION_BODY = ? and BODY_STATUS = 3 and MEMBER_ID = ?;";
+	try (
+		Connection connection = dataSource.getConnection();
+		PreparedStatement pstmt = connection.prepareStatement(sql);
+	){
+		pstmt.setInt(1, bean.getType());
+		pstmt.setInt(2, bean.getNotificationBody());
+		pstmt.setString(3, bean.getMemberId());
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()) {
+			notificationId = rs.getInt(1);
+			return notificationId;
+		}
+	} catch (Exception e) {
+		 e.printStackTrace();
+	}
+		return notificationId;
 	}
 
 
@@ -94,7 +134,11 @@ public class NotifyDaoImpl implements NotifyDao{
 	 */
 	@Override
 	public FriendListBean getFriendListBean(int notificationBody) {
-		String sql = "select * from Tep101_Jome17.FRIEND_LIST Where UID = ?;";
+		String sql =  "select f.UID, f.INVITE_M_ID, m.NICKNAME as INVITE_NAME, f.ACCEPT_M_ID, m2.NICKNAME as ACCEPT_NAME, f.FRIEND_STATUS, f.MODIFY_DATE "
+		+ "from Tep101_Jome17.FRIEND_LIST f "
+		+ "left join Tep101_Jome17.MEMBERINFO m on f.INVITE_M_ID = m.ID "
+		+ "join Tep101_Jome17.MEMBERINFO m2 on f.ACCEPT_M_ID = m2.ID "
+		+ "Where UID = ?;";
 		try (
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -105,33 +149,56 @@ public class NotifyDaoImpl implements NotifyDao{
 			if (rs.next()) {
 				bean.setuId(rs.getInt(1));
 				bean.setInvite_M_ID(rs.getString(2));
-				bean.setInvite_M_ID(rs.getString(3));
-				bean.setFriend_Status(rs.getInt(4));
+				bean.setInviteName(rs.getString(3));
+				bean.setAccept_M_ID(rs.getString(4));
+				bean.setAcceptName(rs.getString(5));
+				bean.setFriend_Status(rs.getInt(6));
 //				bean.setModify_Date(rs.getDate(5));
-			}
-
-			String sqlName = "select NICKNAME from Tep101_Jome17.MEMBER_INFO Where MEMBER_ID = ?;";
-			try (
-				PreparedStatement psInvite = connection.prepareStatement(sqlName);
-				PreparedStatement psAccept = connection.prepareStatement(sqlName);
-			){
-				psInvite.setString(1, bean.getInvite_M_ID());
-				psAccept.setString(1, bean.getAccept_M_ID());
-				ResultSet rsInvite = psInvite.executeQuery();
-				ResultSet rsAccept = psAccept.executeQuery();
-				if (rsInvite.next()) {
-					bean.setInviteName(rsInvite.getString("NICKNAME"));
-				}
-				if (rsAccept.next()) {
-					bean.setAcceptName(rsAccept.getString("NICKNAME"));
-				}
 				return bean;
-			} catch (Exception e) {
-				 e.printStackTrace();
 			}
+			
 		} catch (Exception e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 		}
+		
+//		String sql = "select * from Tep101_Jome17.FRIEND_LIST Where UID = ?;";
+//		try (
+//			Connection connection = dataSource.getConnection();
+//			PreparedStatement pstmt = connection.prepareStatement(sql);
+//		){
+//			pstmt.setInt(1, notificationBody);
+//			ResultSet rs = pstmt.executeQuery();
+//			FriendListBean bean = new FriendListBean();
+//			if (rs.next()) {
+//				bean.setuId(rs.getInt(1));
+//				bean.setInvite_M_ID(rs.getString(2));
+//				bean.setInvite_M_ID(rs.getString(3));
+//				bean.setFriend_Status(rs.getInt(4));
+////				bean.setModify_Date(rs.getDate(5));
+//			}
+//
+//			String sqlName = "select NICKNAME from Tep101_Jome17.MEMBERINFO Where MEMBER_ID = ?;";
+//			try (
+//				PreparedStatement psInvite = connection.prepareStatement(sqlName);
+//				PreparedStatement psAccept = connection.prepareStatement(sqlName);
+//			){
+//				psInvite.setString(1, bean.getInvite_M_ID());
+//				psAccept.setString(1, bean.getAccept_M_ID());
+//				ResultSet rsInvite = psInvite.executeQuery();
+//				ResultSet rsAccept = psAccept.executeQuery();
+//				if (rsInvite.next()) {
+//					bean.setInviteName(rsInvite.getString("NICKNAME"));
+//				}
+//				if (rsAccept.next()) {
+//					bean.setAcceptName(rsAccept.getString("NICKNAME"));
+//				}
+//				return bean;
+//			} catch (Exception e) {
+//				 e.printStackTrace();
+//			}
+//		} catch (Exception e) {
+//			 e.printStackTrace();
+//		}
 		return null;
 	}
 //	在資料庫貼好ID跟NAME的SQL語法。
@@ -148,10 +215,11 @@ public class NotifyDaoImpl implements NotifyDao{
 	 */
 	@Override
 	public AttenderBean getAttenderBean(int notificationBody) {
-		String sql =  "SELECT g.GROUP_NAME, a.* "
-				+ "FROM Tep101_Jome17.JOIN_GROUP g "
-				+ "left join Tep101_Jome17.ATTENDER a on g.GROUP_ID = a.GROUP_ID "
-				+ "Where a.ATTENDER_NO = ?;";
+		String sql =  "SELECT g.GROUP_NAME, a.*, m.NICKNAME "
+					+ "FROM Tep101_Jome17.ATTENDER a "
+					+ "left join Tep101_Jome17.JOIN_GROUP g on g.GROUP_ID = a.GROUP_ID "
+					+ "join Tep101_Jome17.MEMBERINFO m on a.MEMBER_ID = m.ID "
+					+ "Where a.ATTENDER_NO = ?;";
 			try (
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -167,6 +235,7 @@ public class NotifyDaoImpl implements NotifyDao{
 				bean.setModifyDate(rs.getString(5));
 				bean.setRole(rs.getInt(6));
 				bean.setMemberId(rs.getString(7));
+				bean.setMemberName(rs.getString(8));
 				return bean;
 			}
 		} catch (Exception e) {
@@ -250,6 +319,9 @@ public class NotifyDaoImpl implements NotifyDao{
 //		????
 		return null;
 	}
+
+
+
 
 
 

@@ -3,6 +3,9 @@ package web.jome17.jome_notify.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.cj.log.Log;
+
+import sun.invoke.empty.Empty;
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_notify.bean.AttenderBean;
@@ -17,22 +20,22 @@ public class NotifyService {
 	 * 								加工分類一：依type分類，去作相對應的方法，取得需要的材料
 	 * 								加工分類二：依不同材料分類作對應方法，並依材料內容造相關句子
 	 */
-	public List<Notify> getNotifiesWordList(List<Notify> notifiesList) {
+	public List<Notify> getNotifiesWordList(List<Notify> notifiesList, String myId) {
+//System.out.println("NotifyService 裡的 getNotifiesWordList");
 		AttenderBean attenderBean = new AttenderBean();
+		attenderBean = null;
 		FriendListBean friendListBean = new FriendListBean();
+		friendListBean = null;
 		Notify notify = new Notify();
 		List<Notify> notifiesWordList = new ArrayList<>();
 		String groupName = null;
 		String notificationDetail = null;
 		for (Notify no : notifiesList) {
 			int type = no.getType();
-//System.out.println("type: " + type);
 			int notificationBody = no.getNotificationBody();
-//System.out.println("notificationBody: " + notificationBody);
 			switch (type) {
 				case 1: 	//揪團
 					attenderBean = new NotifyDaoImpl().getAttenderBean(notificationBody);
-//System.out.println("attenderBean: " + attenderBean.getGroupName());
 					break;
 				case 2: 	//好友
 					friendListBean = new NotifyDaoImpl().getFriendListBean(notificationBody);
@@ -45,32 +48,54 @@ public class NotifyService {
 			}
 			
 			if (attenderBean != null) {
-//System.out.println("attenderBean != null");
 				groupName = attenderBean.getGroupName();
-//System.out.println("groupName: "+ groupName);
-//System.out.println("AttendStatus: "+attenderBean.getAttendStatus());
-				switch (attenderBean.getAttendStatus()) {
+				switch (no.getBodyStatus()) {
 					case 0:		//自行離開
 						//發通知給團長：掰～我自己走摟～:)
+						if (!attenderBean.getMemberId().equals(myId)) {
+							String memberName = attenderBean.getMemberName();
+							notificationDetail = memberName + " 已退出 " + groupName + " 揪團活動";
+						}else {
+							notificationDetail = "你已退出 " + groupName + " 揪團活動"; 
+						}
 						break;
 					case 1:		//同意
-//System.out.println("case 1");
-						notificationDetail = "成功加入 "+ groupName + " 揪團活動";
+						if (attenderBean.getMemberId().equals(myId)) {
+							notificationDetail = "成功加入 "+ groupName + " 揪團活動";
+						}
 						break;
 					case 2:		//被拒絕
-						notificationDetail = "失敗加入 "+ groupName + " 揪團活動";
+						if (attenderBean.getMemberId().equals(myId)) {
+							notificationDetail = "失敗加入 "+ groupName + " 揪團活動";
+						}
 						break;
 					case 3:		//我是團員我申請入團，待審查中
 						//發通知給團長：嗨～我想加入啦～:)
+							String memberName = attenderBean.getMemberName();
+							notificationDetail = memberName + " 要求加入 " + groupName + " 揪團活動";
+
 						break;
 					default:
 						break;
 				}
 			}else if (friendListBean != null) {
 				String acceptName = friendListBean.getAcceptName();
-				switch (friendListBean.getFriend_Status()) {
+				switch (no.getBodyStatus()) {
 					case 1: 	//	同意
-						notificationDetail = acceptName + " 已同意你的好友邀請";
+						if (friendListBean.getInvite_M_ID().equals(no.getMemberId())) {
+							notificationDetail = acceptName + " 已同意你的好友邀請";
+						}else {
+							notificationDetail = "你與 " + friendListBean.getInviteName() + " 已成為好友";
+						}
+						
+						break;
+					case 3: 	//	等待審核中
+						if (friendListBean.getInvite_M_ID().equals(no.getMemberId())) {
+							break;
+						}else {
+							notificationDetail = friendListBean.getInviteName() + " 發送好友邀請給你";
+						}
+						
 						break;
 					default:
 						break;
@@ -80,11 +105,20 @@ public class NotifyService {
 			}
 			
 //System.out.println("notificationDetail: "+ notificationDetail);
-			no.setNotificationDetail(notificationDetail);
-			notifiesWordList.add(no);
+			if (notificationDetail != null) {
+				no.setNotificationDetail(notificationDetail);
+				notifiesWordList.add(no);
+			}else {
+				break;
+			}
+			
 		}
 		
 		return notifiesWordList;
 	}
+	
+	
+
+	
 
 }

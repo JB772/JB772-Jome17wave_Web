@@ -12,7 +12,9 @@ public interface NotifyDao {
 	//新增
 	int insert(Notify bean);
 	//刪除
-	int deletaByKey(String buildDate);
+	int delete(int notificationId);
+	//找到要刪除的那筆資料
+	int findNotificationId(Notify bean);
 	
 	//查詢(個人的)通知列表
 	List<Notify> getAll(String memberId);

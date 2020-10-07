@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Notify {
-	private int notificationId, type, notificationBody;
+	private int notificationId, type, notificationBody, bodyStatus;
 	private String memberId, notificationDetail;
 	private Date buildDate;
 	
@@ -41,6 +41,20 @@ public class Notify {
 		this.notificationBody = notificationBody;
 		this.memberId = memberId;
 		this.notificationDetail = notificationDetail;
+	}
+	
+	
+
+	public Notify(int notificationId, int type, int notificationBody, int bodyStatus, String memberId,
+			String notificationDetail, Date buildDate) {
+		super();
+		this.notificationId = notificationId;
+		this.type = type;
+		this.notificationBody = notificationBody;
+		this.bodyStatus = bodyStatus;
+		this.memberId = memberId;
+		this.notificationDetail = notificationDetail;
+		this.buildDate = buildDate;
 	}
 
 	public int getNotificationId() {
@@ -89,6 +103,14 @@ public class Notify {
 
 	public void setNotificationDetail(String notificationDetail) {
 		this.notificationDetail = notificationDetail;
+	}
+
+	public int getBodyStatus() {
+		return bodyStatus;
+	}
+
+	public void setBodyStatus(int bodyStatus) {
+		this.bodyStatus = bodyStatus;
 	}
 
 
