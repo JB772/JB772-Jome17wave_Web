@@ -56,10 +56,31 @@ public class FriendShipService {
 	/*
 	 * 確認關係
 	 */
-	public int identifyRelation(FriendListBean identifyBean) {
-		FriendListBean idFriendListBean = dao.selectRelation(identifyBean);
-		
-		return -1;
+	public int identifyRelation(String mainId, String friendId) {
+		FriendListBean identifyBean = new FriendListBean(mainId, friendId);
+		FriendListBean resultFriendList = dao.selectRelation(identifyBean);
+		int relationCode = -1;
+		if(resultFriendList != null) {
+			int status = resultFriendList.getFriend_Status();
+			switch (status) {
+			case 1:
+				relationCode = 1;
+				break;
+			case 2:
+				relationCode = 2;
+				break;
+			case 3:
+				if(mainId.equals(resultFriendList.getInvite_M_ID())) {
+					relationCode = 3;
+				}else {
+					relationCode = 1;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return relationCode;
 	}
 	
 	/*	

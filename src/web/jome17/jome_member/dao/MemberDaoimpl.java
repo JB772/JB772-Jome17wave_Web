@@ -54,6 +54,8 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setNickname(rs.getString("NICKNAME"));
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
+				member.setLatitude(rs.getDouble("LATITUDE"));
+				member.setLongitude(rs.getDouble("LONGITUDE"));
 				return member;
 			} 
 		} catch (Exception e) {
@@ -64,16 +66,26 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public int update(MemberBean bean) {
-		String sql = "update Member set "
+		String sql = "update Tep101_Jome17.MEMBERINFO set "
+						+ "ACCOUNT = ?, "
 						+ "PASSWORD = ?, "
-						+ "NICKNAME = ? "
-					+"where "
-						+ "ACCOUNT = ?";
+						+ "NICKNAME = ?, "		//3
+						+ "GENDER = ?, "
+						+ "PHONE_NUMBER = ?, "
+						+ "LATITUDE = ?, "		//6
+						+ "LONTITUDE = ? "
+					+ "where "
+						+ "ID = ?";
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
-		pstmt.setString(1, bean.getPassword());
-		pstmt.setString(2, bean.getNickname());
-		pstmt.setString(3, bean.getAccount());
+		pstmt.setString(1, bean.getAccount());
+		pstmt.setString(2, bean.getPassword());
+		pstmt.setString(3, bean.getNickname());
+		pstmt.setInt(4, bean.getGender());
+		pstmt.setString(5, bean.getPhone_number());
+		pstmt.setDouble(6, bean.getLatitude());
+		pstmt.setDouble(7, bean.getLongitude());
+		pstmt.setString(8, bean.getMember_id());
 		return pstmt.executeUpdate();
 	} catch (Exception e) {
 		e.printStackTrace();
@@ -98,6 +110,9 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setNickname(rs.getString("NICKNAME"));
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
+				member.setLatitude(rs.getDouble("LATITUDE"));
+				member.setLongitude(rs.getDouble("LONGITUDE"));
+				
 				return member;
 			} 
 		} catch (Exception e) {

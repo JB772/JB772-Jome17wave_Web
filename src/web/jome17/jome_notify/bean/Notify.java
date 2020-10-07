@@ -1,6 +1,5 @@
 package web.jome17.jome_notify.bean;
 
-import java.io.Serializable;
 import java.util.Date;
 
 public class Notify {
@@ -104,6 +103,7 @@ public class Notify {
 	public void setNotificationDetail(String notificationDetail) {
 		this.notificationDetail = notificationDetail;
 	}
+
 
 	public int getBodyStatus() {
 		return bodyStatus;

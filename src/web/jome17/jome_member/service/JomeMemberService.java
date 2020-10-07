@@ -45,12 +45,7 @@ public class JomeMemberService {
 	}
 	//修改會員資料
 	public int updateMember(MemberBean member) {
-		int updateFalse = -1;
-		if (dao.selectByKey("ACCOUNT", member.getAccount()) == null) {
-			return updateFalse;
-		}else {
 			return dao.update(member);
-		}
 	}
 	
 	//account查詢單一Member

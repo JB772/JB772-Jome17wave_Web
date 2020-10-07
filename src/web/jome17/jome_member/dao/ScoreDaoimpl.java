@@ -1,5 +1,6 @@
 package web.jome17.jome_member.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,10 +55,13 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				String selectResult = "";
-				selectResult =String.valueOf(rs.getDouble(1))
-								+ "分，累積評分"
-								+ String.valueOf(rs.getInt(2))
-								+ "次";
+				Double d = rs.getDouble(1);
+				BigDecimal bd = new BigDecimal(d);
+				bd = bd.setScale(1, 4);
+				selectResult =String.valueOf(bd)
+								+ "/"
+								+ String.valueOf(rs.getInt(2));
+//								+ "次";
 				return selectResult;
 			}
 		} catch (Exception e) {	

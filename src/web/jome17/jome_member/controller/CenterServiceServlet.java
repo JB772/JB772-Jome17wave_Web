@@ -75,6 +75,17 @@ public class CenterServiceServlet extends HttpServlet{
 				writeJson(resp, outStr);
 				break;
 				
+				//確認兩id關係
+			case "checkRelation":
+				String mainId = jsonIn.get("mainId").getAsString();
+				String friendId = jsonIn.get("friendId").getAsString();
+				int resultCode = new FriendShipService().identifyRelation(mainId, friendId);
+				jsonOut.addProperty("resultCode", resultCode);
+				outStr = jsonOut.toString();
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+				
 			case "getAllMember":
 				List<MemberBean> members = null;
 				String mId = jsonIn.get("ID").getAsString();
