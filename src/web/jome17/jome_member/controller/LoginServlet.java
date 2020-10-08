@@ -118,7 +118,6 @@ public class LoginServlet extends HttpServlet{
 		case "update":
 			byte[] imageUpdate = null;
 			String imageBase64 = jsonIn.get("imageBase64").getAsString();
-			System.out.println(imageBase64);
 			if(!imageBase64.equals("noImage")) {
 				if (!imageBase64.equals("noImage")) {
 					imageUpdate = Base64.getMimeDecoder().decode(imageBase64);

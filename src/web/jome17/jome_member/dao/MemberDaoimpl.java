@@ -88,7 +88,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					+ "PHONE_NUMBER = ?, "
 					+ "LATITUDE = ?, "		//6
 					+ "LONTITUDE = ?, "
-					+ "IMGE = ? "
+					+ "IMAGE = ? "
 				+ "where "
 					+ "ID = ?";
 		}
