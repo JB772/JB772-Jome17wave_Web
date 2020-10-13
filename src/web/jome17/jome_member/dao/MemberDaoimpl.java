@@ -30,7 +30,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
 			pstmt.setObject(6, bean.getPhone_number());
-//			System.out.println("# insert sql: " + pstmt.toString());
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +54,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
-				member.setLongitude(rs.getDouble("LONGITUDE"));
+				member.setLongitude(rs.getDouble("LONTITUDE"));
 				return member;
 			} 
 		} catch (Exception e) {
@@ -111,7 +110,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
-				member.setLongitude(rs.getDouble("LONGITUDE"));
+				member.setLongitude(rs.getDouble("LONTITUDE"));
 				
 				return member;
 			} 

@@ -115,7 +115,7 @@ public class LoginServlet extends HttpServlet{
 			break;
 			
 		case "update":
-			member = GSON.fromJson(jsonIn.get("memberLatLng").getAsString(), MemberBean.class);
+			member = GSON.fromJson(jsonIn.get("memberUp").getAsString(), MemberBean.class);
 			int resultCode = new JomeMemberService().updateMember(member);
 			jsonOut.addProperty("resultCode", resultCode);
 			outStr = jsonOut.toString();
