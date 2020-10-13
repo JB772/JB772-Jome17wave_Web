@@ -11,9 +11,7 @@ import web.jome17.jome_member.dao.MemberDaoimpl;
 import web.jome17.jome_member.dao.ScoreDaoimpl;
 
 public class JomeMemberService {
-	private CommonDao<MemberBean, String> dao;
-	private MemberBean member;
-	
+	private CommonDao<MemberBean, String> dao;	
 	public JomeMemberService() {
 		dao = new MemberDaoimpl();
 	}
@@ -34,14 +32,16 @@ public class JomeMemberService {
 	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
 	//若回傳的Member物件!=null，再檢查password是否 ==。
 	public MemberBean login(String account, String password) {
+		MemberBean memberLogin = null;
 		System.out.println("account:"+account);
 		System.out.println("password:"+password);
-		member = dao.login(account, password);
-		if (member == null) {
-			return null;
-		}else {
-			return member;
+		memberLogin = dao.selectByKey("ACCOUNT", account);
+		if(memberLogin != null) {
+			if(password.equals(memberLogin.getPassword())) {
+				return memberLogin;
+			}
 		}
+		return null;
 	}
 	//修改會員資料
 	public int updateMember(MemberBean member, byte[] image) {

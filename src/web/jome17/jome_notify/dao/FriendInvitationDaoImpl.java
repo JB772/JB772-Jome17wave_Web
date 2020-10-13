@@ -92,12 +92,6 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 	}
 
 	@Override
-	public FriendListBean login(String account, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub
 		return null;
@@ -106,6 +100,13 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 
 	@Override
 	public String getCount(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<FriendListBean> selectAllNoKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}

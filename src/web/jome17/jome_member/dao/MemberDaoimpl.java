@@ -1,13 +1,15 @@
 
 package web.jome17.jome_member.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.main.ServiceLocator;
 
@@ -41,13 +43,40 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	@Override
 	public MemberBean selectByKey(String keyword, String key) {
 		String sql = "select * from MEMBERINFO where "+ keyword +" = ?";
+		String sqlFriendConut = "select count(*) "
+								+ "from Tep101_Jome17.FRIEND_LIST "
+								+ "where "
+									+ "(INVITE_M_ID = ? or ACCEPT_M_ID = ?) "
+									+ "and FRIEND_STATUS = 1;";
+		String sqlAverageScore ="select "
+									+ "avg(RATING_SCORE), "
+									+ "COUNT(*) "
+								+ "from "
+									+ "Tep101_Jome17.SCORE "
+								+ "where "
+									+ "BE_RATED_ID = ?;";
+		String sqlAddGroupCount = "select count(*) "
+								+ "from Tep101_Jome17.ATTENDER "
+								+ "where "
+									+ "MEMBER_ID = ? "
+									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
+		String sqlGroupCount = "select count(*) "
+								+ "from Tep101_Jome17.ATTENDER "
+								+ "where "
+									+ "MEMBER_ID = ? "
+									+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
 		MemberBean member = null;
 		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlFriendConut);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlAverageScore);
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlAddGroupCount);
+			PreparedStatement pstmt4 = conn.prepareStatement(sqlGroupCount);) {
+			//取member基本資料
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
+			member = new MemberBean();
 			if(rs.next()) {
-				member = new MemberBean();
 				member.setMember_id(rs.getString("ID"));
 				member.setAccount(rs.getString("ACCOUNT"));
 				member.setPassword(rs.getString("PASSWORD"));
@@ -55,9 +84,39 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
-				member.setLongitude(rs.getDouble("LONTITUDE"));
-				return member;
+				member.setLongitude(rs.getDouble("LONTITUDE"));				
 			} 
+			String memberId = member.getMember_id();
+			//取好友數
+			pstmt1.setString(1, memberId);
+			pstmt1.setString(2, memberId);
+			ResultSet rs1 = pstmt1.executeQuery();
+			if(rs1.next()) {
+				member.setFriendCount(String.valueOf(rs1.getInt(1)));
+			}
+			//取平均評分
+			pstmt2.setString(1, memberId);
+			ResultSet rs2 = pstmt2.executeQuery();
+			if(rs2.next()) {
+				Double d = rs2.getDouble(1);
+				BigDecimal bd = new BigDecimal(d);
+				bd = bd.setScale(1, 4);
+				member.setScoreAverage(String.valueOf(bd));
+				member.setBeRankedCount(String.valueOf(rs2.getInt(2)));
+			}
+			//取得主揪次數
+			pstmt3.setString(1, memberId);
+			ResultSet rs3 = pstmt3.executeQuery();
+			if(rs3.next()) {
+				member.setCreateGroupCount(String.valueOf(rs3.getInt(1)));
+			}
+			//取得入團次數
+			pstmt4.setString(1, memberId);
+			ResultSet rs4 = pstmt4.executeQuery();
+			if(rs4.next()) {
+				member.setGroupCount(String.valueOf(rs4.getInt(1)));
+			}
+			return member;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,7 +137,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					+ "LATITUDE = ?, "		//6
 					+ "LONTITUDE = ? "
 				+ "where "
-					+ "ID = ?";
+					+ "ID = ?";				//8
 		}else {
 			sql = "update Tep101_Jome17.MEMBERINFO set "
 					+ "ACCOUNT = ?, "
@@ -90,7 +149,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					+ "LONTITUDE = ?, "
 					+ "IMAGE = ? "
 				+ "where "
-					+ "ID = ?";
+					+ "ID = ?";				//9
 		}
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -113,34 +172,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		e.printStackTrace();
 	}
 	return -1;
-	}
-
-	@Override
-	public MemberBean login(String account, String password) {
-		String sql = "select * from Tep101_Jome17.MEMBERINFO where ACCOUNT= ? and PASSWORD= ?;";
-		MemberBean member = null;
-		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, account);
-			pstmt.setString(2, password);
-			ResultSet rs = pstmt.executeQuery();
-			if(rs.next()) {
-				member = new MemberBean();
-				member.setMember_id(rs.getString("ID"));
-				member.setAccount(rs.getString("ACCOUNT"));
-				member.setPassword(rs.getString("PASSWORD"));
-				member.setNickname(rs.getString("NICKNAME"));
-				member.setGender(rs.getInt("GENDER"));
-				member.setPhone_number(rs.getString("PHONE_NUMBER"));
-				member.setLatitude(rs.getDouble("LATITUDE"));
-				member.setLongitude(rs.getDouble("LONTITUDE"));
-				
-				return member;
-			} 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return member;
 	}
 	
 	@Override
@@ -207,5 +238,11 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 	public int deletaByKey(String key) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<MemberBean> selectAllNoKey() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

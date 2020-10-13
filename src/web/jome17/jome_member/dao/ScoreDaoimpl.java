@@ -107,15 +107,15 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
-	public ScoreBean login(String account, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public byte[] getImage(String acconut) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ScoreBean> selectAllNoKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}
