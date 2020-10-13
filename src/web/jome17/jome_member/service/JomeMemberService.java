@@ -44,8 +44,9 @@ public class JomeMemberService {
 		}
 	}
 	//修改會員資料
-	public int updateMember(MemberBean member) {
-			return dao.update(member);
+	public int updateMember(MemberBean member, byte[] image) {
+		member.setImage(image);
+		return dao.update(member);
 	}
 	
 	//account查詢單一Member

@@ -65,16 +65,32 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public int update(MemberBean bean) {
-		String sql = "update Tep101_Jome17.MEMBERINFO set "
-						+ "ACCOUNT = ?, "
-						+ "PASSWORD = ?, "
-						+ "NICKNAME = ?, "		//3
-						+ "GENDER = ?, "
-						+ "PHONE_NUMBER = ?, "
-						+ "LATITUDE = ?, "		//6
-						+ "LONTITUDE = ? "
-					+ "where "
-						+ "ID = ?";
+		byte[] image = bean.getImage();
+		String sql = "";
+		if(image == null) {
+			sql = "update Tep101_Jome17.MEMBERINFO set "
+					+ "ACCOUNT = ?, "
+					+ "PASSWORD = ?, "
+					+ "NICKNAME = ?, "		//3
+					+ "GENDER = ?, "
+					+ "PHONE_NUMBER = ?, "
+					+ "LATITUDE = ?, "		//6
+					+ "LONTITUDE = ? "
+				+ "where "
+					+ "ID = ?";
+		}else {
+			sql = "update Tep101_Jome17.MEMBERINFO set "
+					+ "ACCOUNT = ?, "
+					+ "PASSWORD = ?, "
+					+ "NICKNAME = ?, "		//3
+					+ "GENDER = ?, "
+					+ "PHONE_NUMBER = ?, "
+					+ "LATITUDE = ?, "		//6
+					+ "LONTITUDE = ?, "
+					+ "IMAGE = ? "
+				+ "where "
+					+ "ID = ?";
+		}
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
 		pstmt.setString(1, bean.getAccount());
@@ -84,7 +100,13 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		pstmt.setString(5, bean.getPhone_number());
 		pstmt.setDouble(6, bean.getLatitude());
 		pstmt.setDouble(7, bean.getLongitude());
-		pstmt.setString(8, bean.getMember_id());
+		if(image == null) {
+			pstmt.setString(8, bean.getMember_id());
+		}else {
+			pstmt.setBytes(8, image);
+			pstmt.setString(9, bean.getMember_id());
+		}
+		
 		return pstmt.executeUpdate();
 	} catch (Exception e) {
 		e.printStackTrace();
