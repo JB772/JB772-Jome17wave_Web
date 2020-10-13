@@ -114,6 +114,10 @@ public class LoginServlet extends HttpServlet{
 			break;
 			
 		case "update":
+<<<<<<< HEAD
+			member = GSON.fromJson(jsonIn.get("memberUp").getAsString(), MemberBean.class);
+			int resultCode = new JomeMemberService().updateMember(member);
+=======
 			byte[] imageUpdate = null;
 			String imageBase64 = jsonIn.get("imageBase64").getAsString();
 			if(!imageBase64.equals("noImage")) {
@@ -124,6 +128,7 @@ public class LoginServlet extends HttpServlet{
 			member = GSON.fromJson(jsonIn.get("memberUp").getAsString(), MemberBean.class);
 			int resultCode = -1;
 			resultCode = new JomeMemberService().updateMember(member, imageUpdate);
+>>>>>>> 14026b9639c5f0e87c12dd7b53b4aa585d549e71
 			jsonOut.addProperty("resultCode", resultCode);
 			outStr = jsonOut.toString();
 			System.out.println("jsonOut:" + outStr);

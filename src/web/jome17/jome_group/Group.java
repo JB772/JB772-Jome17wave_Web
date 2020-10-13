@@ -13,6 +13,7 @@ public class Group {
 	private int groupStatus = -1;
 	private String notice = "";
 	private byte[] gImage = null;
+
 	
 	
 
@@ -116,7 +117,7 @@ public class Group {
 	public void setNotice(String notice) {
 		this.notice = notice;
 	}
-
+	
 	public byte[] getgImage() {
 		return gImage;
 	}
@@ -124,5 +125,6 @@ public class Group {
 	public void setgImage(byte[] gImage) {
 		this.gImage = gImage;
 	}
+
 	
 }

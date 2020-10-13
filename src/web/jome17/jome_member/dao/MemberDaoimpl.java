@@ -32,7 +32,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
 			pstmt.setObject(6, bean.getPhone_number());
-//			System.out.println("# insert sql: " + pstmt.toString());
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
