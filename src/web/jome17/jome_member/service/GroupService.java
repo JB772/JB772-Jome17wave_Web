@@ -49,7 +49,7 @@ public class GroupService {
 		return dao.selectByKey("GROUP_ID", groupId);
 	}
 	//搜尋某一memberId揪團狀態(單筆)
-	public PersonalGroup inquirePerGroup(String memberId) {
+	public PersonalGroup inquirePerGroups(String memberId) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		return attenderDao.selectByKey("MEMBER_ID", memberId);
 	}
