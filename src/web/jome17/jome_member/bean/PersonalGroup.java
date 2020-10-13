@@ -2,9 +2,12 @@ package web.jome17.jome_member.bean;
 
 public class PersonalGroup {
 	private String memberId = "";
+	private String nickname = "";
+	private int memberGender = -1;
 	private int attenderId = -1;
 	private int attenderStatus = -1;
 	private int role = -1;
+	private String surfName = "";
 	private String groupId = "";
 	private String groupName = "";
 	private String assembleTime = "";
@@ -35,6 +38,23 @@ public class PersonalGroup {
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
 	}
+	
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	
+	public int getMemberGender() {
+		return memberGender;
+	}
+
+	public void setMemberGender(int memberGender) {
+		this.memberGender = memberGender;
+	}
 
 	public int getAttenderId() {
 		return attenderId;
@@ -58,6 +78,14 @@ public class PersonalGroup {
 
 	public void setRole(int role) {
 		this.role = role;
+	}
+
+	public String getSurfName() {
+		return surfName;
+	}
+
+	public void setSurfName(String surfName) {
+		this.surfName = surfName;
 	}
 
 	public String getGroupId() {

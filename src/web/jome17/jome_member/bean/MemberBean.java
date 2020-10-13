@@ -15,6 +15,7 @@ public class MemberBean {
 	private byte[] image = null;
     private String friendCount = "0";
     private String scoreAverage = "0";
+    private String beRankedCount = "0";
     private String groupCount = "0";
     private String createGroupCount = "0";
 	
@@ -166,5 +167,17 @@ public class MemberBean {
 	public void setCreateGroupCount(String createGroupCount) {
 		this.createGroupCount = createGroupCount;
 	}
+
+
+
+	public String getBeRankedCount() {
+		return beRankedCount;
+	}
+
+
+	public void setBeRankedCount(String beRankedCount) {
+		this.beRankedCount = beRankedCount;
+	}
+	
 	
 }

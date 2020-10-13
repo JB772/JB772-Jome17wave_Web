@@ -13,13 +13,11 @@ public interface CommonDao<B, K> {
 	
 	//查詢ALL
 	List<B>selectAll(K key);
+	List<B>selectAllNoKey();
 	//修改
 	int update(B bean);
 	//刪除
 	int deletaByKey(K key);
-	
-	//loginByAc&Pw
-	B login(K account, K password);
 	
 	//查圖片
 	byte[] getImage(K acconut);

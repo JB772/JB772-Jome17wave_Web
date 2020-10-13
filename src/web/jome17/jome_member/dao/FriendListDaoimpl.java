@@ -216,7 +216,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	}
 
 	@Override
-	public FriendListBean login(String account, String password) {
+	public List<FriendListBean> selectAllNoKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}
