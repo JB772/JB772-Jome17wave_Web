@@ -27,6 +27,14 @@ public class GroupService {
 		return dao.update(pGroup);
 	}
 	
+	//入團
+	public int joinGroup(PersonalGroup pGroup) {
+		pGroup.setRole(2);
+		pGroup.setAttenderStatus(3);
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		return attenderDao.insert(pGroup);
+	}
+	
 	//退團
 	public int dropGroup(PersonalGroup pGroup) {
 		if(pGroup.getRole() == 1) {
@@ -49,7 +57,7 @@ public class GroupService {
 		return dao.selectByKey("GROUP_ID", groupId);
 	}
 	//搜尋某一memberId揪團狀態(單筆)
-	public PersonalGroup inquirePerGroup(String memberId) {
+	public PersonalGroup inquirePerGroups(String memberId) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		return attenderDao.selectByKey("MEMBER_ID", memberId);
 	}

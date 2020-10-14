@@ -15,20 +15,19 @@ public class PersonalGroup {
 	private String signUpEnd = "";
 	private int surfPointId = -1;
 	private int groupLimit = -1;
+	private int joinCountNow = 1;
 	private int gender = -1;
 	private int groupStatus = -1;
 	private String notice = "";
 	private byte[] gImage = null;
 	
 	public PersonalGroup(String memberId, int attenderId, String groupId) {
-		super();
 		this.memberId = memberId;
 		this.attenderId = attenderId;
 		this.groupId = groupId;
 	}
 
 	public PersonalGroup() {
-		super();
 	}
 
 	public String getMemberId() {
@@ -150,6 +149,14 @@ public class PersonalGroup {
 
 	public void setGender(int gender) {
 		this.gender = gender;
+	}
+	
+	public int getJoinCountNow() {
+		return joinCountNow;
+	}
+
+	public void setJoinCountNow(int joinCountNow) {
+		this.joinCountNow = joinCountNow;
 	}
 
 	public int getGroupStatus() {

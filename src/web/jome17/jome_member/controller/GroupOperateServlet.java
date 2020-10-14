@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +21,7 @@ import com.google.gson.JsonObject;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
-
+@WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
@@ -59,9 +61,37 @@ public class GroupOperateServlet extends HttpServlet {
 			switch (action) {
 			// 查所有揪團
 			case "getAll":
-				int getAllResult = -1;
+				String myId = jsonIn.get("memberId").getAsString();
+				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
 				List<PersonalGroup> pGroups = gService.getAllGroups();
-				if (pGroups != null) {
+				int getAllResult = 0;
+				if(pGroups.size() < mGroups.size() || pGroups == null) {
+					getAllResult = -1;
+				}else {
+					for(PersonalGroup pGroup : pGroups) {
+						System.out.println(pGroup.getMemberId());
+						for(PersonalGroup mGroup : mGroups) {
+							if(pGroup.getGroupId().equals(mGroup.getGroupId())) {
+								int myStatus = mGroup.getAttenderStatus();
+								switch(myStatus) {
+									case 0:
+										pGroup.setAttenderStatus(0);
+										break;
+									case 1:
+										pGroup.setAttenderStatus(1);
+										break;
+									case 2:
+										pGroup.setAttenderStatus(2);
+										break;
+									case 3:
+										pGroup.setAttenderStatus(3);
+										break;
+								}
+							}else {
+								pGroup.setAttenderStatus(-1);
+							}
+						}
+					}
 					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
 					getAllResult = 1;
 				}
@@ -87,7 +117,14 @@ public class GroupOperateServlet extends HttpServlet {
 				creatResult = gService.creatGroup(inPGroup);
 				jsonOut.addProperty("creatResult", creatResult);
 				break;
-
+			// 加入揪團	
+			case "joinGroup":
+				int jointResult = -1;
+				PersonalGroup joinGroup = GSON.fromJson(jsonIn.get("groupBean").getAsString(), PersonalGroup.class);
+				jointResult = gService.joinGroup(joinGroup);
+				jsonOut.addProperty("jointResult", jointResult);
+				break;
+				
 			// 修改揪團
 			case "updateGroup":
 				int updateResult = -1;
@@ -109,7 +146,19 @@ public class GroupOperateServlet extends HttpServlet {
 				int dropResult = gService.dropGroup(groupDrop);
 				jsonOut.addProperty("dropResult", dropResult);
 				break;
-
+			
+			case "getSelfRecord":
+				String memberId = jsonIn.get("memberId").getAsString();
+				List<PersonalGroup> myGroups = new ArrayList<PersonalGroup>();
+				myGroups = gService.getMemberAllGroups(memberId);
+				int myGroupsResult = -1;
+				if(myGroups != null) {
+					myGroupsResult = 1;
+					jsonOut.addProperty("myGroups", GSON.toJson(myGroups));
+				}
+				jsonOut.addProperty("myGroupsResult", myGroupsResult);
+				break;
+				
 			default:
 				break;
 			}

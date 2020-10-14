@@ -73,7 +73,7 @@ public class FriendShipService {
 				if(mainId.equals(resultFriendList.getInvite_M_ID())) {
 					relationCode = 3;
 				}else {
-					relationCode = 1;
+					relationCode = 4;	//別人邀請，等待我回應
 				}
 				break;
 			default:

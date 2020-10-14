@@ -4,9 +4,16 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.main.ServiceLocator;
@@ -39,32 +46,32 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		return -1;
 	}
 	
-	//取得平均分
+	//各分數得到的次數
 	@Override
 	public String getCount(String memberId) {
 		String sql ="select "
-						+ "avg(RATING_SCORE), "
-						+ "COUNT(*) "
+						+ "RATING_SCORE as SCORE, "
+						+ "count(*) as count "
 					+ "from "
 						+ "Tep101_Jome17.SCORE "
 					+ "where "
-						+ "BE_RATED_ID = ?;";			
-		try (Connection conn = dataSource.getConnection();
+						+ "BE_RATED_ID = ? "
+					+ "group by "
+						+ "RATING_SCORE;" ;
+		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, memberId);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				String selectResult = "";
-				Double d = rs.getDouble(1);
-				BigDecimal bd = new BigDecimal(d);
-				bd = bd.setScale(1, 4);
-				selectResult =String.valueOf(bd)
-								+ "/"
-								+ String.valueOf(rs.getInt(2));
-//								+ "次";
-				return selectResult;
+			List<Map<String, String>> scoreCounts = new ArrayList<>();
+			while(rs.next()) {
+				Map<String, String> map = new HashMap<>();
+				map.put(rs.getInt(1) +"", rs.getInt(2) +"");
+				scoreCounts.add(map);
 			}
-		} catch (Exception e) {	
+			JsonObject jsObject = new JsonObject();
+			jsObject.addProperty("scoreCounts", new Gson().toJson(scoreCounts));
+			return jsObject.toString();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;

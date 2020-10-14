@@ -81,22 +81,14 @@ public class JomeMemberService {
 		return friendCount;
 	}
 	
-	//查詢評價平均
-	public String getScoreAverage(String memberId) {
+	//查詢各評分次數
+	public String getScoreCounts(String memberId) {
 		CommonDao<ScoreBean, String> scoreDaoimpl = new ScoreDaoimpl();
-		String scoreAverage = scoreDaoimpl.getCount(memberId);
-		if(scoreAverage.isEmpty()) {
-			scoreAverage = "";
+		String scoreCounts = scoreDaoimpl.getCount(memberId);
+		if(scoreCounts == null) {
+			scoreCounts = "";
 		}
-		return scoreAverage;
-		
-	}
-	
-	public String getGroupCount(String memberId) {
-		
-		String groupCount ="";
-		
-		return groupCount;
+		return scoreCounts;
 		
 	}
 	
