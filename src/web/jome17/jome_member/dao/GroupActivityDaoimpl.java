@@ -275,13 +275,24 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID "
 					+ "where "
 						+ "a.ROLE = 1 "
+//						+ " and j.GROUP_LIMIT <= ( "
+//						+ " select count(*) from Tep101_Jome17.ATTENDER "
+//						+ " where GROUP_ID = ? "
+//						+ " and ATTEDN_STATUS = 1 ) "
 					+ "order by "
 						+ "j.MODIFY_TIME "
 						+ "desc;";
+		String sqlJoinCountNow = "select "
+									+ "count(*) "
+								+ "from "
+									+ "Tep101_Jome17.ATTENDER "
+								+ "where "
+									+ "GROUP_ID = ? and ATTEDN_STATUS = 1;" ;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			ResultSet rs = pstmt.executeQuery();
 			List<PersonalGroup> pGroups = new ArrayList<PersonalGroup>();
+			List<PersonalGroup> pCountGroups = new ArrayList<PersonalGroup>();
 			while(rs.next()) {
 				PersonalGroup pGroup = new PersonalGroup();
 				pGroup.setMemberId(rs.getString("MEMBER_ID"));
@@ -298,11 +309,21 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
 				pGroup.setNotice(rs.getString("NOTICE"));
 				pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
-//				pGroup.setGender(rs.getInt("GENDER"));
 				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
 				pGroups.add(pGroup);
 			}
-			return pGroups;
+			for(PersonalGroup pGroup : pGroups) {
+				PreparedStatement pstmt2 = conn.prepareStatement(sqlJoinCountNow);
+				pstmt2.setString(1, pGroup.getMemberId());
+				ResultSet rs2 = pstmt2.executeQuery();
+				while(rs.next()) {
+					pGroup.setJoinCountNow(rs2.getInt(1));
+					pCountGroups.add(pGroup);
+				}
+			}
+			pGroups.clear();
+			pGroups = null;
+			return pCountGroups;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

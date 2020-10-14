@@ -21,10 +21,6 @@ import com.google.gson.JsonObject;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
-<<<<<<< HEAD
-
-=======
->>>>>>> a415fedb8dbd1bd7b10fb78f7d8b7407c11e3d06
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -65,9 +61,37 @@ public class GroupOperateServlet extends HttpServlet {
 			switch (action) {
 			// 查所有揪團
 			case "getAll":
-				int getAllResult = -1;
+				String myId = jsonIn.get("memberId").getAsString();
+				
+				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
 				List<PersonalGroup> pGroups = gService.getAllGroups();
-				if (pGroups != null) {
+				int getAllResult = 0;
+				if(pGroups.size() < mGroups.size() || pGroups == null) {
+					getAllResult = -1;
+				}else {
+					for(PersonalGroup pgGroup : pGroups) {
+						for(PersonalGroup mGroup : mGroups) {
+							if(pgGroup.getGroupId().equals(mGroup.getGroupId())) {
+								int myStatus = mGroup.getAttenderStatus();
+								switch(myStatus) {
+									case 0:
+										pgGroup.setAttenderStatus(0);
+										break;
+									case 1:
+										pgGroup.setAttenderStatus(1);
+										break;
+									case 2:
+										pgGroup.setAttenderStatus(2);
+										break;
+									case 3:
+										pgGroup.setAttenderStatus(3);
+										break;
+								}
+							}else {
+								pgGroup.setAttenderStatus(-1);
+							}
+						}
+					}
 					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
 					getAllResult = 1;
 				}
@@ -93,7 +117,14 @@ public class GroupOperateServlet extends HttpServlet {
 				creatResult = gService.creatGroup(inPGroup);
 				jsonOut.addProperty("creatResult", creatResult);
 				break;
-
+			// 加入揪團	
+			case "joinGroup":
+				int jointResult = -1;
+				PersonalGroup joinGroup = GSON.fromJson(jsonIn.get("groupBean").getAsString(), PersonalGroup.class);
+				jointResult = gService.joinGroup(joinGroup);
+				jsonOut.addProperty("jointResult", jointResult);
+				break;
+				
 			// 修改揪團
 			case "updateGroup":
 				int updateResult = -1;
