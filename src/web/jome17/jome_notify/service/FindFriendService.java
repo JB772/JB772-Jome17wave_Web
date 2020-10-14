@@ -33,8 +33,14 @@ public class FindFriendService {
 	public String getFriendRelation(FriendListBean checkList) {
 		String friendRelation = null;
 		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
+//System.out.println("checkList.acceptId: "+checkList.getAccept_M_ID());
+//System.out.println("checkList.inviteId: "+checkList.getInvite_M_ID());
 		if (relation == null) {
-			friendRelation = "insert";
+			if (checkList.getInvite_M_ID().equals(checkList.getAccept_M_ID()) ) {
+				friendRelation = "myself";
+			}else {
+				friendRelation = "insert";
+			}
 		}else {
 			int friendStatus = relation.getFriend_Status();
 			switch (friendStatus) {
@@ -63,6 +69,8 @@ public class FindFriendService {
 				break;
 			}
 		}
+		
+		
 		
 		return friendRelation;
 	}
