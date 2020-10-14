@@ -21,10 +21,7 @@ import com.google.gson.JsonObject;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
-<<<<<<< HEAD
 
-=======
->>>>>>> a415fedb8dbd1bd7b10fb78f7d8b7407c11e3d06
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
