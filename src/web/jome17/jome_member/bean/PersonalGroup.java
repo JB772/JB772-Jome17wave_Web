@@ -21,14 +21,12 @@ public class PersonalGroup {
 	private byte[] gImage = null;
 	
 	public PersonalGroup(String memberId, int attenderId, String groupId) {
-		super();
 		this.memberId = memberId;
 		this.attenderId = attenderId;
 		this.groupId = groupId;
 	}
 
 	public PersonalGroup() {
-		super();
 	}
 
 	public String getMemberId() {
