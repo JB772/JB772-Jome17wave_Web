@@ -312,18 +312,19 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
 				pGroups.add(pGroup);
 			}
-			for(PersonalGroup pGroup : pGroups) {
-				PreparedStatement pstmt2 = conn.prepareStatement(sqlJoinCountNow);
-				pstmt2.setString(1, pGroup.getMemberId());
-				ResultSet rs2 = pstmt2.executeQuery();
-				while(rs.next()) {
-					pGroup.setJoinCountNow(rs2.getInt(1));
-					pCountGroups.add(pGroup);
-				}
-			}
-			pGroups.clear();
-			pGroups = null;
-			return pCountGroups;
+//			for(PersonalGroup pGroup : pGroups) {
+//				PreparedStatement pstmt2 = conn.prepareStatement(sqlJoinCountNow);
+//				pstmt2.setString(1, pGroup.getMemberId());
+//				ResultSet rs2 = pstmt2.executeQuery();
+//				while(rs.next()) {
+//					pGroup.setJoinCountNow(rs2.getInt(1));
+//					pCountGroups.add(pGroup);
+//				}
+//			}
+//			pGroups.clear();
+//			pGroups = null;
+//			return pCountGroups;
+			return pGroups;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

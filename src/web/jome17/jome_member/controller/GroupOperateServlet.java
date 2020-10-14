@@ -62,33 +62,33 @@ public class GroupOperateServlet extends HttpServlet {
 			// 查所有揪團
 			case "getAll":
 				String myId = jsonIn.get("memberId").getAsString();
-				
 				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
 				List<PersonalGroup> pGroups = gService.getAllGroups();
 				int getAllResult = 0;
 				if(pGroups.size() < mGroups.size() || pGroups == null) {
 					getAllResult = -1;
 				}else {
-					for(PersonalGroup pgGroup : pGroups) {
+					for(PersonalGroup pGroup : pGroups) {
+						System.out.println(pGroup.getMemberId());
 						for(PersonalGroup mGroup : mGroups) {
-							if(pgGroup.getGroupId().equals(mGroup.getGroupId())) {
+							if(pGroup.getGroupId().equals(mGroup.getGroupId())) {
 								int myStatus = mGroup.getAttenderStatus();
 								switch(myStatus) {
 									case 0:
-										pgGroup.setAttenderStatus(0);
+										pGroup.setAttenderStatus(0);
 										break;
 									case 1:
-										pgGroup.setAttenderStatus(1);
+										pGroup.setAttenderStatus(1);
 										break;
 									case 2:
-										pgGroup.setAttenderStatus(2);
+										pGroup.setAttenderStatus(2);
 										break;
 									case 3:
-										pgGroup.setAttenderStatus(3);
+										pGroup.setAttenderStatus(3);
 										break;
 								}
 							}else {
-								pgGroup.setAttenderStatus(-1);
+								pGroup.setAttenderStatus(-1);
 							}
 						}
 					}
