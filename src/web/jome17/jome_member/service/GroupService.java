@@ -27,6 +27,14 @@ public class GroupService {
 		return dao.update(pGroup);
 	}
 	
+	//入團
+	public int joinGroup(PersonalGroup pGroup) {
+		pGroup.setRole(2);
+		pGroup.setAttenderStatus(3);
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		return attenderDao.insert(pGroup);
+	}
+	
 	//退團
 	public int dropGroup(PersonalGroup pGroup) {
 		if(pGroup.getRole() == 1) {

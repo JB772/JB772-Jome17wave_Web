@@ -15,6 +15,7 @@ public class PersonalGroup {
 	private String signUpEnd = "";
 	private int surfPointId = -1;
 	private int groupLimit = -1;
+	private int joinCountNow = 1;
 	private int gender = -1;
 	private int groupStatus = -1;
 	private String notice = "";
@@ -148,6 +149,14 @@ public class PersonalGroup {
 
 	public void setGender(int gender) {
 		this.gender = gender;
+	}
+	
+	public int getJoinCountNow() {
+		return joinCountNow;
+	}
+
+	public void setJoinCountNow(int joinCountNow) {
+		this.joinCountNow = joinCountNow;
 	}
 
 	public int getGroupStatus() {
