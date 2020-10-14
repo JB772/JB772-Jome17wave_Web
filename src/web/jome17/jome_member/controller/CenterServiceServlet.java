@@ -90,10 +90,16 @@ public class CenterServiceServlet extends HttpServlet{
 				List<MemberBean> members = null;
 				String mId = jsonIn.get("ID").getAsString();
 				JomeMemberService memberService = new JomeMemberService();
-				members = memberService.searchNearBy(mId);
 				int membersResult = -1;		//沒有member
+				members = memberService.searchNearBy(mId);
 				if(members != null) {
-					jsonOut.addProperty("users", GSON.toJson(members));
+					List<MemberBean> users = new ArrayList<MemberBean>();
+					for(MemberBean member : members) {
+						if(!member.getMember_id().equals(mId)) {
+							users.add(member);
+						}
+					}
+					jsonOut.addProperty("users", GSON.toJson(users));
 					membersResult = 1;			//有member
 				}
 				jsonOut.addProperty("membersResult", membersResult);

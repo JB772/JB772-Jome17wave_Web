@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -20,7 +21,10 @@ import com.google.gson.JsonObject;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
+<<<<<<< HEAD
 
+=======
+>>>>>>> a415fedb8dbd1bd7b10fb78f7d8b7407c11e3d06
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -111,7 +115,19 @@ public class GroupOperateServlet extends HttpServlet {
 				int dropResult = gService.dropGroup(groupDrop);
 				jsonOut.addProperty("dropResult", dropResult);
 				break;
-
+			
+			case "getSelfRecord":
+				String memberId = jsonIn.get("memberId").getAsString();
+				List<PersonalGroup> myGroups = new ArrayList<PersonalGroup>();
+				myGroups = gService.getMemberAllGroups(memberId);
+				int myGroupsResult = -1;
+				if(myGroups != null) {
+					myGroupsResult = 1;
+					jsonOut.addProperty("myGroups", GSON.toJson(myGroups));
+				}
+				jsonOut.addProperty("myGroupsResult", myGroupsResult);
+				break;
+				
 			default:
 				break;
 			}

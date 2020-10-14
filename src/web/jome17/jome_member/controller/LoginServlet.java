@@ -82,8 +82,8 @@ public class LoginServlet extends HttpServlet{
 			if(member != null) {
 				idGetResult = 1;
 				int relationCode = new FriendShipService().identifyRelation(mainId, friendId);
-				member.setFriendCount(mService.getFriendCount(member.getMember_id())); 
-				member.setScoreAverage(mService.getScoreAverage(member.getMember_id()));
+//				member.setFriendCount(mService.getFriendCount(member.getMember_id())); 
+//				member.setScoreAverage(mService.getScoreAverage(member.getMember_id()));
 				jsonOut.addProperty("relationCode", relationCode);
 				jsonOut.addProperty("idMember", GSON.toJson(member));
 			}
@@ -129,6 +129,13 @@ public class LoginServlet extends HttpServlet{
 			jsonOut.addProperty("resultCode", resultCode);
 			outStr = jsonOut.toString();
 			System.out.println("jsonOut:" + outStr);
+			writeJson(resp, outStr);
+			break;
+		
+		case "scoreCounts":
+			String memId = jsonIn.get("memberId").getAsString();
+			outStr = new JomeMemberService().getScoreCounts(memId);
+			System.out.println("scoreCountsStr :" + outStr);
 			writeJson(resp, outStr);
 			break;
 			
