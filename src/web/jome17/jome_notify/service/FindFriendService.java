@@ -32,13 +32,10 @@ public class FindFriendService {
 	 */
 	public String getFriendRelation(FriendListBean checkList) {
 		String friendRelation = null;
-<<<<<<< HEAD
-		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
+
 //System.out.println("checkList.acceptId: "+checkList.getAccept_M_ID());
 //System.out.println("checkList.inviteId: "+checkList.getInvite_M_ID());
-=======
 		FriendListBean relation = dao.selectRelation(checkList);
->>>>>>> Justin_Branch
 		if (relation == null) {
 			if (checkList.getInvite_M_ID().equals(checkList.getAccept_M_ID()) ) {
 				friendRelation = "myself";
