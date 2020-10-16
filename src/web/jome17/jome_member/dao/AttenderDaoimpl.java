@@ -205,7 +205,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	}
 	
 	@Override
-	public int deletaByKey(String key) {
+	public int deletaByKey(String key, String key1) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

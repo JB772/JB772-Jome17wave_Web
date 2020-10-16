@@ -32,7 +32,7 @@ public class FindFriendService {
 	 */
 	public String getFriendRelation(FriendListBean checkList) {
 		String friendRelation = null;
-		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
+		FriendListBean relation = dao.selectRelation(checkList);
 		if (relation == null) {
 			friendRelation = "insert";
 		}else {
@@ -86,10 +86,17 @@ public class FindFriendService {
 			bean.setFriend_Status(-1);
 			break;
 		}
-		resultCode = new FriendListDaoimpl().update(bean);
+		resultCode = dao.update(bean);
 		return resultCode;
 	}
 	
-
-
+	/*
+	 * 刪好友
+	 */
+	public  int deletRelation(FriendListBean bean) {
+		String mainId = bean.getInvite_M_ID();
+		String acceptId = bean.getAccept_M_ID();
+		int result = dao.deletaByKey(mainId, acceptId);
+		return result;
+	}
 }
