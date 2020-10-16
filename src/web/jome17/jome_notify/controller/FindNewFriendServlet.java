@@ -46,6 +46,8 @@ public class FindNewFriendServlet extends HttpServlet {
 		}
 		String action = jsonIn.get("action").getAsString();
 		String outStr = "";
+		String mainId = "";
+		String acceptId = "";
 		JsonObject jsonOut = new JsonObject();
 		switch(action) {
 				/*
@@ -93,6 +95,8 @@ public class FindNewFriendServlet extends HttpServlet {
 			case "addNewFriend":
 //				int resultCode = 0;
 				FriendListBean checkList = new Gson().fromJson(jsonIn.get("addNewFriend").getAsString(), FriendListBean.class);
+				mainId = checkList.getInvite_M_ID();
+				acceptId = checkList.getAccept_M_ID();
 				FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
 				if (relation == null) {
 					resultCode = new FriendListDaoimpl().insert(checkList);
@@ -117,17 +121,11 @@ public class FindNewFriendServlet extends HttpServlet {
 						notify.setBodyStatus(checkList.getFriend_Status());
 						notify.setMemberId(checkList.getAccept_M_ID());
 						resultCode = new NotifyDaoImpl().insert(notify);
-						
 						break;
 					default:
 						break;
-				}
-				
-				jsonOut.addProperty("resultCode", resultCode);
+				}	
 				jsonOut.addProperty("FriendListBean", GSON.toJson(checkList));
-				outStr = jsonOut.toString();
-				resp.setContentType(CONTENT_TYPE);
-				writeJson(resp, outStr);
 				break;
 				
 				/*
@@ -145,6 +143,8 @@ public class FindNewFriendServlet extends HttpServlet {
 //				agreeBean.setuId(agreeRelation.getuId());
 //				agreeBean.setFriend_Status(1);
 //				resultCode = new FriendListDaoimpl().update(agreeBean);
+				mainId = agreeBean.getInvite_M_ID();
+				acceptId = agreeBean.getAccept_M_ID();
 				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
 				
 				//新增通知訊息 給對方
@@ -167,11 +167,6 @@ public class FindNewFriendServlet extends HttpServlet {
 				}else {
 				System.out.println("Notification Delete Failed");
 				}
-				
-				jsonOut.addProperty("resultCode", resultCode);
-				outStr = jsonOut.toString();
-				resp.setContentType(CONTENT_TYPE);
-				writeJson(resp, outStr);
 				break;
 				
 				/*
@@ -190,18 +185,26 @@ public class FindNewFriendServlet extends HttpServlet {
 //				declineBean.setFriend_Status(2);
 //				resultCode = new FriendListDaoimpl().update(declineBean);
 				resultCode = ffs.changeFriendList(declineBean, "clickDecline");
-				jsonOut.addProperty("resultCode", resultCode);
-				outStr = jsonOut.toString();
-				resp.setContentType(CONTENT_TYPE);
-				writeJson(resp, outStr);
 				break;
-					
+				
+			case "deleteRelation":
+				FriendListBean deleteFriend = new Gson().fromJson(jsonIn.get("deleteFriend").getAsString(), FriendListBean.class);
+				resultCode = ffs.deletRelation(deleteFriend);
+				break;
 			default:
-				break;
-				
-			
-				
+				break;		
 		}
+		
+		jsonOut.addProperty("resultCode", resultCode);
+		FriendListBean afterRelation = new FriendListBean(mainId, acceptId);
+		int relationCode = -1;
+		if(afterRelation != null) {
+			relationCode = afterRelation.getFriend_Status();
+		}
+		jsonOut.addProperty("relationCode", relationCode);
+		outStr = jsonOut.toString();
+		resp.setContentType(CONTENT_TYPE);
+		writeJson(resp, outStr);
 	}
 	
 	

@@ -22,9 +22,13 @@ import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 639e96014aa47b05e1c9a306f4fb51ed6aa75c08
+=======
+
+>>>>>>> Justin_Branch
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -65,40 +69,44 @@ public class GroupOperateServlet extends HttpServlet {
 			switch (action) {
 			// 查所有揪團
 			case "getAll":
-				String myId = jsonIn.get("memberId").getAsString();
-				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
+//				String myId = jsonIn.get("memberId").getAsString();
+//				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
 				List<PersonalGroup> pGroups = gService.getAllGroups();
 				int getAllResult = 0;
-				if(pGroups.size() < mGroups.size() || pGroups == null) {
-					getAllResult = -1;
-				}else {
-					for(PersonalGroup pGroup : pGroups) {
-						System.out.println(pGroup.getMemberId());
-						for(PersonalGroup mGroup : mGroups) {
-							if(pGroup.getGroupId().equals(mGroup.getGroupId())) {
-								int myStatus = mGroup.getAttenderStatus();
-								switch(myStatus) {
-									case 0:
-										pGroup.setAttenderStatus(0);
-										break;
-									case 1:
-										pGroup.setAttenderStatus(1);
-										break;
-									case 2:
-										pGroup.setAttenderStatus(2);
-										break;
-									case 3:
-										pGroup.setAttenderStatus(3);
-										break;
-								}
-							}else {
-								pGroup.setAttenderStatus(-1);
-							}
-						}
-					}
-					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
+				if(pGroups != null) {
 					getAllResult = 1;
+					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
 				}
+//				if(pGroups.size() < mGroups.size() || pGroups == null) {
+//					getAllResult = -1;
+//				}else {
+//					for(PersonalGroup pGroup : pGroups) {
+//						System.out.println(pGroup.getMemberId());
+//						for(PersonalGroup mGroup : mGroups) {
+//							if(pGroup.getGroupId().equals(mGroup.getGroupId())) {
+//								int myStatus = mGroup.getAttenderStatus();
+//								switch(myStatus) {
+//									case 0:
+//										pGroup.setAttenderStatus(0);
+//										break;
+//									case 1:
+//										pGroup.setAttenderStatus(1);
+//										break;
+//									case 2:
+//										pGroup.setAttenderStatus(2);
+//										break;
+//									case 3:
+//										pGroup.setAttenderStatus(3);
+//										break;
+//								}
+//							}else {
+//								pGroup.setAttenderStatus(-1);
+//							}
+//						}
+//					}
+//					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
+//					getAllResult = 1;
+//				}
 				jsonOut.addProperty("getAllResult", getAllResult);
 				break;
 
@@ -113,7 +121,21 @@ public class GroupOperateServlet extends HttpServlet {
 				}
 				jsonOut.addProperty("getAResult", getAResult);
 				break;
-
+			
+			//查我與揪團的關係
+			case "getMyGroup":
+				int myGroupResult = -1;
+				String myGroupId = jsonIn.get("groupId").getAsString();
+				String myId = jsonIn.get("memberId").getAsString();
+				PersonalGroup myGroup = gService.inquirePerGroups(myId, myGroupId);
+				if(myGroup != null) {
+					myGroupResult = gService.getGroupCount(myGroupId);
+					myGroup.setJoinCountNow(myGroupResult);
+					jsonOut.addProperty("myGroup", GSON.toJson(myGroup));
+					myGroupResult = 1;
+				}
+				break;
+				
 			// 建立揪團
 			case "creatAGroup":
 				int creatResult = -1;

@@ -32,9 +32,13 @@ public class FindFriendService {
 	 */
 	public String getFriendRelation(FriendListBean checkList) {
 		String friendRelation = null;
+<<<<<<< HEAD
 		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
 //System.out.println("checkList.acceptId: "+checkList.getAccept_M_ID());
 //System.out.println("checkList.inviteId: "+checkList.getInvite_M_ID());
+=======
+		FriendListBean relation = dao.selectRelation(checkList);
+>>>>>>> Justin_Branch
 		if (relation == null) {
 			if (checkList.getInvite_M_ID().equals(checkList.getAccept_M_ID()) ) {
 				friendRelation = "myself";
@@ -94,10 +98,17 @@ public class FindFriendService {
 			bean.setFriend_Status(-1);
 			break;
 		}
-		resultCode = new FriendListDaoimpl().update(bean);
+		resultCode = dao.update(bean);
 		return resultCode;
 	}
 	
-
-
+	/*
+	 * 刪好友
+	 */
+	public  int deletRelation(FriendListBean bean) {
+		String mainId = bean.getInvite_M_ID();
+		String acceptId = bean.getAccept_M_ID();
+		int result = dao.deletaByKey(mainId, acceptId);
+		return result;
+	}
 }

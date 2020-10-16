@@ -38,7 +38,7 @@ public class GroupService {
 	//退團
 	public int dropGroup(PersonalGroup pGroup) {
 		if(pGroup.getRole() == 1) {
-			//是主揪就刪除該GroupId的所有記錄含兩張Table
+			//是主揪就更新該GroupId的所有記錄含兩張Table
 			return dao.update(pGroup);
 		}else {
 			//是團員就改ATTEND_STATUS = 0;
@@ -57,9 +57,9 @@ public class GroupService {
 		return dao.selectByKey("GROUP_ID", groupId);
 	}
 	//搜尋某一memberId揪團狀態(單筆)
-	public PersonalGroup inquirePerGroups(String memberId) {
+	public PersonalGroup inquirePerGroups(String memberId, String groupId) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-		return attenderDao.selectByKey("MEMBER_ID", memberId);
+		return attenderDao.selectByKey(memberId, groupId);
 	}
 	//搜尋某一groupId的所有成員(多筆)
 	public List<PersonalGroup> getAllAttenders(String groupId) {
@@ -78,6 +78,12 @@ public class GroupService {
 		return image;
 	}
 	
+	//取得該團目前參加人數
+	public int getGroupCount(String groupId) {
+		int groupAttenderCount = -1;
+		groupAttenderCount = Integer.valueOf(dao.getCount(groupId));
+;		return groupAttenderCount;
+	}
 	public void createScore(String groupId) {
 		
 	}

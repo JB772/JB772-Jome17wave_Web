@@ -194,7 +194,56 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				}
 				return null;
 	}
-
+	
+	@Override
+	public int deletaByKey(String mId, String mId1) {
+		String sqlGetTableId = "SELECT UID"
+							+ " FROM Tep101_Jome17.FRIEND_LIST"
+							+ " where "
+								+ "INVITE_M_ID in(?, ?) "
+								+ "and "
+								+ "ACCEPT_M_ID in(?, ?);";
+		String sqlRelation = "DELETE FROM Tep101_Jome17.FRIEND_LIST WHERE UID = ?;";
+		String sqlMessage = "DELETE FROM Tep101_Jome17.NOTIFY "
+							+ "WHERE TYPE = 2 and NOTIFICATION_BODY = ?;";
+		int uid = -1;
+		int deleteResult = -1;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlGetTableId);
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlRelation);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlMessage);) {
+			pstmt3.setString(1, mId);
+			pstmt3.setString(2, mId1);
+			pstmt3.setString(3, mId);
+			pstmt3.setString(4, mId1);
+			ResultSet rs = pstmt3.executeQuery();
+			while(rs.next()) {
+				uid = rs.getInt(1);
+				System.out.println(pstmt3.toString());
+			}
+			conn.setAutoCommit(false);
+			try{
+				pstmt1.setInt(1, uid);
+				int resultDelFriend = pstmt1.executeUpdate();
+				if(resultDelFriend < 1) {
+					throw new SQLException("table FRIEND_LIST is deleted in error!");
+				}
+				pstmt2.setInt(1, uid);
+				int resultDelNotify = pstmt2.executeUpdate();
+				if(resultDelNotify < 1) {
+					throw new SQLException("table NOTIFY is deleted in error!");
+				}
+				conn.commit();
+				deleteResult = 1;
+			}catch(SQLException e) {
+				conn.rollback();
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deleteResult;
+	}
 
 
 
@@ -207,12 +256,6 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	public byte[] getImage(String acconut) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public int deletaByKey(String key) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override

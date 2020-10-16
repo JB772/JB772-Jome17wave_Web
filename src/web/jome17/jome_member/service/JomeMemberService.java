@@ -103,8 +103,8 @@ public class JomeMemberService {
 	 * 前台用不到的方法
 	 */
 	//刪除會員資料
-	public int deletaMember(String account) {
-		return dao.deletaByKey(account);
+	public int deletaMember(String account, String key) {
+		return dao.deletaByKey(account, key);
 	}
 
 	
