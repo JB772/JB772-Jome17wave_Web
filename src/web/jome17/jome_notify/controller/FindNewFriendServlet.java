@@ -196,12 +196,10 @@ public class FindNewFriendServlet extends HttpServlet {
 		}
 		
 		jsonOut.addProperty("resultCode", resultCode);
-		FriendListBean afterRelation = new FriendListBean(mainId, acceptId);
-		int relationCode = -1;
+		FriendListBean afterRelation = new FriendListDaoimpl().selectRelation(new FriendListBean(mainId, acceptId));
 		if(afterRelation != null) {
-			relationCode = afterRelation.getFriend_Status();
+			jsonOut.addProperty("afterRelation", new Gson().toJson(afterRelation));
 		}
-		jsonOut.addProperty("relationCode", relationCode);
 		outStr = jsonOut.toString();
 		resp.setContentType(CONTENT_TYPE);
 		writeJson(resp, outStr);

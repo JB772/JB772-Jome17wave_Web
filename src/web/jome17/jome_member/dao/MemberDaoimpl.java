@@ -32,6 +32,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
 			pstmt.setObject(6, bean.getPhone_number());
+			
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +42,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 //										keyword = ID or ACCOUNT
 	@Override
 	public MemberBean selectByKey(String keyword, String key) {
-		String sql = "select * from MEMBERINFO where "+ keyword +" = ?";
+		String sql = "select * from Tep101_Jome17.MEMBERINFO where "+ keyword +" = ?";
 		String sqlFriendConut = "select count(*) "
 								+ "from Tep101_Jome17.FRIEND_LIST "
 								+ "where "
@@ -64,7 +65,8 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 								+ "where "
 									+ "MEMBER_ID = ? "
 									+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
-		MemberBean member = null;
+
+		MemberBean member = new MemberBean();
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlFriendConut);
@@ -74,7 +76,6 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			//取member基本資料
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
-			member = new MemberBean();
 			if(rs.next()) {
 				member.setMember_id(rs.getString("ID"));
 				member.setAccount(rs.getString("ACCOUNT"));
@@ -86,40 +87,42 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setLongitude(rs.getDouble("LONTITUDE"));				
 			} 
 			String memberId = member.getMember_id();
-			//取好友數
-			pstmt1.setString(1, memberId);
-			pstmt1.setString(2, memberId);
-			ResultSet rs1 = pstmt1.executeQuery();
-			if(rs1.next()) {
-				member.setFriendCount(String.valueOf(rs1.getInt(1)));
+			if(memberId != "null") {
+				//取好友數
+				pstmt1.setString(1, memberId);
+				pstmt1.setString(2, memberId);
+				ResultSet rs1 = pstmt1.executeQuery();
+				if(rs1.next()) {
+					member.setFriendCount(String.valueOf(rs1.getInt(1)));
+				}
+				//取平均評分
+				pstmt2.setString(1, memberId);
+				ResultSet rs2 = pstmt2.executeQuery();
+				if(rs2.next()) {
+					Double d = rs2.getDouble(1);
+					BigDecimal bd = new BigDecimal(d);
+					bd = bd.setScale(1, 4);
+					member.setScoreAverage(String.valueOf(bd));
+					member.setBeRankedCount(String.valueOf(rs2.getInt(2)));
+				}
+				//取得主揪次數
+				pstmt3.setString(1, memberId);
+				ResultSet rs3 = pstmt3.executeQuery();
+				if(rs3.next()) {
+					member.setCreateGroupCount(String.valueOf(rs3.getInt(1)));
+				}
+				//取得入團次數
+				pstmt4.setString(1, memberId);
+				ResultSet rs4 = pstmt4.executeQuery();
+				if(rs4.next()) {
+					member.setGroupCount(String.valueOf(rs4.getInt(1)));
+				}
+				return member;
 			}
-			//取平均評分
-			pstmt2.setString(1, memberId);
-			ResultSet rs2 = pstmt2.executeQuery();
-			if(rs2.next()) {
-				Double d = rs2.getDouble(1);
-				BigDecimal bd = new BigDecimal(d);
-				bd = bd.setScale(1, 4);
-				member.setScoreAverage(String.valueOf(bd));
-				member.setBeRankedCount(String.valueOf(rs2.getInt(2)));
-			}
-			//取得主揪次數
-			pstmt3.setString(1, memberId);
-			ResultSet rs3 = pstmt3.executeQuery();
-			if(rs3.next()) {
-				member.setCreateGroupCount(String.valueOf(rs3.getInt(1)));
-			}
-			//取得入團次數
-			pstmt4.setString(1, memberId);
-			ResultSet rs4 = pstmt4.executeQuery();
-			if(rs4.next()) {
-				member.setGroupCount(String.valueOf(rs4.getInt(1)));
-			}
-			return member;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return member;
+		return null;
 	}
 
 	@Override
