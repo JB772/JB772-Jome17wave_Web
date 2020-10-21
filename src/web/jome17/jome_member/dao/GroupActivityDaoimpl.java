@@ -175,7 +175,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 
 	//主揪按下退出揪團的按鈕就是 刪除該groupId的揪團資料；交易控制：一併刪除ATTENDER表的該groupId資料。
 	@Override
-	public int deletaByKey(String groupId) {
+	public int deletaByKey(String groupId, String key) {
 		String sqlDelGroup = "DELETE from Tep101_Jome17.JOIN_GROUP where GROUP_ID = ? ;";
 		String sqlDelAttender = "DELETE from Tep101_Jome17.ATTENDER where GROUP_ID = ? ;";
 		int deleteResult = 0;
@@ -227,27 +227,34 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	
 	//拿到主揪的次數 及 參加揪團的次數
 	@Override
-	public String getCount(String memberId) {
-		String sqlAddGroupCount = "select count(*) "
-								+ "from Tep101_Jome17.ATTENDER "
-								+ "where "
-									+ "MEMBER_ID = ? "
-									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
-		String sqlGroupCount = "select count(*) "
-							+ "from Tep101_Jome17.ATTENDER "
-							+ "where "
-								+ "MEMBER_ID = ? "
-								+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
+	public String getCount(String groupId) {
+//		String sqlAddGroupCount = "select count(*) "
+//								+ "from Tep101_Jome17.ATTENDER "
+//								+ "where "
+//									+ "MEMBER_ID = ? "
+//									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
+//		String sqlGroupCount = "select count(*) "
+//							+ "from Tep101_Jome17.ATTENDER "
+//							+ "where "
+//								+ "MEMBER_ID = ? "
+//								+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
+		String sql = "select count(*) "
+					+ "from Tep101_Jome17.ATTENDER "
+					+ "where "
+					+ "GROUP_ID = ? and ATTEDN_STATUS = 1;";
+		String resultCount = 0 + "";
 		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt1 = conn.prepareStatement(sqlAddGroupCount);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlGroupCount);) {
-			
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, groupId);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				resultCount = rs.getInt(1) + "";
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return null;
+		return resultCount;
 	}
 	
 	//直接拿到所有揪團資料(含主揪人mId及nickname)
@@ -394,7 +401,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	
 	//搜尋某一場揪團的所有資料(含主揪、浪點)
 	@Override
-	public PersonalGroup selectByKey(String keyword, String groupId) {
+	public PersonalGroup selectByKey(String memberId, String groupId) {
 		String sql = "select "
 				+ "a.MEMBER_ID, "
 				+ "m.NICKNAME, "
@@ -417,10 +424,11 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID"
 			+ "where "
 				+ "j.GROUP_ID = ? "
-				+ "and a.ROLE = 1;";
+				+ "and a.MEMBER_ID = ?;";
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, groupId);
+			pstmt.setString(2, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			PersonalGroup pGroup = new PersonalGroup();
 			pGroup.setMemberId(rs.getString("MEMBER_ID"));

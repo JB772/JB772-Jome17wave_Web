@@ -110,7 +110,7 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 	}
 
 	@Override
-	public int deletaByKey(String key) {
+	public int deletaByKey(String key, String key1) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

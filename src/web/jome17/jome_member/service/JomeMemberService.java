@@ -19,14 +19,11 @@ public class JomeMemberService {
 	
 	//註冊，拿到Member物件，檢查account是否存在，存在return，不存在就insert
 	public int register(MemberBean member) {
-		int acoountExist = 2;
-		//int registerSuccess = 1;
-		String registrAccount = member.getAccount();
-		if (dao.selectByKey("ACCOUNT", registrAccount) == null) {
-			return dao.insert(member);
-		}else {
-			return acoountExist;
+		int insertResult = -1;
+		if(dao.selectByKey("ACCOUNT", member.getAccount()).getMember_id() == null) {
+			insertResult =  dao.insert(member);
 		}
+		return insertResult;
 	}
 	//登入
 	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
@@ -103,8 +100,8 @@ public class JomeMemberService {
 	 * 前台用不到的方法
 	 */
 	//刪除會員資料
-	public int deletaMember(String account) {
-		return dao.deletaByKey(account);
+	public int deletaMember(String account, String key) {
+		return dao.deletaByKey(account, key);
 	}
 
 	

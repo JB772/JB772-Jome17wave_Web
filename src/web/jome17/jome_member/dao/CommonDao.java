@@ -17,7 +17,7 @@ public interface CommonDao<B, K> {
 	//修改
 	int update(B bean);
 	//刪除
-	int deletaByKey(K key);
+	int deletaByKey(K key, K key1);
 	
 	//查圖片
 	byte[] getImage(K acconut);
