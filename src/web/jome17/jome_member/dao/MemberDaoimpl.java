@@ -85,7 +85,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
 				member.setLongitude(rs.getDouble("LONTITUDE"));				
-			} 
+			}else {
+				System.out.println("select: null");
+				return null;
+			}
 			String memberId = member.getMember_id();
 			if(memberId != "null") {
 				//取好友數
@@ -244,7 +247,31 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 
 	@Override
 	public List<MemberBean> selectAllNoKey() {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "SELECT "
+				+ "ID, "
+				+ "ACCOUNT, "
+				+ "NICKNAME, "
+				+ "LATITUDE, "
+				+ "LONTITUDE "
+			+ "FROM "
+				+ "Tep101_Jome17.MEMBERINFO;";
+List<MemberBean> members = new ArrayList<MemberBean>();
+try(Connection conn = dataSource.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();) {
+		while(rs.next()) {
+			MemberBean member = new MemberBean();
+			member.setMember_id(rs.getString("ID"));
+			member.setAccount(rs.getString("ACCOUNT"));
+			member.setNickname(rs.getString("NICKNAME"));
+			member.setLatitude(rs.getDouble("LATITUDE"));
+			member.setLongitude(rs.getDouble("LONTITUDE"));
+			members.add(member);
+		}
+		return members;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return members;
 	}
 }
