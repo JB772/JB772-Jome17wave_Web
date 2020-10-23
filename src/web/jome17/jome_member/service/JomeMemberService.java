@@ -9,6 +9,7 @@ import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.FriendListDaoimpl;
 import web.jome17.jome_member.dao.MemberDaoimpl;
 import web.jome17.jome_member.dao.ScoreDaoimpl;
+import web.jome17.main.DateUtil;
 
 public class JomeMemberService {
 	private CommonDao<MemberBean, String> dao;	
@@ -17,13 +18,16 @@ public class JomeMemberService {
 	}
 	
 	
-	//註冊，拿到Member物件，檢查account是否存在，存在return，不存在就insert
+	//註冊，拿到Member物件，檢查account是否重複，存在return，不存在就insert
 	public int register(MemberBean member) {
-		int insertResult = -1;
-		if(dao.selectByKey("ACCOUNT", member.getAccount()).getMember_id() == null) {
-			insertResult =  dao.insert(member);
+		List<MemberBean> allMembers = dao.selectAllNoKey();
+		for(MemberBean aMember: allMembers){
+			if(aMember.getAccount().equals(member.getAccount())) {
+				return -1;
+			}
 		}
-		return insertResult;
+		member.setMember_id(new DateUtil().getDateTimeId());
+		return dao.insert(member);
 	}
 	//登入
 	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
