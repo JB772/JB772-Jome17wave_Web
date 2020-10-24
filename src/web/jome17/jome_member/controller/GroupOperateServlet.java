@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +22,8 @@ import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
+import web.jome17.main.ScoreDateTask;
+import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
 
@@ -137,9 +141,28 @@ public class GroupOperateServlet extends HttpServlet {
 			case "creatAGroup":
 				int creatResult = -1;
 				PersonalGroup inPGroup = GSON.fromJson(jsonIn.get("inGroup").getAsString(), PersonalGroup.class);
+				String createGroupId = inPGroup.getGroupId();
 				creatResult = gService.creatGroup(inPGroup);
+				
+				/*
+				 * 結束時間到：1.建立評分表，2.請團員評分
+				 */
+				TimerTask groupEndTimeTask = new TimerTask() {
+					@Override
+					public void run() {
+						// 1.建立評分表
+						GroupService groupService = new GroupService();
+						List<PersonalGroup> attenders = groupService.getAllAttenders(createGroupId);
+						int scoreTableCount = groupService.createScoreTable(attenders);
+					}
+				};
+				
+				Timer timer = new Timer();
+				timer.schedule(groupEndTimeTask, new DateUtil().str2Date(inPGroup.getGroupEndTime()));
+				
 				jsonOut.addProperty("creatResult", creatResult);
 				break;
+				
 			// 加入揪團	
 			case "joinGroup":
 				int jointResult = -1;

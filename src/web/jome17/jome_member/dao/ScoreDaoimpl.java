@@ -1,6 +1,5 @@
 package web.jome17.jome_member.dao;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,38 +75,46 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		}
 		return null;
 	}
-
+	
+	//取得該groupId的所有評分資料
 	@Override
-	public ScoreBean selectByKey(String keyword, String key) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ScoreBean> selectAll(String groupID) {
+		String sql = "SELECT * "
+					+ "FROM Tep101_Jome17.SCORE "
+					+ "WHERE GROUP_ID = ?;";
+	try(Connection conn = dataSource.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(sql);) {
+		pstmt.setString(1, groupID);
+		ResultSet rs = pstmt.executeQuery();
+		List<ScoreBean> scoreDatas = new ArrayList<ScoreBean>();
+		while(rs.next()) {
+			ScoreBean scoreData = new ScoreBean();
+			scoreData.setScoreId(rs.getInt("SCORE_ID"));
+			scoreData.setMemberId(rs.getString("MEMBER_ID"));
+			scoreData.setBeRatedId(rs.getString("BE_RATED_ID"));
+			scoreData.setGroupId(rs.getString("GROUP_ID"));
+			scoreData.setRatingScore(rs.getInt("RATING_SCORE"));
+			scoreDatas.add(scoreData);
+		}
+		return scoreDatas;	
+	} catch (SQLException e) {
+		e.printStackTrace();
 	}
-
-	@Override
-	public List<ScoreBean> selectAll(String key) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	//member進行評分
 	@Override
-	public ScoreBean selectRelation(ScoreBean bean) {
+	public int update(ScoreBean bean) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
-	
-
 	
 	/*
 	 * 
 	 * 暫無用方法
 	 * 
 	 */
-	
-	@Override
-	public int update(ScoreBean bean) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public int deletaByKey(String key, String key1) {
@@ -127,4 +134,15 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		return null;
 	}
 
+	@Override
+	public ScoreBean selectByKey(String keyword, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public ScoreBean selectRelation(ScoreBean bean) {
+
+		return null;
+	}
 }
