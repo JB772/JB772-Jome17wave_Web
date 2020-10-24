@@ -22,10 +22,7 @@ import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.main.ImageUtil;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 398a222de9ab595adaa03452213eeaf8034a7f9b
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -51,7 +48,9 @@ public class GroupOperateServlet extends HttpServlet {
 		if (action.equals("getImage")) {
 			//拿圖
 			byte[] image = null;
+		
 			String groupId = jsonIn.get("groupId").getAsString();
+			
 			int imageSize = jsonIn.get("imageSize").getAsInt();
 			image = gService.groupImage(groupId);
 			if(image != null) {
@@ -125,6 +124,7 @@ public class GroupOperateServlet extends HttpServlet {
 				String myGroupId = jsonIn.get("groupId").getAsString();
 				String myId = jsonIn.get("memberId").getAsString();
 				PersonalGroup myGroup = gService.inquirePerGroups(myId, myGroupId);
+				
 				if(myGroup != null) {
 					myGroupResult = gService.getGroupCount(myGroupId);
 					myGroup.setJoinCountNow(myGroupResult);

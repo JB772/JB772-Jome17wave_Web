@@ -99,7 +99,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ "left join Tep101_Jome17.JOIN_GROUP j "
 							+ "on j.GROUP_ID = a.GROUP_ID "
 					+ "where "
-						+ " a.? = ? ;";	//a.MEMBER_ID  or a.GROUP_ID
+						+ " a.MEMBER_ID = ?  and a.GROUP_ID = ?;";	//a.MEMBER_ID  or a.GROUP_ID
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, keyword);
