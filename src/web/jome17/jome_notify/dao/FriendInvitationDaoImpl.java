@@ -53,7 +53,33 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 		return null;
 	}
 
-	
+	// 查詢FriendList列表
+	@Override
+	public FriendListBean selectByKey(String keyword, String key) {
+		FriendListBean bean = new FriendListBean();
+		String sql = "";
+		if (keyword.equals("UID")) {
+			sql =  "SELECT * FROM Tep101_Jome17.FRIEND_LIST where UID = ?;";
+		}
+		
+	try (
+		Connection connection = dataSource.getConnection();
+		PreparedStatement pstmt = connection.prepareStatement(sql);
+	){
+		pstmt.setInt(1, Integer.valueOf(key));
+		ResultSet rs = pstmt.executeQuery();
+		while (rs.next()) {
+			bean.setuId(rs.getInt("UID"));
+			bean.setInvite_M_ID(rs.getString("Invite_M_ID"));
+			bean.setAccept_M_ID(rs.getString("Accept_M_ID"));
+			bean.setFriend_Status(rs.getInt("Friend_Status"));
+		}
+		return bean;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+	}
 	
 
 	/*
@@ -66,11 +92,7 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 	}
 
 	
-	@Override
-	public FriendListBean selectByKey(String keyword, String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public FriendListBean selectRelation(FriendListBean bean) {

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,7 +36,17 @@ public class GroupOperateServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+	}
 
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+	}
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -74,6 +85,16 @@ public class GroupOperateServlet extends HttpServlet {
 				int getAllResult = 0;
 				if(pGroups != null) {
 					getAllResult = 1;
+					for(int i= 0; i < pGroups.size(); i++) {
+						if(pGroups.get(i).getGroupStatus() == 1) {
+							String groupId = pGroups.get(i).getGroupId();
+							pGroups.get(i).setJoinCountNow(gService.getGroupCount(groupId));
+							if(pGroups.get(i).getGroupLimit() == pGroups.get(i).getJoinCountNow()) {
+								pGroups.get(i).setGroupStatus(2);
+								gService.updateGroup(pGroups.get(i), null);
+							}
+						}
+					}
 					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
 				}
 //				if(pGroups.size() < mGroups.size() || pGroups == null) {
@@ -140,9 +161,21 @@ public class GroupOperateServlet extends HttpServlet {
 			case "creatAGroup":
 				int creatResult = -1;
 				PersonalGroup inPGroup = GSON.fromJson(jsonIn.get("inGroup").getAsString(), PersonalGroup.class);
-				String createGroupId = inPGroup.getGroupId();
+				String createGroupId = inPGroup.getGroupId();	//client端已包裝完成，Server新增就好
 				creatResult = gService.creatGroup(inPGroup);
-				
+
+				/*
+				 * 集合時間到：groupStatus
+				 */
+				TimerTask assembleTime = new TimerTask() {
+					@Override
+					public void run() {
+						inPGroup.setGroupStatus(3);
+						gService.updateGroup(inPGroup, null);
+					}
+				};
+				Timer assembleTimer = new Timer();
+				assembleTimer.schedule(assembleTime, new DateUtil().str2Date(inPGroup.getAssembleTime()));
 				/*
 				 * 結束時間到：1.建立評分表，2.請團員評分
 				 */
@@ -150,14 +183,26 @@ public class GroupOperateServlet extends HttpServlet {
 					@Override
 					public void run() {
 						// 1.建立評分表
-						GroupService groupService = new GroupService();
-						List<PersonalGroup> attenders = groupService.getAllAttenders(createGroupId);
-						int scoreTableCount = groupService.createScoreTable(attenders);
+//						GroupService groupService = new GroupService();
+						List<PersonalGroup> attenders = gService.getAllAttenders(createGroupId);
+						if(attenders == null) {
+							System.out.println("TimerTask is fail.");
+							System.gc();
+							cancel();
+						}else {
+							int scoreTableCount = gService.createScoreTable(attenders);
+							for(PersonalGroup attender: attenders) {
+								System.out.println(attender.getNickname());
+							}
+							System.out.println("insertScoreTableCount: " + scoreTableCount+ "\t" + new Date());
+							System.gc();
+							cancel();
+						}
+
 					}
 				};
-				
-				Timer timer = new Timer();
-				timer.schedule(groupEndTimeTask, new DateUtil().str2Date(inPGroup.getGroupEndTime()));
+				Timer groupEndTimer = new Timer();
+				groupEndTimer.schedule(groupEndTimeTask, new DateUtil().str2Date(inPGroup.getGroupEndTime()));
 				
 				jsonOut.addProperty("creatResult", creatResult);
 				break;

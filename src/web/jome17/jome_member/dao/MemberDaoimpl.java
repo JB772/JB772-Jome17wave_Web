@@ -54,7 +54,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 								+ "from "
 									+ "Tep101_Jome17.SCORE "
 								+ "where "
-									+ "BE_RATED_ID = ?;";
+									+ "BE_RATED_ID = ? and RATING_SCORE in (1,2,3,4,5);";
 		String sqlAddGroupCount = "select count(*) "
 								+ "from Tep101_Jome17.ATTENDER "
 								+ "where "

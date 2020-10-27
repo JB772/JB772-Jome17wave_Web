@@ -71,7 +71,7 @@ public class NotifyDaoImpl implements NotifyDao{
 				notify.setNotificationBody(rs.getInt(3));
 				notify.setBodyStatus(rs.getInt(4));
 				notify.setMemberId(rs.getString(5));
-System.out.println("notify: " + notify.getMemberId());
+//System.out.println("notify: " + notify.getMemberId());
 				notifiesList.add(notify);
 			}
 			return notifiesList;

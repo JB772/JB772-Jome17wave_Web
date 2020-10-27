@@ -8,8 +8,10 @@ import com.mysql.cj.log.Log;
 import sun.invoke.empty.Empty;
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.ScoreBean;
+import web.jome17.jome_member.dao.AttenderDaoimpl;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.jome_notify.bean.Notify;
+import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
 import web.jome17.jome_notify.dao.NotifyDaoImpl;
 
 public class NotifyService {
@@ -117,7 +119,31 @@ public class NotifyService {
 		return notifiesWordList;
 	}
 	
+	/*
+	 * 組合Body代碼1 的資料
+	 * 	收到attenderNo，
+	 * 			用attenderNo得到GroupId回傳
+	 */
+	public String getGroupId(String attenderNo) {
+		// TODO Auto-generated method stub
+//		return new AttenderDaoimpl().getAttenderBean.getGroupId;
+		return null;
+	}
 	
+	/*
+	 * 組合Body代碼2 的資料
+	 * 	收到uID與自己的ID，
+	 * 			用uId得到FriendListBean，再用自己的Id與FriendListBean做比對，取得對方的Id回傳
+	 */
+	public String getOtherMemberId(String uId, String myselfId) {
+
+		FriendListBean bean = new FriendInvitationDaoImpl().selectByKey("UID", uId);
+//System.out.println("Invite_M_ID(): " + bean.getInvite_M_ID());
+		String otherMemberId = bean.getInvite_M_ID().equals(myselfId) ? bean.getAccept_M_ID() : bean.getInvite_M_ID();
+		return otherMemberId;
+	}
+
+
 
 	
 

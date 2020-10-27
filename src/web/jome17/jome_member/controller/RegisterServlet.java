@@ -31,7 +31,31 @@ public class RegisterServlet extends HttpServlet{
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
+//		req.setCharacterEncoding("UTF-8");
+//		StringBuilder json = new StringBuilder();
+//		try (BufferedReader br = req.getReader()){
+//			String line;
+//			while ((line = br.readLine()) != null) {
+//				json.append(line);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(json.toString());
+//		Test test = GSON.fromJson(json.toString(), Test.class);
+//		if(test.getAction().equals("register")) {
+//			MemberBean member = test.getMember();
+//			JsonObject jsonOut = new JsonObject();
+//			String outStr = "";
+//			int resultCode = 0;
+//			resultCode = new JomeMemberService().register(member);
+//			jsonOut.addProperty("resultCode", resultCode);
+//			outStr = jsonOut.toString();
+//			System.out.println("jsonOut:" + outStr);
+//			writeJson(resp, outStr);
+//		}
+		
+				try {
 			req.setCharacterEncoding("UTF-8");
 			jsonIn = json2In(req);
 			System.out.println("jsonIn:" + jsonIn.toString());
@@ -46,11 +70,13 @@ public class RegisterServlet extends HttpServlet{
 		switch(action){
 			case "register":
 				member = GSON.fromJson(jsonIn.get("jomeMember").getAsString(), MemberBean.class);
+			
 				resultCode = new JomeMemberService().register(member);
 				jsonOut.addProperty("resultCode", resultCode);
 				outStr = jsonOut.toString();
 				System.out.println("jsonOut:" + outStr);
 				writeJson(resp, outStr);
+				
 				break;
 		}
 	}
@@ -77,4 +103,22 @@ public class RegisterServlet extends HttpServlet{
 		}
 		return GSON.fromJson(json.toString(), JsonObject.class);
 	}
+}
+class Test{
+	private String action;
+	private MemberBean member;
+	
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
+	}
+	public MemberBean getMember() {
+		return member;
+	}
+	public void setMember(MemberBean member) {
+		this.member = member;
+	}
+	
 }

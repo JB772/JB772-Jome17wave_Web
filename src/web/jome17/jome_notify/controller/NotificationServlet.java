@@ -66,6 +66,48 @@ public class NotificationServlet extends HttpServlet {
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
 				break;
+			
+				/*
+				* 解析Body代碼1 的資料
+				* 	收到Json:{ 參加者名單的編號(attenderNo) }
+				* 	在Attender資料庫裡找處那筆資料
+				* 	取得groupId
+				* 	包裝Json:{ groupId }
+				*/	
+				case "getGroupBundle":
+					String attenderNo = jsonIn.get("attenderNo").getAsString();
+					String groupId = new NotifyService().getGroupId(attenderNo);
+	//System.out.println("otherMemberId: " + otherMemberId);				
+//					if (otherMemberId != null && !otherMemberId.isEmpty()) {
+//						jsonOut.addProperty("getKey", otherMemberId);
+//					}
+//					outStr = jsonOut.toString();
+//					System.out.println(outStr);
+//					resp.setContentType(CONTENT_TYPE);
+//					writeJson(resp, outStr);
+					break;
+			
+			/*
+			* 解析Body代碼2 的資料
+			* 	收到Json:{ uId, 自己的Id }
+			* 	在FriendList資料庫裡找處那筆資料
+			* 	與自己id比對的另一個ID
+			* 	包裝Json:{ 對方ID }
+			*/	
+			case "getFriendBundle":
+				String uId = jsonIn.get("uId").getAsString();
+				String myselfId = jsonIn.get("myselfId").getAsString();
+				String otherMemberId = new NotifyService().getOtherMemberId(uId, myselfId);
+//System.out.println("otherMemberId: " + otherMemberId);				
+				if (otherMemberId != null && !otherMemberId.isEmpty()) {
+					jsonOut.addProperty("getKey", otherMemberId);
+				}
+				outStr = jsonOut.toString();
+				System.out.println(outStr);
+				resp.setContentType(CONTENT_TYPE);
+				writeJson(resp, outStr);
+				break;
+					
 	
 			default:
 				break;

@@ -7,7 +7,7 @@ public class PersonalGroup {
 	private int attenderId = -1;
 	private int attenderStatus = -1;
 	private int role = -1;
-	private String surfName = "";
+	private String surfName = "noData";
 	private String groupId = "";
 	private String groupName = "";
 	private String assembleTime = "";
@@ -26,6 +26,23 @@ public class PersonalGroup {
 		this.attenderId = attenderId;
 		this.groupId = groupId;
 	}
+
+	
+	public PersonalGroup(String memberId, String groupId, String groupName, String assembleTime, String groupEndTime,
+			String signUpEnd, int surfPointId, int groupLimit, String notice) {
+		super();
+		this.memberId = memberId;
+		this.groupId = groupId;
+		this.groupName = groupName;
+		this.assembleTime = assembleTime;
+		this.groupEndTime = groupEndTime;
+		this.signUpEnd = signUpEnd;
+		this.surfPointId = surfPointId;
+		this.groupLimit = groupLimit;
+		this.notice = notice;
+	}
+
+
 
 	public PersonalGroup() {
 	}
