@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
-import web.jome17.main.ScoreDateTask;
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
