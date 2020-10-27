@@ -27,12 +27,12 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ " GROUP_LIMIT, GENDER, NOTICE,"					//9
 						+ " GROUP_STATUS, IMAGE) "							//11
 					+ "values "
-						+ "(?, ?, ?"		//3
-						+ " ?, ?, ?"		//6
-						+ "	?, ?, ?"		//9
+						+ "(?, ?, ?, "		//3
+						+ " ?, ?, ?, "		//6
+						+ "	?, ?, ?, "		//9
 						+ " ?, ?) ;";		//11
 		String sqlAttender = "insert into Tep101_Jome17.ATTENDER "
-						+ "(Group_ID, ATTEND_STATUS,"		//2
+						+ "(Group_ID, ATTEDN_STATUS,"		//2
 						+ " ROLE, MEMBER_ID) "				//4
 					+ "values "
 						+ "(?, ?,"		//2
@@ -92,13 +92,13 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 		if (groupImage == null) {
 			if(bean.getAttenderStatus() != 0) {
 				sql = "update Tep101_Jome17.JOIN_GROUP set "
-						+ " GROUP_NAME, ASSEMBLE_TIME,"			//2		
-						+ " GROUP_END_TIME, SIGN_UP_END,"		//4
-						+ " SURF_POINT_ID, GROUP_LIMIT,"		//6
-						+ " GENDER, NOTICE,"					//8
-						+ " GROUP_STATUS"						//9
+						+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
+						+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
+						+ " SURF_POINT_ID = ?, GROUP_LIMIT = ?,"		//6
+						+ " GENDER = ?, NOTICE = ?,"					//8
+						+ " GROUP_STATUS = ?"							//9
 					+ " where "
-						+ "GROUP_ID = ?";						//10
+						+ "GROUP_ID = ?";								//10
 			}else {
 					sqlGroup = "update Tep101_Jome17.JOIN_GROUP set "
 									+ "GROUP_STATUS = 0"
@@ -111,13 +111,13 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 			}		
 		}else {
 			sql = "update Tep101_Jome17.JOIN_GROUP set "
-					+ " GROUP_NAME, ASSEMBLE_TIME,"			//2		
-					+ " GROUP_END_TIME, SIGN_UP_END,"		//4
-					+ " SURF_POINT_ID, GROUP_LIMIT,"		//6
-					+ " GENDER, NOTICE,"					//8
-					+ " GROUP_STATUS, IMAGE"				//10								
+					+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
+					+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
+					+ " SURF_POINT_ID = ?, GROUP_LIMIT = ?,"		//6
+					+ " GENDER = ?, NOTICE = ?,"					//8
+					+ " GROUP_STATUS = ?, IMAGE = ?"				//10								
 				+ " where "
-					+ "GROUP_ID = ?";						//11					
+					+ "GROUP_ID = ?";								//11					
 		}
 		if(bean.getAttenderStatus() != 0) {
 			try(Connection conn = dataSource.getConnection();
@@ -361,7 +361,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ "left join Tep101_Jome17.MEMBERINFO m "
 						+ "on m.ID = a.MEMBER_ID "
 							+ "left join Tep101_Jome17.SURF_POINT s "
-							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID"
+							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID "
 			+ "where "
 				+ "j.GROUP_ID = ? "
 			+ "order by "
@@ -377,7 +377,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setNickname(rs.getString("NICKNAME"));
 				pGroup.setMemberGender(rs.getInt(3));						//3
 				pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
-				pGroup.setAttenderStatus(rs.getInt("ATTEND_STATUS"));
+				pGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
 				pGroup.setRole(rs.getInt("ROLE"));							//6
 				pGroup.setSurfName(rs.getString("SURF_NAME"));
 				pGroup.setGroupId(rs.getString("GROUP_ID"));
@@ -385,9 +385,9 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setAssembleTime(rs.getString("ASSEMBLE_TIME"));
 				pGroup.setGroupEndTime(rs.getString("GROUP_END_TIME"));
 				pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
-				pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));
 				pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
 //				pGroup.setGender(rs.getInt("GENDER"));
+				pGroup.setNotice(rs.getString("NOTICE"));
 				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
 				pGroups.add(pGroup);
 			}

@@ -230,7 +230,7 @@ public class NotifyDaoImpl implements NotifyDao{
 				AttenderBean bean = new AttenderBean();
 				bean.setGroupName(rs.getString(1));
 				bean.setAttenderNo(rs.getInt(2));
-				bean.setGroupId(rs.getInt(3));
+				bean.setGroupId(rs.getString(3));
 				bean.setAttendStatus(rs.getInt(4));
 				bean.setModifyDate(rs.getString(5));
 				bean.setRole(rs.getInt(6));

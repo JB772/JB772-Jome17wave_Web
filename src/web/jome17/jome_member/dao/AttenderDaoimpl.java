@@ -188,18 +188,34 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		return null;
 	}
 	
+	@Override
+	public PersonalGroup selectRelation(PersonalGroup bean) {
+		String sql = "SELECT * FROM Tep101_Jome17.ATTENDER where ATTENDER_NO = ?; ";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setInt(1, bean.getAttenderId());
+			ResultSet rs = pstmt.executeQuery();
+			PersonalGroup attenderGroup = new PersonalGroup();
+			while(rs.next()) {
+				attenderGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
+				attenderGroup.setGroupId(rs.getString("GROUP_ID"));
+				attenderGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
+				attenderGroup.setRole(rs.getInt("ROLE"));
+				attenderGroup.setMemberId(rs.getString("MEMBER_ID"));
+			}
+			return attenderGroup;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/*
 	 * 暫時無用到方法
 	 */
 	
 	@Override
 	public byte[] getImage(String acconut) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public PersonalGroup selectRelation(PersonalGroup bean) {
 		// TODO Auto-generated method stub
 		return null;
 	}

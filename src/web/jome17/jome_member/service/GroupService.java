@@ -3,9 +3,13 @@ package web.jome17.jome_member.service;
 import java.util.List;
 
 import web.jome17.jome_member.bean.PersonalGroup;
+import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_member.dao.AttenderDaoimpl;
 import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.GroupActivityDaoimpl;
+import web.jome17.jome_member.dao.ScoreDaoimpl;
+import web.jome17.jome_notify.bean.AttenderBean;
+import web.jome17.main.DateUtil;
 
 public class GroupService {
 	private CommonDao<PersonalGroup, String> dao;
@@ -86,5 +90,40 @@ public class GroupService {
 	}
 	public void createScore(String groupId) {
 		
+	}
+	
+	//用attender_NO取 單筆資料
+	public PersonalGroup getDataByAttenderNo(int attenderNO) {
+		PersonalGroup attenderTable = new PersonalGroup();
+		attenderTable.setAttenderId(attenderNO);
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		
+		return attenderDao.selectRelation(attenderTable);
+	}
+	
+	/*
+	 * 傳入該groupId所有的attender名單，建立評分資料，回傳成功建立資料筆數
+	 */
+	public int createScoreTable(List<PersonalGroup> attenders) {
+		CommonDao<ScoreBean, String> ScoreDao = new ScoreDaoimpl();
+		int inserCount = 0 ;
+		for(PersonalGroup beRatedAttender: attenders) {
+			String beRatedId = beRatedAttender.getMemberId();
+			
+			for (PersonalGroup member: attenders) {
+				String memberId = member.getMemberId();
+				if(!beRatedId.equals(memberId)) {
+					ScoreBean newScoreData = new ScoreBean(member.getGroupId(), beRatedId, memberId, -1);
+					inserCount += ScoreDao.insert(newScoreData);
+				}
+			}
+		}
+		return inserCount;
+	}
+	
+	//取得某揪團的所有評分資料
+	public List<ScoreBean> getTheGroupScore(String groupId){
+		CommonDao<ScoreBean, String> ScoreDao = new ScoreDaoimpl();
+		return ScoreDao.selectAll(groupId);
 	}
 }

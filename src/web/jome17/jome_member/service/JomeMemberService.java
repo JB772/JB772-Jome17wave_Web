@@ -34,8 +34,6 @@ public class JomeMemberService {
 	//若回傳的Member物件!=null，再檢查password是否 ==。
 	public MemberBean login(String account, String password) {
 		MemberBean memberLogin = null;
-		System.out.println("account:"+account);
-		System.out.println("password:"+password);
 		memberLogin = dao.selectByKey("ACCOUNT", account);
 		if(memberLogin != null) {
 			if(password.equals(memberLogin.getPassword())) {

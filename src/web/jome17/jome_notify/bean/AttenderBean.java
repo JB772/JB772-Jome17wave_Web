@@ -1,8 +1,8 @@
 package web.jome17.jome_notify.bean;
 
 public class AttenderBean {
-private int attenderNo, groupId, attendStatus, role;
-private String groupName, memberId, modifyDate, memberName;
+private int attenderNo, attendStatus, role;
+private String groupName, memberId, modifyDate, memberName, groupId;
 
 
 public AttenderBean() {
@@ -11,7 +11,7 @@ public AttenderBean() {
 
 
 
-public AttenderBean(int attenderNo, int groupId, int attendStatus, int role, String groupName, String memberId,
+public AttenderBean(int attenderNo, String groupId, int attendStatus, int role, String groupName, String memberId,
 		String modifyDate, String memberName) {
 	super();
 	this.attenderNo = attenderNo;
@@ -34,11 +34,11 @@ public void setAttenderNo(int attenderNo) {
 	this.attenderNo = attenderNo;
 }
 
-public int getGroupId() {
+public String getGroupId() {
 	return groupId;
 }
 
-public void setGroupId(int groupId) {
+public void setGroupId(String groupId) {
 	this.groupId = groupId;
 }
 
