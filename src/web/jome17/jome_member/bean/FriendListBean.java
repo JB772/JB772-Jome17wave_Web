@@ -1,7 +1,5 @@
 package web.jome17.jome_member.bean;
 
-import java.util.Date;
-
 public class FriendListBean {
 	private int uId = 0;
 	private String invite_M_ID = "";

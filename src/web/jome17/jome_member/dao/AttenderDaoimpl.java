@@ -99,13 +99,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ "left join Tep101_Jome17.JOIN_GROUP j "
 							+ "on j.GROUP_ID = a.GROUP_ID "
 					+ "where "
-<<<<<<< HEAD
 						+ " a.MEMBER_ID = ?  and a.GROUP_ID = ?;";	//a.MEMBER_ID  or a.GROUP_ID
-=======
-						+ " a.MEMBER_ID = ? "
-						+ "and "
-						+ "a.GROUP_ID = ?;";	//a.MEMBER_ID  or a.GROUP_ID
->>>>>>> Justin_Branch
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, keyword);
@@ -194,18 +188,34 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		return null;
 	}
 	
+	@Override
+	public PersonalGroup selectRelation(PersonalGroup bean) {
+		String sql = "SELECT * FROM Tep101_Jome17.ATTENDER where ATTENDER_NO = ?; ";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setInt(1, bean.getAttenderId());
+			ResultSet rs = pstmt.executeQuery();
+			PersonalGroup attenderGroup = new PersonalGroup();
+			while(rs.next()) {
+				attenderGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
+				attenderGroup.setGroupId(rs.getString("GROUP_ID"));
+				attenderGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
+				attenderGroup.setRole(rs.getInt("ROLE"));
+				attenderGroup.setMemberId(rs.getString("MEMBER_ID"));
+			}
+			return attenderGroup;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/*
 	 * 暫時無用到方法
 	 */
 	
 	@Override
 	public byte[] getImage(String acconut) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public PersonalGroup selectRelation(PersonalGroup bean) {
 		// TODO Auto-generated method stub
 		return null;
 	}

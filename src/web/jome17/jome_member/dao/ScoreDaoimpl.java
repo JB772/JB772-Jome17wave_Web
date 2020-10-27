@@ -37,7 +37,7 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 			pstmt.setObject(2, bean.getBeRatedId());
 			pstmt.setObject(3, bean.getMemberId());
 			pstmt.setObject(4, bean.getRatingScore());
-//			System.out.println("# insert sql: " + pstmt.toString());
+			System.out.println("# insert sql: " + pstmt.toString());
 			return pstmt.executeUpdate();	
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 					+ "from "
 						+ "Tep101_Jome17.SCORE "
 					+ "where "
-						+ "BE_RATED_ID = ? "
+						+ "BE_RATED_ID = ? and RATING_SCORE in(1,2,3,4,5) "
 					+ "group by "
 						+ "RATING_SCORE;" ;
 		try(Connection conn = dataSource.getConnection();
@@ -106,7 +106,14 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 	//member進行評分
 	@Override
 	public int update(ScoreBean bean) {
-		// TODO Auto-generated method stub
+		String sql = "";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	
