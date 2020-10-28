@@ -100,10 +100,6 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 							+ "on j.GROUP_ID = a.GROUP_ID "
 					+ "where "
 						+ " a.MEMBER_ID = ?  and a.GROUP_ID = ?;";	//a.MEMBER_ID  or a.GROUP_ID
-<<<<<<< HEAD
-
-=======
->>>>>>> 91e2f094c3549c0a085e8e7a5344391c59bfb232
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, keyword);
