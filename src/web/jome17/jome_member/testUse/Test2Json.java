@@ -1,5 +1,7 @@
 package web.jome17.jome_member.testUse;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,24 @@ public class Test2Json {
 		jsonObject.addProperty("inGroup", new Gson().toJson(testGroup));
 		System.out.println(jsonObject.toString());
 		
+		Calendar calendar2 = Calendar.getInstance();
+		
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+		
+		String toDateStr = sdfDate.format(nowDate);
+		String toTimeString = sdfTime.format(nowDate);
+		System.out.println(toDateStr +" "+toTimeString);
+		
+		SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		
+		try {
+			Date toDate = sdfDateTime.parse(toDateStr+" "+toTimeString);
+			String toDateString = sdfDateTime.format(toDate);
+			System.out.println(toDateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
