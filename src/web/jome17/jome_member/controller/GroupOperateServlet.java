@@ -97,36 +97,6 @@ public class GroupOperateServlet extends HttpServlet {
 					}
 					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
 				}
-//				if(pGroups.size() < mGroups.size() || pGroups == null) {
-//					getAllResult = -1;
-//				}else {
-//					for(PersonalGroup pGroup : pGroups) {
-//						System.out.println(pGroup.getMemberId());
-//						for(PersonalGroup mGroup : mGroups) {
-//							if(pGroup.getGroupId().equals(mGroup.getGroupId())) {
-//								int myStatus = mGroup.getAttenderStatus();
-//								switch(myStatus) {
-//									case 0:
-//										pGroup.setAttenderStatus(0);
-//										break;
-//									case 1:
-//										pGroup.setAttenderStatus(1);
-//										break;
-//									case 2:
-//										pGroup.setAttenderStatus(2);
-//										break;
-//									case 3:
-//										pGroup.setAttenderStatus(3);
-//										break;
-//								}
-//							}else {
-//								pGroup.setAttenderStatus(-1);
-//							}
-//						}
-//					}
-//					jsonOut.addProperty("allGroup", GSON.toJson(pGroups));
-//					getAllResult = 1;
-//				}
 				jsonOut.addProperty("getAllResult", getAllResult);
 				break;
 
@@ -160,12 +130,19 @@ public class GroupOperateServlet extends HttpServlet {
 			// 建立揪團
 			case "creatAGroup":
 				int creatResult = -1;
+				//處理Base64 轉 byte[]
+				byte[] imageCreate = null;
+				String imageCreateStr = jsonIn.get("imageBase64").getAsString();
+				imageCreate = Base64.getMimeDecoder().decode(imageCreateStr);
+				
+				//處理 PersonalGroup資料
 				PersonalGroup inPGroup = GSON.fromJson(jsonIn.get("inGroup").getAsString(), PersonalGroup.class);
+				inPGroup.setgImage(imageCreate);
 				String createGroupId = inPGroup.getGroupId();	//client端已包裝完成，Server新增就好
 				creatResult = gService.creatGroup(inPGroup);
 
 				/*
-				 * 集合時間到：groupStatus
+				 * 集合時間到：groupStatus = 2
 				 */
 				TimerTask assembleTime = new TimerTask() {
 					@Override
