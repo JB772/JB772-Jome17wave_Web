@@ -109,14 +109,15 @@ public class NotifyDaoImpl implements NotifyDao{
 		int notificationId = -1;
 		String sql = "select notification_ID "
 	 			+ "from Tep101_Jome17.NOTIFY "
-	 			+ "where type = ? and NOTIFICATION_BODY = ? and BODY_STATUS = 3 and MEMBER_ID = ?;";
+	 			+ "where type = ? and NOTIFICATION_BODY = ? and BODY_STATUS = ? and MEMBER_ID = ?;";
 	try (
 		Connection connection = dataSource.getConnection();
 		PreparedStatement pstmt = connection.prepareStatement(sql);
 	){
 		pstmt.setInt(1, bean.getType());
 		pstmt.setInt(2, bean.getNotificationBody());
-		pstmt.setString(3, bean.getMemberId());
+		pstmt.setInt(3, bean.getBodyStatus());
+		pstmt.setString(4, bean.getMemberId());
 		ResultSet rs = pstmt.executeQuery();
 		if (rs.next()) {
 			notificationId = rs.getInt(1);

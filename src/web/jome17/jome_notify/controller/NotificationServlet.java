@@ -17,6 +17,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.FriendListBean;
+import web.jome17.jome_member.bean.PersonalGroup;
+import web.jome17.jome_member.service.GroupService;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
 import web.jome17.jome_notify.dao.NotifyDaoImpl;
@@ -76,15 +78,14 @@ public class NotificationServlet extends HttpServlet {
 				*/	
 				case "getGroupBundle":
 					String attenderNo = jsonIn.get("attenderNo").getAsString();
-					String groupId = new NotifyService().getGroupId(attenderNo);
-	//System.out.println("otherMemberId: " + otherMemberId);				
-//					if (otherMemberId != null && !otherMemberId.isEmpty()) {
-//						jsonOut.addProperty("getKey", otherMemberId);
-//					}
-//					outStr = jsonOut.toString();
-//					System.out.println(outStr);
-//					resp.setContentType(CONTENT_TYPE);
-//					writeJson(resp, outStr);
+					PersonalGroup bean = new GroupService().getDataByAttenderNo(Integer.valueOf(attenderNo));				
+					if (bean != null) {
+						jsonOut.addProperty("getKey", new Gson().toJson(bean));
+					}
+					outStr = jsonOut.toString();
+					System.out.println(outStr);
+					resp.setContentType(CONTENT_TYPE);
+					writeJson(resp, outStr);
 					break;
 			
 			/*

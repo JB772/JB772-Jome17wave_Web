@@ -102,7 +102,9 @@ public class FindNewFriendServlet extends HttpServlet {
 					resultCode = new FriendListDaoimpl().insert(checkList);
 //System.out.println("relation == null 且 resultCode: "+resultCode);
 				}else {
+					checkList.setuId(relation.getuId());
 					resultCode = new FriendListDaoimpl().update(checkList);
+//System.out.println("relation != null 且 resultCode: "+resultCode);
 				}
 				
 				switch (resultCode) {
@@ -137,6 +139,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				 *  							包裝Json:{結果代碼, FriendList物件}
 				 */
 			case "clickAgree":
+//				
 //				int resultCode = 0;
 				FriendListBean agreeBean = new Gson().fromJson(jsonIn.get("agreeBean").getAsString(), FriendListBean.class);
 //				FriendListBean agreeRelation = new FriendListDaoimpl().selectRelation(agreeBean);
@@ -147,21 +150,23 @@ public class FindNewFriendServlet extends HttpServlet {
 				acceptId = agreeBean.getAccept_M_ID();
 				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
 				
-				//新增通知訊息 給對方
-				Notify notify = new Notify();
-				notify.setType(2);
-				notify.setNotificationBody(agreeBean.getuId());
-				notify.setBodyStatus(1);
-				notify.setMemberId(agreeBean.getInvite_M_ID());
-				int notifyRC = new NotifyDaoImpl().insert(notify);
-				
-				//新增通知訊息 給自己
-				notify.setMemberId(agreeBean.getAccept_M_ID());
-				notifyRC = new NotifyDaoImpl().insert(notify);
-				
-				int deleteId = new NotifyDaoImpl().findNotificationId(notify);
-//System.out.println("deleteId: " + deleteId);
-				notifyRC = new NotifyDaoImpl().delete(deleteId);
+				//新增通知訊息
+				int notifyRC = new NotifyService().insertFriendNoti(agreeBean);
+//				//新增通知訊息 給對方
+//				Notify notify = new Notify();
+//				notify.setType(2);
+//				notify.setNotificationBody(agreeBean.getuId());
+//				notify.setBodyStatus(1);
+//				notify.setMemberId(agreeBean.getInvite_M_ID());
+//				int notifyRC = new NotifyDaoImpl().insert(notify);
+//				
+//				//新增通知訊息 給自己
+//				notify.setMemberId(agreeBean.getAccept_M_ID());
+//				notifyRC = new NotifyDaoImpl().insert(notify);
+//				
+//				int deleteId = new NotifyDaoImpl().findNotificationId(notify);
+////System.out.println("deleteId: " + deleteId);
+//				notifyRC = new NotifyDaoImpl().delete(deleteId);
 				if (notifyRC == 1) {
 				System.out.println("Notification Delete Successful");
 				}else {
@@ -201,6 +206,7 @@ public class FindNewFriendServlet extends HttpServlet {
 			jsonOut.addProperty("afterRelation", new Gson().toJson(afterRelation));
 		}
 		outStr = jsonOut.toString();
+System.out.println("outStr: " + outStr);
 		resp.setContentType(CONTENT_TYPE);
 		writeJson(resp, outStr);
 	}
