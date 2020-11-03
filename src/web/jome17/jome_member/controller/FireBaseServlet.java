@@ -29,6 +29,7 @@ import com.google.gson.JsonObject;
 @WebServlet("/jome_member/FcmBasicServlet")
 public class FireBaseServlet extends HttpServlet {
 
+
 	private static final long serialVersionUID = 1L;
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
 	private String registrationToken = "";
