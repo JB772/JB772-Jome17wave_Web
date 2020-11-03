@@ -51,6 +51,12 @@ public class GroupService {
 		}
 	}
 	
+	//審核(更新團員狀態)
+	public int auditAttender(PersonalGroup auditGroup) {
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		return attenderDao.update(auditGroup);
+	}
+	
 	//搜尋所有的揪團資料(含主揪人的mId及nickname)
 	public List<PersonalGroup> getAllGroups(){
 		return dao.selectAllNoKey();

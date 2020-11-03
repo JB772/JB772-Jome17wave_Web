@@ -3,12 +3,7 @@ package web.jome17.jome_notify.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.cj.log.Log;
-
-import sun.invoke.empty.Empty;
 import web.jome17.jome_member.bean.FriendListBean;
-import web.jome17.jome_member.bean.ScoreBean;
-import web.jome17.jome_member.dao.AttenderDaoimpl;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
