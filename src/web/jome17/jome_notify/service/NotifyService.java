@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import web.jome17.jome_member.bean.FriendListBean;
-<<<<<<< HEAD
+
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_member.dao.AttenderDaoimpl;
-=======
->>>>>>> 3649efbcff8c2b760e262a6bc8bb4782844d9533
+
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
