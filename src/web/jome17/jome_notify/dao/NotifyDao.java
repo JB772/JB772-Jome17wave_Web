@@ -11,6 +11,7 @@ import web.jome17.jome_notify.bean.Notify;
 public interface NotifyDao {
 	//新增
 	int insert(Notify bean);
+	int insertForFriendUpdate(FriendListBean bean);
 	//刪除
 	int delete(int notificationId);
 	//找到要刪除的那筆資料

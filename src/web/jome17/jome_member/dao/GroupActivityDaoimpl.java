@@ -463,5 +463,10 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public int updateAndDeleteNote(PersonalGroup bean) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

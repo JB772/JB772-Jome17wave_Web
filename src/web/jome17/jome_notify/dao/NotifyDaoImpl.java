@@ -3,6 +3,7 @@ package web.jome17.jome_notify.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,45 @@ public class NotifyDaoImpl implements NotifyDao{
 		return count;
 	}
 	
+	//交易控制於 回覆同意他人交友邀請
+	@Override
+	public int insertForFriendUpdate(FriendListBean bean) {
+		String sqlInsert1 = "Insert into Tep101_Jome17.NOTIFY "
+							+ "(TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID)"
+							+ " values(2, ?, 1, ?);";
+		String sqlInsert2 = "Insert into Tep101_Jome17.NOTIFY "
+							+ "(TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID)"
+							+ " values(2, ?, 1, ?);";;
+		int insertResult = -1;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlInsert1);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlInsert2);) {
+			conn.setAutoCommit(false);
+			try {
+				pstmt1.setInt(1, bean.getuId());
+				pstmt1.setString(2, bean.getInvite_M_ID());
+				int insertResult1 = pstmt1.executeUpdate();
+				if(insertResult1 < 1) {
+					throw new SQLException("Table notify insert1 is error!");
+				}
+				pstmt2.setInt(1, bean.getuId());
+				pstmt2.setString(2, bean.getAccept_M_ID());
+				int insertResult2 = pstmt2.executeUpdate();
+				if(insertResult2 < 1) {
+					throw new SQLException("Table notify insert2 is error!");
+				}
+				conn.commit();
+				insertResult = 1;
+			} catch (SQLException e) {
+				conn.rollback();
+				insertResult = -1;
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return insertResult;
+	}
 	
 	/*
 	 * 查詢(個人的)通知列表

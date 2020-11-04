@@ -152,4 +152,10 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 
 		return null;
 	}
+
+	@Override
+	public int updateAndDeleteNote(ScoreBean bean) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

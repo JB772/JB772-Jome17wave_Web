@@ -76,6 +76,47 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return -1;
 	}
 	
+	@Override
+	public int updateAndDeleteNote(FriendListBean bean) {
+		String sqlUpdateFriend = "update Tep101_Jome17.FRIEND_LIST "
+								+ "SET INVITE_M_ID = ?, ACCEPT_M_ID = ?, FRIEND_STATUS = ? "
+								+ "WHERE UID = ? ;";
+		String sqlDeleteNote = "delete from Tep101_Jome17.NOTIFY "
+								+ "where TYPE = 2 "
+								+ "and NOTIFICATION_BODY = ? "
+								+ "and BODY_STATUS = 3;";
+		int updateFriendResult = 0;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlUpdateFriend);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlDeleteNote);) {
+			conn.setAutoCommit(false);
+			try {
+				pstmt1.setString(1, bean.getInvite_M_ID());
+				pstmt1.setString(2, bean.getAccept_M_ID());
+				pstmt1.setInt(3, bean.getFriend_Status());
+				pstmt1.setInt(4, bean.getuId());
+				int updateResult = pstmt1.executeUpdate();
+				if(updateResult < 1) {
+					throw new SQLException("update FriendeList is error!");
+				}
+				pstmt2.setInt(1, bean.getuId());
+				int deleteResult = pstmt2.executeUpdate();
+				if(deleteResult < 1) {
+					throw new SQLException("delete notify is error!");
+				}
+				conn.commit();
+				updateFriendResult = 1;
+			}catch (SQLException e) {
+				conn.rollback();
+				updateFriendResult = -1;
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return updateFriendResult;
+	}
+	
 	//查詢(查個人好友列表含名字)
 	@Override
 	public FriendListBean selectByKey(String keyword, String memberId) {

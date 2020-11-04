@@ -16,6 +16,7 @@ public interface CommonDao<B, K> {
 	List<B>selectAllNoKey();
 	//修改
 	int update(B bean);
+	int updateAndDeleteNote(B bean);
 	//刪除
 	int deletaByKey(K key, K key1);
 	

@@ -133,4 +133,11 @@ public class FriendInvitationDaoImpl implements CommonDao<FriendListBean, String
 		return null;
 	}
 
+
+	@Override
+	public int updateAndDeleteNote(FriendListBean bean) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
