@@ -144,7 +144,7 @@ public class NotifyService {
 	 */
 	public int insertFriendNoti(FriendListBean agreeBean) {
 
-		// 新增通知訊息 給對方
+//		// 新增通知訊息 給對方
 		Notify notify = new Notify();
 		notify.setType(2);
 		notify.setNotificationBody(agreeBean.getuId());
@@ -158,7 +158,7 @@ public class NotifyService {
 		
 		notify.setBodyStatus(3);
 		int deleteId = new NotifyDaoImpl().findNotificationId(notify);
- System.out.println("deleteId: " + deleteId);
+// System.out.println("deleteId: " + deleteId);
 		notifyRC = new NotifyDaoImpl().delete(deleteId);
 
 		return notifyRC;
@@ -213,5 +213,29 @@ public class NotifyService {
 	
 		return notifyRC;
 	}
+	
+	
+//	/*
+//	 * 新增通知訊息: 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
+//	 * 
+//	 */
+//	public int insertNotiForFriendUpdated(FriendListBean agreeBean) {
+//		int resultCode = new NotifyDaoImpl().insertForFriendUpdate(agreeBean);
+//		if (resultCode == 1) {
+//			resultCode = new NotifyDaoImpl().updateForFriendUpdate(agreeBean);
+//		}else {
+//			resultCode = -1;
+//			return resultCode;
+//		}
+//		
+//		if (resultCode == 1 ) {
+//			return resultCode;
+//		}else {
+//			int deleteRC = new NotifyDaoImpl().deleteForFriendUpdate(agreeBean);
+//			return resultCode;
+//		}
+//		
+//		return -1;
+//	}
 
 }

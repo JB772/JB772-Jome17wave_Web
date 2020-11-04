@@ -96,8 +96,10 @@ public class FriendInvitationServlet extends HttpServlet {
 				}else {
 				System.out.println("Notification Delete Failed");
 				}
+			
 				
 				jsonOut.addProperty("resultCode", resultCode);
+				
 				outStr = jsonOut.toString();
 				resp.setContentType(CONTENT_TYPE);
 				writeJson(resp, outStr);
