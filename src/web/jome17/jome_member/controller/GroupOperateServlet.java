@@ -31,12 +31,9 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
-<<<<<<< HEAD
 import web.jome17.jome_notify.service.NotifyService;
-=======
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.jome_member.service.SendFcmService;
->>>>>>> Justin
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
