@@ -14,6 +14,7 @@ public interface NotifyDao {
 	int insertForFriendUpdate(FriendListBean bean);
 	//刪除
 	int delete(int notificationId);
+	int delete2(FriendListBean bean);
 	//找到要刪除的那筆資料
 	int findNotificationId(Notify bean);
 	
