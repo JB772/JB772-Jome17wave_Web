@@ -2,12 +2,16 @@ package web.jome17.jome_member.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -24,30 +31,37 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
+<<<<<<< HEAD
 import web.jome17.jome_notify.service.NotifyService;
+=======
+import web.jome17.jome_member.service.JomeMemberService;
+import web.jome17.jome_member.service.SendFcmService;
+>>>>>>> Justin
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
 
 @WebServlet("/jome_member/GroupOperateServlet")
 public class GroupOperateServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
+	private static final Set<String> registrationTokens = Collections.synchronizedSet(new HashSet<String>());
+	private String registrationToken = "";
 	private JsonObject jsonIn;
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
+//	
+//	@Override
+//	public void init() throws ServletException {
+//		
+//		try(InputStream inStream = getServletContext().getResourceAsStream("FirebaseServerKey.json");) {
+//			FirebaseOptions options = new FirebaseOptions.Builder()
+//														 .setCredentials(GoogleCredentials.fromStream(inStream))
+//														 .build();
+//			FirebaseApp.initializeApp(options);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -232,6 +246,7 @@ public class GroupOperateServlet extends HttpServlet {
 				jsonOut.addProperty("dropResult", dropResult);
 				break;
 			
+			// 拿自己的揪團記錄
 			case "getSelfRecord":
 				String memberId = jsonIn.get("memberId").getAsString();
 				List<PersonalGroup> myGroups = new ArrayList<PersonalGroup>();
@@ -243,6 +258,20 @@ public class GroupOperateServlet extends HttpServlet {
 				}
 				jsonOut.addProperty("myGroupsResult", myGroupsResult);
 				break;
+			
+//			// 測試Fcm發送，一支app只能有一支servlet連firebase
+//			case "testFcm":
+//				String mId = jsonIn.get("memberId").getAsString();
+//System.out.println("mId244: " + mId);
+//				registrationToken = new JomeMemberService().selectTokenById(mId);
+//System.out.println("registrationToken246: " + registrationToken);
+//				synchronized (this) {
+//						registrationTokens.add(registrationToken);
+//				}
+//				String messageId = "";
+//				messageId = new SendFcmService().sendSingleFcm(registrationToken, "teseTitle", "testBody");
+//				System.out.println("testOtherServletFcm: " + messageId);
+//				break;
 				
 			default:
 				break;

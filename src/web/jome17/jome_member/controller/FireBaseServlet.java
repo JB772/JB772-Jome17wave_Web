@@ -26,6 +26,9 @@ import com.google.firebase.messaging.Notification;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import web.jome17.jome_member.service.JomeMemberService;
+import web.jome17.jome_member.service.SendFcmService;
+
 @WebServlet("/jome_member/FcmBasicServlet")
 public class FireBaseServlet extends HttpServlet {
 
@@ -38,8 +41,9 @@ public class FireBaseServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		try (InputStream input = getServletContext().getResourceAsStream("FirebaseServerKey.json");) {
-			FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(input))
-					.build();
+			FirebaseOptions options = new FirebaseOptions.Builder()
+														 .setCredentials(GoogleCredentials.fromStream(input))
+														 .build();
 			FirebaseApp.initializeApp(options);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,9 +79,12 @@ public class FireBaseServlet extends HttpServlet {
 			break;
 			
 		case "singleFcm":
+			String mId = jsonObject.get("memberId").getAsString();
+			registrationToken = new JomeMemberService().selectTokenById(mId);
 			sendSingleFcm(jsonObject, registrationToken);
 			writeText(resp, "Single FCM is sent!");
 			break;
+			
 		case "groupFcm":
 			sendGroupFcm(jsonObject, registrationTokens);
 			writeText(resp, "Group FCMs are sent!");
@@ -137,8 +144,6 @@ public class FireBaseServlet extends HttpServlet {
 		} catch (FirebaseMessagingException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 	private void writeText(HttpServletResponse resp, String outStr) {
@@ -149,7 +154,5 @@ public class FireBaseServlet extends HttpServlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 }

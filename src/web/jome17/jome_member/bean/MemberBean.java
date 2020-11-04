@@ -2,16 +2,16 @@ package web.jome17.jome_member.bean;
 
 
 public class MemberBean {
-	private String member_id = "null";
+	private String member_id = "noMemberId";
 	private int account_status = -1;
-	private String phone_number = "null";
-	private String nickname = "null";
-	private String account = "null";
-	private String password = "null";
+	private String phone_number = "noPhoneNumber";
+	private String nickname = "noNickname";
+	private String account = "noAccount";
+	private String password = "noPassword";
 	private int gender = -1;
 	private double latitude = -1.0;
 	private double longitude = -1.0;
-	private String token_id = "null";
+	private String token_id = "noTokenId";
 	private byte[] image = null;
     private String friendCount = "0";
     private String scoreAverage = "0";

@@ -16,9 +16,10 @@ public class JomeMemberService {
 	public JomeMemberService() {
 		dao = new MemberDaoimpl();
 	}
-	
-	
-	//註冊，拿到Member物件，檢查account是否重複，存在return，不存在就insert
+	/*
+	 * 註冊
+	 * 拿到Member物件，檢查account是否重複，存在return，不存在就insert
+	 */
 	public int register(MemberBean member) {
 		List<MemberBean> allMembers = dao.selectAllNoKey();
 		for(MemberBean aMember: allMembers){
@@ -29,9 +30,12 @@ public class JomeMemberService {
 		member.setMember_id(new DateUtil().getDateTimeId());
 		return dao.insert(member);
 	}
-	//登入
-	//拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
-	//若回傳的Member物件!=null，再檢查password是否 ==。
+	
+	/**
+	 * 登入
+	 * 拿到acconut及password，用account去selecByKey，若回傳的Member物件==null，return ；
+	 * 若回傳的Member物件!=null，再檢查password是否 ==。
+	 */
 	public MemberBean login(String account, String password) {
 		MemberBean memberLogin = null;
 		memberLogin = dao.selectByKey("ACCOUNT", account);
@@ -42,6 +46,7 @@ public class JomeMemberService {
 		}
 		return null;
 	}
+	
 	//修改會員資料
 	public int updateMember(MemberBean member, byte[] image) {
 		member.setImage(image);
@@ -60,6 +65,17 @@ public class JomeMemberService {
 		MemberBean idMember = null;
 		idMember = dao.selectByKey("ID", memberId);
 		return idMember;
+	}
+	
+	//memberID查詢registrationToken
+	public String selectTokenById(String memberId) {
+		 MemberBean idMember = new MemberBean();
+		idMember = dao.selectByKey("ID", memberId);
+		 String tokenId = idMember.getToken_id();
+		 if(tokenId == null || tokenId.equals("noTokenId")) {
+			 return "noTokenId";
+		 }
+		return tokenId;
 	}
 	
 	//拿圖片
