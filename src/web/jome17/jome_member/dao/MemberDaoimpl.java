@@ -90,7 +90,8 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhone_number(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
-				member.setLongitude(rs.getDouble("LONTITUDE"));				
+				member.setLongitude(rs.getDouble("LONTITUDE"));	
+				member.setToken_id(rs.getString("TOKEN_ID"));
 			}else {
 				System.out.println("select: null");
 				return null;
