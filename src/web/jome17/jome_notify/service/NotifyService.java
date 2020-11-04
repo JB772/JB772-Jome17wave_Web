@@ -158,7 +158,7 @@ public class NotifyService {
 		
 		notify.setBodyStatus(3);
 		int deleteId = new NotifyDaoImpl().findNotificationId(notify);
-// System.out.println("deleteId: " + deleteId);
+ System.out.println("deleteId: " + deleteId);
 		notifyRC = new NotifyDaoImpl().delete(deleteId);
 
 		return notifyRC;

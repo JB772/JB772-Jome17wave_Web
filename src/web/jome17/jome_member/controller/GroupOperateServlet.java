@@ -137,6 +137,7 @@ public class GroupOperateServlet extends HttpServlet {
 				byte[] imageCreate = null;
 				String imageCreateStr = jsonIn.get("imageBase64").getAsString();
 				imageCreate = Base64.getMimeDecoder().decode(imageCreateStr);
+			
 				
 				//處理 PersonalGroup資料
 				PersonalGroup inPGroup = GSON.fromJson(jsonIn.get("inGroup").getAsString(), PersonalGroup.class);
