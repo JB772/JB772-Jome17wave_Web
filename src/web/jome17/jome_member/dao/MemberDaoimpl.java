@@ -55,24 +55,30 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 									+ "Tep101_Jome17.SCORE "
 								+ "where "
 									+ "BE_RATED_ID = ? and RATING_SCORE in (1,2,3,4,5);";
-		String sqlAddGroupCount = "select count(*) "
-								+ "from Tep101_Jome17.ATTENDER "
-								+ "where "
-									+ "MEMBER_ID = ? "
-									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
 		String sqlGroupCount = "select count(*) "
-								+ "from Tep101_Jome17.ATTENDER "
+								+ "from Tep101_Jome17.ATTENDER a "
+									+ "left join Tep101_Jome17.JOIN_GROUP j "
+										+ "on a.GROUP_ID = j.GROUP_ID "
 								+ "where "
-									+ "MEMBER_ID = ? "
-									+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
+									+ "a.MEMBER_ID = ? and a.ROLE = 1 "
+									+ "and a.ATTEDN_STATUS = 1 "
+									+ "and j.GROUP_STATUS in (1,2,3);" ;
+		String sqlAddGroupCount = "select count(*) "
+									+ "from Tep101_Jome17.ATTENDER a "
+									+ "left join Tep101_Jome17.JOIN_GROUP j "
+									+ "on a.GROUP_ID = j.GROUP_ID "
+								+ "where "
+									+ "MEMBER_ID = ? and ROLE = 2 "
+									+ "and ATTEDN_STATUS = 1 "
+									+ "and j.GROUP_STATUS in (1,2,3);" ;
 
 		MemberBean member = new MemberBean();
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlFriendConut);
 			PreparedStatement pstmt2 = conn.prepareStatement(sqlAverageScore);
-			PreparedStatement pstmt3 = conn.prepareStatement(sqlAddGroupCount);
-			PreparedStatement pstmt4 = conn.prepareStatement(sqlGroupCount);) {
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlGroupCount);
+			PreparedStatement pstmt4 = conn.prepareStatement(sqlAddGroupCount);) {
 			//取member基本資料
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
@@ -140,9 +146,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					+ "GENDER = ?, "
 					+ "PHONE_NUMBER = ?, "
 					+ "LATITUDE = ?, "		//6
-					+ "LONTITUDE = ? "
+					+ "LONTITUDE = ?, "
+					+ "TOKEN_ID = ? "		//8
 				+ "where "
-					+ "ID = ?";				//8
+					+ "ID = ?";				//9
 		}else {
 			sql = "update Tep101_Jome17.MEMBERINFO set "
 					+ "ACCOUNT = ?, "
@@ -152,9 +159,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 					+ "PHONE_NUMBER = ?, "
 					+ "LATITUDE = ?, "		//6
 					+ "LONTITUDE = ?, "
+					+ "TOKEN_ID = ?, "		//8
 					+ "IMAGE = ? "
 				+ "where "
-					+ "ID = ?";				//9
+					+ "ID = ?";				//10
 		}
 	try(Connection conn = dataSource.getConnection();
 		PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -165,11 +173,12 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 		pstmt.setString(5, bean.getPhone_number());
 		pstmt.setDouble(6, bean.getLatitude());
 		pstmt.setDouble(7, bean.getLongitude());
+		pstmt.setString(8, bean.getToken_id());
 		if(image == null) {
-			pstmt.setString(8, bean.getMember_id());
-		}else {
-			pstmt.setBytes(8, image);
 			pstmt.setString(9, bean.getMember_id());
+		}else {
+			pstmt.setBytes(9, image);
+			pstmt.setString(10, bean.getMember_id());
 		}
 		
 		return pstmt.executeUpdate();

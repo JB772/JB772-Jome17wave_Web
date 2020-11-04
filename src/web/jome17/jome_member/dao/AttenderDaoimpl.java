@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import web.jome17.jome_member.bean.PersonalGroup;
+import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.main.ServiceLocator;
 
 public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
@@ -210,6 +211,34 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		}
 		return null;
 	}
+	
+	//用Attender的groupId 查詢 團長
+	public AttenderBean selectByGroupId(String key) {
+			String sql = "select "
+							+ "*"
+						+ "from "
+							+ "Tep101_Jome17.ATTENDER  "
+						+ "where "
+							+ " ROLE = 1 and GROUP_ID = ?;";	
+
+			try(Connection conn = dataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql);) {
+				pstmt.setString(1, key);
+				ResultSet rs = pstmt.executeQuery();
+				AttenderBean attenderCaptain = new AttenderBean();
+				if(rs.next()) {
+					attenderCaptain.setAttenderNo(rs.getInt("ATTENDER_NO"));
+					attenderCaptain.setGroupId(rs.getString("GROUP_ID"));
+					attenderCaptain.setAttendStatus(rs.getInt("ATTEDN_STATUS"));
+					attenderCaptain.setRole(rs.getInt("ROLE"));
+					attenderCaptain.setMemberId(rs.getString("MEMBER_ID"));
+				}
+				return attenderCaptain;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	
 	/*
 	 * 暫時無用到方法

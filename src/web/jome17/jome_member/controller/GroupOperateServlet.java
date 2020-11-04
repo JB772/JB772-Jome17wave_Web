@@ -20,9 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
+import web.jome17.jome_notify.service.NotifyService;
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
@@ -58,6 +60,7 @@ public class GroupOperateServlet extends HttpServlet {
 		String outStr = "";
 		JsonObject jsonOut = new JsonObject();
 		GroupService gService = new GroupService();
+		int notiInsertResult;
 
 		if (action.equals("getImage")) {
 			//拿圖
@@ -189,6 +192,13 @@ public class GroupOperateServlet extends HttpServlet {
 				int jointResult = -1;
 				PersonalGroup joinGroup = GSON.fromJson(jsonIn.get("groupBean").getAsString(), PersonalGroup.class);
 				jointResult = gService.joinGroup(joinGroup);
+				//新增通知訊息
+				notiInsertResult = new NotifyService().insertGroupNoti(joinGroup);
+				if (notiInsertResult == 1) {
+					System.out.println("Group Notification Inserted Successfully");
+				}else {
+					System.out.println("Group Notification Insert Failed");
+				}
 				jsonOut.addProperty("jointResult", jointResult);
 				break;
 				
@@ -211,6 +221,13 @@ public class GroupOperateServlet extends HttpServlet {
 				PersonalGroup groupDrop = null;
 				groupDrop = GSON.fromJson(jsonIn.get("gruopUp").getAsString(), PersonalGroup.class);
 				int dropResult = gService.dropGroup(groupDrop);
+				//新增通知訊息
+				notiInsertResult = new NotifyService().insertGroupNoti(groupDrop);
+				if (notiInsertResult == 1) {
+					System.out.println("Group Notification Inserted Successfully");
+				}else {
+					System.out.println("Group Notification Insert Failed");
+				}
 				jsonOut.addProperty("dropResult", dropResult);
 				break;
 			

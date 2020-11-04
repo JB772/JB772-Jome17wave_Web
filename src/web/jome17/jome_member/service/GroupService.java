@@ -51,6 +51,12 @@ public class GroupService {
 		}
 	}
 	
+	//審核(更新團員狀態)
+	public int auditAttender(PersonalGroup auditGroup) {
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		return attenderDao.update(auditGroup);
+	}
+	
 	//搜尋所有的揪團資料(含主揪人的mId及nickname)
 	public List<PersonalGroup> getAllGroups(){
 		return dao.selectAllNoKey();
@@ -97,8 +103,15 @@ public class GroupService {
 		PersonalGroup attenderTable = new PersonalGroup();
 		attenderTable.setAttenderId(attenderNO);
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-		
-		return attenderDao.selectRelation(attenderTable);
+//		PersonalGroup myMyGroup = attenderDao.selectRelation(attenderTable);
+		List<PersonalGroup> getAllGroups = dao.selectAllNoKey();
+		for(PersonalGroup group: getAllGroups) {
+			if (group.getGroupId().equals(attenderDao.selectRelation(attenderTable).getGroupId())) {
+				return group;
+			}
+		}
+//		return attenderDao.selectRelation(attenderTable);
+		return null;
 	}
 	
 	/*
