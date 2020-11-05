@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+
+import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.main.ServiceLocator;
@@ -261,5 +263,6 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 
 }

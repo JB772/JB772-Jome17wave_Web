@@ -205,12 +205,12 @@ public class GroupOperateServlet extends HttpServlet {
 				PersonalGroup joinGroup = GSON.fromJson(jsonIn.get("groupBean").getAsString(), PersonalGroup.class);
 				jointResult = gService.joinGroup(joinGroup);
 				//新增通知訊息
-				notiInsertResult = new NotifyService().insertGroupNoti(joinGroup);
-				if (notiInsertResult == 1) {
-					System.out.println("Group Notification Inserted Successfully");
-				}else {
-					System.out.println("Group Notification Insert Failed");
-				}
+//				notiInsertResult = new NotifyService().insertGroupNoti(joinGroup);
+//				if (notiInsertResult == 1) {
+//					System.out.println("Group Notification Inserted Successfully");
+//				}else {
+//					System.out.println("Group Notification Insert Failed");
+//				}
 				jsonOut.addProperty("jointResult", jointResult);
 				break;
 				
@@ -234,12 +234,12 @@ public class GroupOperateServlet extends HttpServlet {
 				groupDrop = GSON.fromJson(jsonIn.get("gruopUp").getAsString(), PersonalGroup.class);
 				int dropResult = gService.dropGroup(groupDrop);
 				//新增通知訊息
-				notiInsertResult = new NotifyService().insertGroupNoti(groupDrop);
-				if (notiInsertResult == 1) {
-					System.out.println("Group Notification Inserted Successfully");
-				}else {
-					System.out.println("Group Notification Insert Failed");
-				}
+//				notiInsertResult = new NotifyService().insertGroupNoti(groupDrop);
+//				if (notiInsertResult == 1) {
+//					System.out.println("Group Notification Inserted Successfully");
+//				}else {
+//					System.out.println("Group Notification Insert Failed");
+//				}
 				jsonOut.addProperty("dropResult", dropResult);
 				break;
 			
