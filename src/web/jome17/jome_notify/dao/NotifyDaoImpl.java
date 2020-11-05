@@ -141,6 +141,20 @@ public class NotifyDaoImpl implements NotifyDao{
 		return count;
 	}
 	
+	@Override
+	public int delete2(FriendListBean bean) {
+		String sql = "delete from Tep101_Jome17.NOTIFY where TYPE = 2 and NOTIFICATION_BODY = ? and BODY_STATUS = 1;";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setInt(1, bean.getuId());
+			return pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	/*
 	 * 找到要刪除的那筆資料
 	 */

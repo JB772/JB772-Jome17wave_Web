@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import web.jome17.jome_member.bean.FriendListBean;
+import web.jome17.jome_member.controller.FireBaseServlet;
 import web.jome17.main.ServiceLocator;
 
 public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
@@ -41,20 +42,52 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return null;
 	}
 	
-	//新增
+	//新增陌生人為好友
 	@Override
 	public int insert(FriendListBean friendList) {
-		String sql = "insert into Tep101_Jome17.FRIEND_LIST(INVITE_M_ID, ACCEPT_M_ID) "
-					+ "values	(?,?) ;";
+		String sqlInsertFriend = "insert into Tep101_Jome17.FRIEND_LIST(INVITE_M_ID, ACCEPT_M_ID) "
+								+ "values	(?,?) ;";
+		String sqlseletctTableFriend = "select UID from Tep101_Jome17.FRIEND_LIST "
+									+ "where INVITE_M_ID = ? and ACCEPT_M_ID = ?;";
+		String sqlInsertNotify = "Insert into Tep101_Jome17.NOTIFY (TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID) "
+								+ "values(2, ?, 3, ?);";
+		int inserNewFriendResult = 0;
 		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			pstmt.setString(1, friendList.getInvite_M_ID());
-			pstmt.setString(2, friendList.getAccept_M_ID());
-			return pstmt.executeUpdate();
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlInsertFriend);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlseletctTableFriend);
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlInsertNotify);) {
+			conn.setAutoCommit(false);
+			try {
+				pstmt1.setString(1, friendList.getInvite_M_ID());
+				pstmt1.setString(2, friendList.getAccept_M_ID());
+				int insertFriend = pstmt1.executeUpdate();
+				int uid = -1;
+				pstmt2.setString(1, friendList.getInvite_M_ID());
+				pstmt2.setString(2, friendList.getAccept_M_ID());
+				ResultSet rs = pstmt3.executeQuery();
+				while(rs.next()) {
+					uid = rs.getInt(1);
+				}
+				if(insertFriend < 1 && uid != -1) {
+					throw new SQLException("Table Friend insert error! ");
+				}
+				pstmt3.setInt(1, uid);
+				pstmt3.setString(2, friendList.getAccept_M_ID());
+				int insertNotify = pstmt3.executeUpdate();
+				if(insertNotify < 1) {
+					throw new SQLException("Table Notify insert error! ");
+				}
+				conn.commit();
+				inserNewFriendResult = 1;
+			}catch (SQLException e) {
+				conn.rollback();
+				inserNewFriendResult = -1;
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return -1;
+		return inserNewFriendResult;
 	}
 
 	//更新
@@ -76,19 +109,26 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 		return -1;
 	}
 	
-	@Override
-	public int updateAndDeleteNote(FriendListBean bean) {
+	
+	public int insertNotiForFriendUpdate(FriendListBean bean) {
+		int friendStatus = bean.getFriend_Status();
+		String sqlNotify = "";
+		if(friendStatus == 1) {
+			sqlNotify = "delete from Tep101_Jome17.NOTIFY "
+					+ "where TYPE = 2 "
+					+ "and NOTIFICATION_BODY = ? "
+					+ "and BODY_STATUS = 3;";
+		}else if(friendStatus == 3) {
+			sqlNotify = "Insert into Tep101_Jome17.NOTIFY (TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID) values(2, ?, 3, " + bean.getAccept_M_ID() + ");";
+		}
 		String sqlUpdateFriend = "update Tep101_Jome17.FRIEND_LIST "
 								+ "SET INVITE_M_ID = ?, ACCEPT_M_ID = ?, FRIEND_STATUS = ? "
 								+ "WHERE UID = ? ;";
-		String sqlDeleteNote = "delete from Tep101_Jome17.NOTIFY "
-								+ "where TYPE = 2 "
-								+ "and NOTIFICATION_BODY = ? "
-								+ "and BODY_STATUS = 3;";
+
 		int updateFriendResult = 0;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlUpdateFriend);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlDeleteNote);) {
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotify);) {
 			conn.setAutoCommit(false);
 			try {
 				pstmt1.setString(1, bean.getInvite_M_ID());

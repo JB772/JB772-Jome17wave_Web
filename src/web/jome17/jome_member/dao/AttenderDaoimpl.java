@@ -262,9 +262,4 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		return null;
 	}
 
-	@Override
-	public int updateAndDeleteNote(PersonalGroup bean) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

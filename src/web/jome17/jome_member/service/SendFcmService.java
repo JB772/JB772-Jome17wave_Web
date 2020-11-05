@@ -47,6 +47,7 @@ public class SendFcmService {
 								 .putData("data", "messageCenter")
 								 .build();
 		
+		
 		BatchResponse bResponse;
 		int successCount = -1;
 		try {
