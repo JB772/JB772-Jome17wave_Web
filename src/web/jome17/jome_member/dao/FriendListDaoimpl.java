@@ -64,7 +64,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				int uid = -1;
 				pstmt2.setString(1, friendList.getInvite_M_ID());
 				pstmt2.setString(2, friendList.getAccept_M_ID());
-				ResultSet rs = pstmt3.executeQuery();
+				ResultSet rs = pstmt2.executeQuery();
 				while(rs.next()) {
 					uid = rs.getInt(1);
 				}
@@ -110,7 +110,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 	}
 	
 	
-	public int insertNotiForFriendUpdate(FriendListBean bean) {
+	public int changeNotiForFriendUpdate(FriendListBean bean) {
 		int friendStatus = bean.getFriend_Status();
 		String sqlNotify = "";
 		if(friendStatus == 1) {

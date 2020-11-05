@@ -222,17 +222,17 @@ public class NotifyService {
 	 * 新增通知訊息 - 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
 	 * 
 	 */
-	public int insertNotiForFriendUpdated(FriendListBean agreeBean) {
+	public int insertBothNotiForBeFriend(FriendListBean agreeBean) {
 		//拿到資料庫裡的關係資料，status還是3
 		FriendListBean relationBean = new FriendListDaoimpl().selectRelation(agreeBean);
 		//組裝完整的Bean，準備做update
 		agreeBean.setuId(relationBean.getuId());
 		agreeBean.setFriend_Status(1);
 		//同意成為好友，新增notify雙方通知
-		int resultCode = new NotifyDaoImpl().insertForFriendUpdate(agreeBean);
+		int resultCode = new NotifyDaoImpl().insert2Noti(agreeBean);
 		if (resultCode == 1) {
 			//新增同意通知成功，做好友關係update，並刪除待審的通知訊息
-			resultCode = new FriendListDaoimpl().insertNotiForFriendUpdate(agreeBean);
+			resultCode = new FriendListDaoimpl().changeNotiForFriendUpdate(agreeBean);
 		}else {
 			resultCode = -1;
 			return resultCode;
@@ -263,7 +263,7 @@ public class NotifyService {
 		}else {
 			//已有資料，做更新資料
 			checkList.setuId(relation.getuId());
-			resultCode = new FriendListDaoimpl().insertNotiForFriendUpdate(checkList);
+			resultCode = new FriendListDaoimpl().changeNotiForFriendUpdate(checkList);
 //System.out.println("relation != null 且 resultCode: "+resultCode);
 		}
 		return resultCode;

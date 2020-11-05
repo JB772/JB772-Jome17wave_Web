@@ -52,8 +52,7 @@ public class NotifyDaoImpl implements NotifyDao{
 	}
 	
 	//交易控制於 回覆同意他人交友邀請
-	@Override
-	public int insertForFriendUpdate(FriendListBean bean) {
+	public int insert2Noti(FriendListBean bean) {
 		String sqlInsert1 = "Insert into Tep101_Jome17.NOTIFY "
 							+ "(TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID)"
 							+ " values(2, ?, 1, ?);";
@@ -373,6 +372,13 @@ public class NotifyDaoImpl implements NotifyDao{
 		String sql = "";
 //		????
 		return null;
+	}
+
+
+	@Override
+	public int insertForFriendUpdate(FriendListBean bean) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

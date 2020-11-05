@@ -105,7 +105,7 @@ public class FriendServlet extends HttpServlet {
 				// agreeBean裡inviteId是對方，acceptId是自己
 				mainId = agreeBean.getInvite_M_ID();
 				acceptId = agreeBean.getAccept_M_ID();
-				resultCode = new NotifyService().insertNotiForFriendUpdated(agreeBean);				
+				resultCode = new NotifyService().insertBothNotiForBeFriend(agreeBean);				
 				break;
 				
 			/*
