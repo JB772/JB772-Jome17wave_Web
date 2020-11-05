@@ -6,9 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import web.jome17.jome_member.bean.FriendListBean;
-import web.jome17.jome_member.controller.FireBaseServlet;
 import web.jome17.main.ServiceLocator;
 
 public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
@@ -68,7 +69,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				while(rs.next()) {
 					uid = rs.getInt(1);
 				}
-				if(insertFriend < 1 && uid != -1) {
+				if(insertFriend < 1 || uid != -1) {
 					throw new SQLException("Table Friend insert error! ");
 				}
 				pstmt3.setInt(1, uid);

@@ -9,13 +9,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.sun.org.apache.regexp.internal.recompile;
-import com.sun.swing.internal.plaf.basic.resources.basic;
-
 import web.jome17.jome_group.Group;
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.ScoreBean;
-import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.main.ServiceLocator;
