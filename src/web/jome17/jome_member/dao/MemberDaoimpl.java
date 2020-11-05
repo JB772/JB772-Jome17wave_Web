@@ -285,9 +285,4 @@ try(Connection conn = dataSource.getConnection();
 	return members;
 	}
 
-	@Override
-	public int updateAndDeleteNote(MemberBean bean) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }
