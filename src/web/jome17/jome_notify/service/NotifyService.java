@@ -1,5 +1,6 @@
 package web.jome17.jome_notify.service;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_member.dao.AttenderDaoimpl;
-
+import web.jome17.jome_member.dao.FriendListDaoimpl;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
@@ -138,6 +139,7 @@ public class NotifyService {
 		return otherMemberId;
 	}
 
+// ----------------------- 以下為無交易控制區 ----------------------- //
 	/*
 	 * 新增通知訊息: 好友類型通知: 同意成為好友(雙方有通知)
 	 * 
@@ -214,28 +216,59 @@ public class NotifyService {
 		return notifyRC;
 	}
 	
+	// ----------------------- 以下為有交易控制區 ----------------------- //
 	
-//	/*
-//	 * 新增通知訊息: 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
-//	 * 
-//	 */
-//	public int insertNotiForFriendUpdated(FriendListBean agreeBean) {
-//		int resultCode = new NotifyDaoImpl().insertForFriendUpdate(agreeBean);
-//		if (resultCode == 1) {
-//			resultCode = new NotifyDaoImpl().updateForFriendUpdate(agreeBean);
-//		}else {
-//			resultCode = -1;
-//			return resultCode;
-//		}
-//		
-//		if (resultCode == 1 ) {
-//			return resultCode;
-//		}else {
+	/*
+	 * 新增通知訊息 - 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
+	 * 
+	 */
+	public int insertNotiForFriendUpdated(FriendListBean agreeBean) {
+		//拿到資料庫裡的關係資料，status還是3
+		FriendListBean relationBean = new FriendListDaoimpl().selectRelation(agreeBean);
+		//組裝完整的Bean，準備做update
+		agreeBean.setuId(relationBean.getuId());
+		agreeBean.setFriend_Status(1);
+		//同意成為好友，新增notify雙方通知
+		int resultCode = new NotifyDaoImpl().insertForFriendUpdate(agreeBean);
+		if (resultCode == 1) {
+			//新增同意通知成功，做好友關係update，並刪除待審的通知訊息
+			resultCode = new FriendListDaoimpl().insertNotiForFriendUpdate(agreeBean);
+		}else {
+			resultCode = -1;
+			return resultCode;
+		}
+		
+		if (resultCode == 1 ) {
+			return resultCode;
+		}else {
+			//好友關係update與刪除待審的noti失敗：做刪除前面新增的兩則同意訊息！
 //			int deleteRC = new NotifyDaoImpl().deleteForFriendUpdate(agreeBean);
-//			return resultCode;
-//		}
-//		
-//		return -1;
-//	}
+			return resultCode;
+		}
+	}
+	
+	/*
+	 * 新增通知訊息 - 好友類型通知: 邀請你成為好友(被邀請方單方有通知)，使用交易控制的daoImpl
+	 * 
+	 */
+	public int insertNotiForFriendInsert(FriendListBean checkList) {
+		// checkList裡inviteId是自己，acceptId是對方，friendStatus是3(待審)
+		int resultCode = -1;
+		// relation是資料庫裡的資料
+		FriendListBean relation = new FriendListDaoimpl().selectRelation(checkList);
+		if (relation == null) {
+			//沒有任何資料，做新增資料
+			resultCode = new FriendListDaoimpl().insert(checkList); //要改成有交易控制的insert
+//System.out.println("relation == null 且 resultCode: "+resultCode);
+		}else {
+			//已有資料，做更新資料
+			checkList.setuId(relation.getuId());
+			resultCode = new FriendListDaoimpl().insertNotiForFriendUpdate(checkList);
+//System.out.println("relation != null 且 resultCode: "+resultCode);
+		}
+		return resultCode;
+	}
 
+	
 }
+
