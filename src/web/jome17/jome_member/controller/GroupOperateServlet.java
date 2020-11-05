@@ -2,7 +2,6 @@ package web.jome17.jome_member.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -21,19 +20,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
-import web.jome17.jome_notify.service.NotifyService;
-import web.jome17.jome_member.service.JomeMemberService;
-import web.jome17.jome_member.service.SendFcmService;
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
