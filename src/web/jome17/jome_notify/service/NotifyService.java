@@ -140,81 +140,81 @@ public class NotifyService {
 	}
 
 // ----------------------- 以下為無交易控制區 ----------------------- //
-	/*
-	 * 新增通知訊息: 好友類型通知: 同意成為好友(雙方有通知)
-	 * 
-	 */
-	public int insertFriendNoti(FriendListBean agreeBean) {
-
-//		// 新增通知訊息 給對方
-		Notify notify = new Notify();
-		notify.setType(2);
-		notify.setNotificationBody(agreeBean.getuId());
-		notify.setBodyStatus(1);
-		notify.setMemberId(agreeBean.getInvite_M_ID());
-		int notifyRC = new NotifyDaoImpl().insert(notify);
-
-		// 新增通知訊息 給自己
-		notify.setMemberId(agreeBean.getAccept_M_ID());
-		notifyRC = new NotifyDaoImpl().insert(notify);
-		
-		notify.setBodyStatus(3);
-		int deleteId = new NotifyDaoImpl().findNotificationId(notify);
-// System.out.println("deleteId: " + deleteId);
-		notifyRC = new NotifyDaoImpl().delete(deleteId);
-
-		return notifyRC;
-	}
-
-	/*
-	 * 新增通知訊息: 揪團類型通知 
-	 * 		魯夫 要求加入 夏天來了 的揪團活動。 我是團員，我申請加入，然後要發通知給團長。 
-	 * 		成功/失敗加入 夏天來囉的揪團活動。我是團長，我審核申請後，要發通知給申請人。 
-	 * 		魯夫 離開了 夏天來囉 的揪團活動。當團員自行離開，或是遭到踢除的時候，團長會收到通知。 
-	 * 		你已離開夏天來囉 的揪團活動。團員自己離開，或是遭到踢除的時候，團員會收到通知。
-	 */
-	public int insertGroupNoti(PersonalGroup attenderBean) {
-		int notifyRC = -1;
-		int deleteRC = -1;
-		//用attenderBean搜尋團長Id(captainId)
-		String captainId = new AttenderDaoimpl().selectByGroupId(attenderBean.getGroupId()).getMemberId();
-		// 新增通知訊息給團員(notify)
-		Notify notify = new Notify();
-		notify.setType(1);
-		notify.setNotificationBody(attenderBean.getAttenderId());
-		notify.setBodyStatus(attenderBean.getAttenderStatus());
-		// 新增通知訊息給團長(notifyCaptain)
-		Notify notifyCaptain = notify;
-		notifyCaptain.setMemberId(captainId);
-		if(attenderBean.getAttenderStatus() == 0 || attenderBean.getAttenderStatus() == 3) {
-			notifyRC = new NotifyDaoImpl().insert(notifyCaptain);
-		}else {
-			notify.setMemberId(attenderBean.getMemberId());
-		}
-		
-		if (notifyRC != 0 && attenderBean.getAttenderStatus() != 3) {
-			notifyRC = new NotifyDaoImpl().insert(notify);
-		}
-		
-
-		// 當狀態轉為離開(0)時，刪除舊得通知訊息： 成功加入 夏天來囉 的揪團活動 ＆＆ 魯夫 要求加入 夏天來了 的揪團活動。
-		if (attenderBean.getAttenderStatus() == 0) {
-			notifyCaptain.setBodyStatus(3);
-			int deleteCaptainNotiId = new NotifyDaoImpl().findNotificationId(notifyCaptain);
-			notify.setBodyStatus(1);
-			int deleteMyselfNotiId = new NotifyDaoImpl().findNotificationId(notify);
-			deleteRC = new NotifyDaoImpl().delete(deleteCaptainNotiId);
-			deleteRC = new NotifyDaoImpl().delete(deleteMyselfNotiId);
-		}
-		
-		if (notifyRC == 1 && deleteRC == 1) {
-			notifyRC = 1;
-		}else {
-			notifyRC = -2;
-		}
-	
-		return notifyRC;
-	}
+//	/*
+//	 * 新增通知訊息: 好友類型通知: 同意成為好友(雙方有通知)
+//	 * 
+//	 */
+//	public int insertFriendNoti(FriendListBean agreeBean) {
+//
+////		// 新增通知訊息 給對方
+//		Notify notify = new Notify();
+//		notify.setType(2);
+//		notify.setNotificationBody(agreeBean.getuId());
+//		notify.setBodyStatus(1);
+//		notify.setMemberId(agreeBean.getInvite_M_ID());
+//		int notifyRC = new NotifyDaoImpl().insert(notify);
+//
+//		// 新增通知訊息 給自己
+//		notify.setMemberId(agreeBean.getAccept_M_ID());
+//		notifyRC = new NotifyDaoImpl().insert(notify);
+//		
+//		notify.setBodyStatus(3);
+//		int deleteId = new NotifyDaoImpl().findNotificationId(notify);
+//// System.out.println("deleteId: " + deleteId);
+//		notifyRC = new NotifyDaoImpl().delete(deleteId);
+//
+//		return notifyRC;
+//	}
+//
+//	/*
+//	 * 新增通知訊息: 揪團類型通知 
+//	 * 		魯夫 要求加入 夏天來了 的揪團活動。 我是團員，我申請加入，然後要發通知給團長。 
+//	 * 		成功/失敗加入 夏天來囉的揪團活動。我是團長，我審核申請後，要發通知給申請人。 
+//	 * 		魯夫 離開了 夏天來囉 的揪團活動。當團員自行離開，或是遭到踢除的時候，團長會收到通知。 
+//	 * 		你已離開夏天來囉 的揪團活動。團員自己離開，或是遭到踢除的時候，團員會收到通知。
+//	 */
+//	public int insertGroupNoti(PersonalGroup attenderBean) {
+//		int notifyRC = -1;
+//		int deleteRC = -1;
+//		//用attenderBean搜尋團長Id(captainId)
+//		String captainId = new AttenderDaoimpl().selectByGroupId(attenderBean.getGroupId()).getMemberId();
+//		// 新增通知訊息給團員(notify)
+//		Notify notify = new Notify();
+//		notify.setType(1);
+//		notify.setNotificationBody(attenderBean.getAttenderId());
+//		notify.setBodyStatus(attenderBean.getAttenderStatus());
+//		// 新增通知訊息給團長(notifyCaptain)
+//		Notify notifyCaptain = notify;
+//		notifyCaptain.setMemberId(captainId);
+//		if(attenderBean.getAttenderStatus() == 0 || attenderBean.getAttenderStatus() == 3) {
+//			notifyRC = new NotifyDaoImpl().insert(notifyCaptain);
+//		}else {
+//			notify.setMemberId(attenderBean.getMemberId());
+//		}
+//		
+//		if (notifyRC != 0 && attenderBean.getAttenderStatus() != 3) {
+//			notifyRC = new NotifyDaoImpl().insert(notify);
+//		}
+//		
+//
+//		// 當狀態轉為離開(0)時，刪除舊得通知訊息： 成功加入 夏天來囉 的揪團活動 ＆＆ 魯夫 要求加入 夏天來了 的揪團活動。
+//		if (attenderBean.getAttenderStatus() == 0) {
+//			notifyCaptain.setBodyStatus(3);
+//			int deleteCaptainNotiId = new NotifyDaoImpl().findNotificationId(notifyCaptain);
+//			notify.setBodyStatus(1);
+//			int deleteMyselfNotiId = new NotifyDaoImpl().findNotificationId(notify);
+//			deleteRC = new NotifyDaoImpl().delete(deleteCaptainNotiId);
+//			deleteRC = new NotifyDaoImpl().delete(deleteMyselfNotiId);
+//		}
+//		
+//		if (notifyRC == 1 && deleteRC == 1) {
+//			notifyRC = 1;
+//		}else {
+//			notifyRC = -2;
+//		}
+//	
+//		return notifyRC;
+//	}
 	
 	// ----------------------- 以下為有交易控制區 ----------------------- //
 	

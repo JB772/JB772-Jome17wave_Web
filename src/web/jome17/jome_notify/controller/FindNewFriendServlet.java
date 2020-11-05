@@ -149,7 +149,7 @@ public class FindNewFriendServlet extends HttpServlet {
 				resultCode = ffs.changeFriendList(agreeBean, "clickAgree");
 				
 				//新增通知訊息
-				int notifyRC = new NotifyService().insertFriendNoti(agreeBean);
+//				int notifyRC = new NotifyService().insertFriendNoti(agreeBean);
 //				//新增通知訊息 給對方
 //				Notify notify = new Notify();
 //				notify.setType(2);
@@ -165,11 +165,11 @@ public class FindNewFriendServlet extends HttpServlet {
 //				int deleteId = new NotifyDaoImpl().findNotificationId(notify);
 ////System.out.println("deleteId: " + deleteId);
 //				notifyRC = new NotifyDaoImpl().delete(deleteId);
-				if (notifyRC == 1) {
-				System.out.println("Notification Delete Successful");
-				}else {
-				System.out.println("Notification Delete Failed");
-				}
+//				if (notifyRC == 1) {
+//				System.out.println("Notification Delete Successful");
+//				}else {
+//				System.out.println("Notification Delete Failed");
+//				}
 				break;
 				
 				/*
