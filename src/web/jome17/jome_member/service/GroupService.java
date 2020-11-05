@@ -35,8 +35,9 @@ public class GroupService {
 	public int joinGroup(PersonalGroup pGroup) {
 		pGroup.setRole(2);
 		pGroup.setAttenderStatus(3);
+		AttenderBean joinAttender = new AttenderBean(pGroup.getAttenderId(), pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-		return attenderDao.insert(pGroup);
+		return attenderDao.insertAtenderBean(joinAttender);
 	}
 	
 	//退團
@@ -47,14 +48,17 @@ public class GroupService {
 		}else {
 			//是團員就改ATTEND_STATUS = 0;
 			AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-			return attenderDao.update(pGroup);
+			AttenderBean memberAttender = new AttenderBean(pGroup.getAttenderId(), pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
+			String groupHeadId = attenderDao.selectGroupHeadId(pGroup.getGroupId()).getMemberId();
+			return attenderDao.updateAtender(memberAttender, groupHeadId);
 		}
 	}
 	
 	//審核(更新團員狀態)
 	public int auditAttender(PersonalGroup auditGroup) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-		return attenderDao.update(auditGroup);
+		AttenderBean auditAttender = new AttenderBean(auditGroup.getAttenderId(), auditGroup.getAttenderStatus(), auditGroup.getRole(), auditGroup.getMemberId(), auditGroup.getGroupId());
+		return attenderDao.updateAtender(auditAttender, "groupHeadId");
 	}
 	
 	//搜尋所有的揪團資料(含主揪人的mId及nickname)

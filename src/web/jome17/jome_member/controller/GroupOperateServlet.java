@@ -35,22 +35,7 @@ public class GroupOperateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
-	private static final Set<String> registrationTokens = Collections.synchronizedSet(new HashSet<String>());
-	private String registrationToken = "";
 	private JsonObject jsonIn;
-//	
-//	@Override
-//	public void init() throws ServletException {
-//		
-//		try(InputStream inStream = getServletContext().getResourceAsStream("FirebaseServerKey.json");) {
-//			FirebaseOptions options = new FirebaseOptions.Builder()
-//														 .setCredentials(GoogleCredentials.fromStream(inStream))
-//														 .build();
-//			FirebaseApp.initializeApp(options);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

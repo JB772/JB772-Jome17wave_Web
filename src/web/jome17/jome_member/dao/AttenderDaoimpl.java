@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.jsp.tagext.TryCatchFinally;
 import javax.sql.DataSource;
 
-import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_notify.bean.AttenderBean;
 import web.jome17.main.ServiceLocator;
@@ -335,7 +333,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	}
 	
 	//用Attender的groupId 查詢 團長
-	public AttenderBean selectByGroupId(String key) {
+	public AttenderBean selectGroupHeadId(String key) {
 			String sql = "select "
 							+ "*"
 						+ "from "

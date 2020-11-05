@@ -11,6 +11,17 @@ public AttenderBean() {
 
 
 
+public AttenderBean(int attenderNo, int attendStatus, int role, String memberId, String groupId) {
+	super();
+	this.attenderNo = attenderNo;
+	this.attendStatus = attendStatus;
+	this.role = role;
+	this.memberId = memberId;
+	this.groupId = groupId;
+}
+
+
+
 public AttenderBean(int attenderNo, String groupId, int attendStatus, int role, String groupName, String memberId,
 		String modifyDate, String memberName) {
 	super();
