@@ -91,6 +91,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 		int updateResult = 0;
 		if (groupImage == null) {
 			if(bean.getAttenderStatus() != 0) {
+				//團長更新資料
 				sql = "update Tep101_Jome17.JOIN_GROUP set "
 						+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
 						+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
@@ -100,6 +101,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 					+ " where "
 						+ "GROUP_ID = ?";								//10
 			}else {
+				//團長退團
 					sqlGroup = "update Tep101_Jome17.JOIN_GROUP set "
 									+ "GROUP_STATUS = 0"
 								+ " where "
@@ -110,6 +112,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 									+ "GROUP_ID = ?";
 			}		
 		}else {
+			//團長改圖
 			sql = "update Tep101_Jome17.JOIN_GROUP set "
 					+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
 					+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
@@ -228,16 +231,6 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	//拿到主揪的次數 及 參加揪團的次數
 	@Override
 	public String getCount(String groupId) {
-//		String sqlAddGroupCount = "select count(*) "
-//								+ "from Tep101_Jome17.ATTENDER "
-//								+ "where "
-//									+ "MEMBER_ID = ? "
-//									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
-//		String sqlGroupCount = "select count(*) "
-//							+ "from Tep101_Jome17.ATTENDER "
-//							+ "where "
-//								+ "MEMBER_ID = ? "
-//								+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
 		String sql = "select count(*) "
 					+ "from Tep101_Jome17.ATTENDER "
 					+ "where "

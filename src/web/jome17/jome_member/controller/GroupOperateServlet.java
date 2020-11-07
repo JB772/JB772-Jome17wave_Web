@@ -43,7 +43,6 @@ public class GroupOperateServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		jsonIn = json2In(req);
 		System.out.println("jsonIn:" + jsonIn);
-
 		String action = jsonIn.get("action").getAsString();
 		String outStr = "";
 		JsonObject jsonOut = new JsonObject();
@@ -204,12 +203,32 @@ public class GroupOperateServlet extends HttpServlet {
 				updateResult = gService.updateGroup(groupUp, imageUpdate);
 				jsonOut.addProperty("updateResult", updateResult);
 				break;
+			//	審核團員
+			case "auditAttender":
+				int auditResult = -1;
+				PersonalGroup auditAttender = null;
+				auditAttender = GSON.fromJson(jsonIn.get("auditAttender").getAsString(), PersonalGroup.class);
+				auditResult = gService.auditAttender(auditAttender);
+				if(auditResult > 0) {
+					List<PersonalGroup> afterAttenders = gService.getAllAttenders(auditAttender.getGroupId());
+					jsonOut.addProperty("auditResult", auditResult);
+					jsonOut.addProperty("afterAttenders", GSON.toJson(afterAttenders));
+					jsonOut.addProperty("dropResult", -1);
+				}
+				break;
 				
-			// 退團
+			// 退團(一般團員)
 			case "dropOutGroup":
+				int dropResult = -1;
 				PersonalGroup groupDrop = null;
-				groupDrop = GSON.fromJson(jsonIn.get("gruopUp").getAsString(), PersonalGroup.class);
-				int dropResult = gService.dropGroup(groupDrop);
+				groupDrop = GSON.fromJson(jsonIn.get("auditAttender").getAsString(), PersonalGroup.class);
+				dropResult = gService.dropGroup(groupDrop);
+				if(dropResult > 0) {
+					List<PersonalGroup> afterAttenders = gService.getAllAttenders(groupDrop.getGroupId());
+					jsonOut.addProperty("dropResult", dropResult);
+					jsonOut.addProperty("afterAttenders", GSON.toJson(afterAttenders));
+					jsonOut.addProperty("auditResult", -1);
+				}
 				//新增通知訊息
 //				notiInsertResult = new NotifyService().insertGroupNoti(groupDrop);
 //				if (notiInsertResult == 1) {
@@ -217,7 +236,6 @@ public class GroupOperateServlet extends HttpServlet {
 //				}else {
 //					System.out.println("Group Notification Insert Failed");
 //				}
-				jsonOut.addProperty("dropResult", dropResult);
 				break;
 			
 			// 拿自己的揪團記錄
@@ -232,21 +250,19 @@ public class GroupOperateServlet extends HttpServlet {
 				}
 				jsonOut.addProperty("myGroupsResult", myGroupsResult);
 				break;
-			
-//			// 測試Fcm發送，一支app只能有一支servlet連firebase
-//			case "testFcm":
-//				String mId = jsonIn.get("memberId").getAsString();
-//System.out.println("mId244: " + mId);
-//				registrationToken = new JomeMemberService().selectTokenById(mId);
-//System.out.println("registrationToken246: " + registrationToken);
-//				synchronized (this) {
-//						registrationTokens.add(registrationToken);
-//				}
-//				String messageId = "";
-//				messageId = new SendFcmService().sendSingleFcm(registrationToken, "teseTitle", "testBody");
-//				System.out.println("testOtherServletFcm: " + messageId);
-//				break;
 				
+			//取得該揪團所有成員(1, 2, 3)
+			case "getAllAttenders":
+				String attenderGroupId = jsonIn.get("groupId").getAsString();
+				List<PersonalGroup> allAttenders = new ArrayList<PersonalGroup>();
+				allAttenders = gService.getAllAttenders(attenderGroupId);
+				int allAttendersResult = -1;
+				if( allAttenders != null) {
+					allAttendersResult = 1;
+					jsonOut.addProperty("allAttenders", GSON.toJson(allAttenders));
+				}
+				jsonOut.addProperty("myGroupsResult", allAttendersResult);
+				break;
 			default:
 				break;
 			}

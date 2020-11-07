@@ -37,7 +37,7 @@ public class NotifyDaoImpl implements NotifyDao{
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
 			pstmt.setInt(1, bean.getType());
-			pstmt.setInt(2, bean.getNotificationBody());
+			pstmt.setString(2, bean.getNotificationBody());
 			pstmt.setInt(3, bean.getBodyStatus());
 			pstmt.setString(4, bean.getMemberId());
 			count = pstmt.executeUpdate();
@@ -103,7 +103,7 @@ public class NotifyDaoImpl implements NotifyDao{
 				Notify notify = new Notify();
 				notify.setNotificationId(rs.getInt(1));
 				notify.setType(rs.getInt(2));
-				notify.setNotificationBody(rs.getInt(3));
+				notify.setNotificationBody(rs.getString(3));
 				notify.setBodyStatus(rs.getInt(4));
 				notify.setMemberId(rs.getString(5));
 //System.out.println("notify: " + notify.getMemberId());
@@ -164,7 +164,7 @@ public class NotifyDaoImpl implements NotifyDao{
 		PreparedStatement pstmt = connection.prepareStatement(sql);
 	){
 		pstmt.setInt(1, bean.getType());
-		pstmt.setInt(2, bean.getNotificationBody());
+		pstmt.setString(2, bean.getNotificationBody());
 		pstmt.setInt(3, bean.getBodyStatus());
 		pstmt.setString(4, bean.getMemberId());
 		ResultSet rs = pstmt.executeQuery();
@@ -183,7 +183,7 @@ public class NotifyDaoImpl implements NotifyDao{
 	 * 用 UID 取得 FriendListBean 物件 (好友狀態紀錄)
 	 */
 	@Override
-	public FriendListBean getFriendListBean(int notificationBody) {
+	public FriendListBean getFriendListBean(String notificationBody) {
 		String sql =  "select f.UID, f.INVITE_M_ID, m.NICKNAME as INVITE_NAME, f.ACCEPT_M_ID, m2.NICKNAME as ACCEPT_NAME, f.FRIEND_STATUS, f.MODIFY_DATE "
 		+ "from Tep101_Jome17.FRIEND_LIST f "
 		+ "left join Tep101_Jome17.MEMBERINFO m on f.INVITE_M_ID = m.ID "
@@ -193,7 +193,7 @@ public class NotifyDaoImpl implements NotifyDao{
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
-			pstmt.setInt(1, notificationBody);
+			pstmt.setString(1, notificationBody);
 			ResultSet rs = pstmt.executeQuery();
 			FriendListBean bean = new FriendListBean();
 			if (rs.next()) {
@@ -264,7 +264,7 @@ public class NotifyDaoImpl implements NotifyDao{
 	 * 用 Attender_No 取得 AttenderBean 物件 (單則揪團成功/失敗的Bean)
 	 */
 	@Override
-	public AttenderBean getAttenderBean(int notificationBody) {
+	public AttenderBean getAttenderBean(String notificationBody) {
 		String sql =  "SELECT g.GROUP_NAME, a.*, m.NICKNAME "
 					+ "FROM Tep101_Jome17.ATTENDER a "
 					+ "left join Tep101_Jome17.JOIN_GROUP g on g.GROUP_ID = a.GROUP_ID "
@@ -274,7 +274,7 @@ public class NotifyDaoImpl implements NotifyDao{
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
-			pstmt.setInt(1, notificationBody);
+			pstmt.setString (1, notificationBody);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				AttenderBean bean = new AttenderBean();
@@ -327,7 +327,7 @@ public class NotifyDaoImpl implements NotifyDao{
 	 * 用 Group_ID 與 memberId 取得 ScoreList  (評分列表)
 	 */
 	@Override
-	public List<ScoreBean> getScoreList(int notificationBody, String memberId) {
+	public List<ScoreBean> getScoreList(String notificationBody, String memberId) {
 		 String sql = "select s.*, g.GROUP_NAME "
 		 			+ "from Tep101_Jome17.SCORE s l"
 		 			+ "eft join Tep101_Jome17.JOIN_GROUP g on g.GROUP_ID = s.GROUP_ID "
@@ -337,7 +337,7 @@ public class NotifyDaoImpl implements NotifyDao{
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
-			pstmt.setInt(1, notificationBody);
+			pstmt.setString(1, notificationBody);
 			pstmt.setString(2, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -364,7 +364,7 @@ public class NotifyDaoImpl implements NotifyDao{
 //	 * 取得 GroupBean 物件 (單則揪團資料)
 	 */
 	@Override
-	public Group getGroupBean(int notificationBody) {
+	public Group getGroupBean(String notificationBody) {
 		String sql = "";
 //		????
 		return null;

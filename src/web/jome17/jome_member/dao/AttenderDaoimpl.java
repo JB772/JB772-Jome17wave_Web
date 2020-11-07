@@ -66,7 +66,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 				if(insertAttenderResult < 1) {
 					throw new SQLException("Table Attender insert error! ");
 				}
-				pstmt2.setInt(1, bean.getAttenderNo());
+				pstmt2.setString(1, bean.getAttenderNo()+"");
 				pstmt2.setString(2, bean.getMemberId());
 				int insertNotifyResult = pstmt2.executeUpdate();
 				if(insertNotifyResult < 1) {
@@ -87,11 +87,11 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	
 	/**
 	 * 修改Attender表；團員變更參加狀態 (status3→1 , 3→2)→ delete notifiy(要求3)，增加notify(加入成功or失敗),
-	 * 								(status1→0		)→delete notifiy(成功1)，增加notify(團員 && 團長)
+	 * 								(status1→0		)→ delete notifiy(成功1)，增加notify(團員 && 團長)
 	 */
 	public int updateAtender(AttenderBean bean, String headId) {
 		String sqlAttenderUpdate = "update Tep101_Jome17.ATTENDER set "
-										+ "ATTEND_STATUS = ?, "
+										+ "ATTEDN_STATUS = ?, "
 										+ "ROLE = ? "
 									+"where "
 										+ "ATTENDER_NO = ?";
@@ -108,12 +108,13 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyDelete);
 			PreparedStatement pstmt3 = conn.prepareStatement(sqlNotifyInsert); 
 			PreparedStatement pstmt4 = conn.prepareStatement(sqlNotifyInsert);) {
-			conn.commit();
+			conn.setAutoCommit(false);
 			try{
 				pstmt1.setInt(1, bean.getAttendStatus());
 				pstmt1.setInt(2, bean.getRole());
 				pstmt1.setInt(3, bean.getAttenderNo());
 				int attenderUpdateResult = pstmt1.executeUpdate();
+System.out.println(pstmt1);
 				if (attenderUpdateResult < 1) {
 					throw new SQLException("Table Attender update error! ");
 				}
@@ -123,14 +124,14 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 					throw new SQLException("Table Notify delete error! ");
 				}
 				if(bean.getAttendStatus() == 0) {
-					pstmt3.setInt(1, bean.getAttenderNo());
+					pstmt3.setString(1, bean.getAttenderNo()+ "");
 					pstmt3.setInt(2, bean.getAttendStatus());
 					pstmt3.setString(3, headId);
 					int insertNotifyResultHead = pstmt3.executeUpdate();
 					if(insertNotifyResultHead < 1) {
 						throw new SQLException("Table notify for groupHead insert error! ");
 					}
-					pstmt4.setInt(1, bean.getAttenderNo());
+					pstmt4.setString(1, bean.getAttenderNo()+ "");
 					pstmt4.setInt(2, bean.getAttendStatus());
 					pstmt4.setString(3, bean.getMemberId());
 					int insertNotifyResultSelf = pstmt4.executeUpdate();
@@ -138,10 +139,11 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 						throw new SQLException("Table notify for groupMemer insert error! ");
 					}
 				}else {
-					pstmt3.setInt(1, bean.getAttenderNo());
+					pstmt3.setString(1, bean.getAttenderNo()+ "");
 					pstmt3.setInt(2, bean.getAttendStatus());
 					pstmt3.setString(3, bean.getMemberId());
-					int insertNotifyResultSelf = pstmt4.executeUpdate();
+					int insertNotifyResultSelf = pstmt3.executeUpdate();
+					System.out.println(pstmt3);
 					if(insertNotifyResultSelf < 1) {
 						throw new SQLException("Table notify for groupMember insert error! ");
 					}

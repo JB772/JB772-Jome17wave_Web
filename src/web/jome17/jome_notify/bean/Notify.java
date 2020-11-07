@@ -3,15 +3,15 @@ package web.jome17.jome_notify.bean;
 import java.util.Date;
 
 public class Notify {
-	private int notificationId, type, notificationBody, bodyStatus;
-	private String memberId, notificationDetail;
+	private int notificationId, type, bodyStatus;
+	private String memberId, notificationDetail, notificationBody;
 	private Date buildDate;
 	
 	public Notify() {
 		super();
 	}
 
-	public Notify(int notificationId, int type, int notificationBody, String memberId) {
+	public Notify(int notificationId, int type, String notificationBody, String memberId) {
 		super();
 		this.notificationId = notificationId;
 		this.type = type;
@@ -21,7 +21,7 @@ public class Notify {
 	
 	
 
-	public Notify(int notificationId, int type, int notificationBody, String memberId, String notificationDetail,
+	public Notify(int notificationId, int type, String notificationBody, String memberId, String notificationDetail,
 			Date buildDate) {
 		super();
 		this.notificationId = notificationId;
@@ -33,7 +33,7 @@ public class Notify {
 	}
 	
 
-	public Notify(int notificationId, int type, int notificationBody, String memberId, String notificationDetail) {
+	public Notify(int notificationId, int type, String notificationBody, String memberId, String notificationDetail) {
 		super();
 		this.notificationId = notificationId;
 		this.type = type;
@@ -44,7 +44,7 @@ public class Notify {
 	
 	
 
-	public Notify(int notificationId, int type, int notificationBody, int bodyStatus, String memberId,
+	public Notify(int notificationId, int type, String notificationBody, int bodyStatus, String memberId,
 			String notificationDetail, Date buildDate) {
 		super();
 		this.notificationId = notificationId;
@@ -72,11 +72,11 @@ public class Notify {
 		this.type = type;
 	}
 
-	public int getNotificationBody() {
+	public String getNotificationBody() {
 		return notificationBody;
 	}
 
-	public void setNotificationBody(int notificationBody) {
+	public void setNotificationBody(String notificationBody) {
 		this.notificationBody = notificationBody;
 	}
 

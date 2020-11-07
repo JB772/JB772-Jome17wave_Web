@@ -33,7 +33,7 @@ public class NotifyService {
 		String notificationDetail = null;
 		for (Notify no : notifiesList) {
 			int type = no.getType();
-			int notificationBody = no.getNotificationBody();
+			String notificationBody = no.getNotificationBody();
 			switch (type) {
 			case 1: // 揪團
 				attenderBean = new NotifyDaoImpl().getAttenderBean(notificationBody);
