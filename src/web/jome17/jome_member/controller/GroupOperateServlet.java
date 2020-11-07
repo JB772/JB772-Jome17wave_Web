@@ -2,7 +2,6 @@ package web.jome17.jome_member.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
@@ -22,23 +21,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+//import com.google.auth.oauth2.GoogleCredentials;
+//import com.google.firebase.FirebaseApp;
+//import com.google.firebase.FirebaseOptions;
+//import java.io.InputStream;
+
 import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+
 
 import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.bean.ScoreBean;
 import web.jome17.jome_member.dao.ScoreDaoimpl;
 import web.jome17.jome_member.service.GroupService;
+
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.service.NotifyService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.jome_member.service.SendFcmService;
+
 import web.jome17.main.DateUtil;
 import web.jome17.main.ImageUtil;
 
@@ -48,22 +52,7 @@ public class GroupOperateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 	private static final String CONTENT_TYPE = "text/html; charset=UTF-8";
-	private static final Set<String> registrationTokens = Collections.synchronizedSet(new HashSet<String>());
-	private String registrationToken = "";
 	private JsonObject jsonIn;
-//	
-//	@Override
-//	public void init() throws ServletException {
-//		
-//		try(InputStream inStream = getServletContext().getResourceAsStream("FirebaseServerKey.json");) {
-//			FirebaseOptions options = new FirebaseOptions.Builder()
-//														 .setCredentials(GoogleCredentials.fromStream(inStream))
-//														 .build();
-//			FirebaseApp.initializeApp(options);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
