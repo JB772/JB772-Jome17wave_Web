@@ -402,52 +402,66 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	//搜尋某一場揪團的所有資料(含主揪、浪點)
 	@Override
 	public PersonalGroup selectByKey(String memberId, String groupId) {
-		String sql = "select "
-				+ "a.MEMBER_ID, "
-				+ "m.NICKNAME, "
-				+ "m.GENDER, "			//3
-				+ "a.ATTENDER_NO, "
-				+ "a.ATTEDN_STATUS, "	
-				+ "a.ROLE, "			//6
-				+ "s.SURF_NAME, "
-				+ "j.GROUP_ID, j.GROUP_NAME, "		//9
-				+ "j.ASSEMBLE_TIME, j.GROUP_END_TIME, "		//11
-				+ "j.SIGN_UP_END, j.GROUP_LIMIT, "			//13
-				+ "j.NOTICE, j.GROUP_STATUS "				//15
-			+ "from "
-				+ "Tep101_Jome17.ATTENDER a "
-					+ "left join Tep101_Jome17.JOIN_GROUP j "
-					+ "on j.GROUP_ID = a.GROUP_ID "
-						+ "left join Tep101_Jome17.MEMBERINFO m "
-						+ "on m.ID = a.MEMBER_ID "
-							+ "left join Tep101_Jome17.SURF_POINT s "
-							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID"
-			+ "where "
-				+ "j.GROUP_ID = ? "
-				+ "and a.MEMBER_ID = ?;";
+//		String sql = "select "
+//				+ "a.MEMBER_ID, "
+//				+ "m.NICKNAME, "
+//				+ "m.GENDER, "			//3
+//				+ "a.ATTENDER_NO, "
+//				+ "a.ATTEDN_STATUS, "	
+//				+ "a.ROLE, "			//6
+//				+ "s.SURF_NAME, "
+//				+ "j.GROUP_ID, j.GROUP_NAME, "		//9
+//				+ "j.ASSEMBLE_TIME, j.GROUP_END_TIME, "		//11
+//				+ "j.SIGN_UP_END, j.GROUP_LIMIT, "			//13
+//				+ "j.NOTICE, j.GROUP_STATUS "				//15
+//			+ "from "
+//				+ "Tep101_Jome17.ATTENDER a "
+//					+ "left join Tep101_Jome17.JOIN_GROUP j "
+//					+ "on j.GROUP_ID = a.GROUP_ID "
+//						+ "left join Tep101_Jome17.MEMBERINFO m "
+//						+ "on m.ID = a.MEMBER_ID "
+//							+ "left join Tep101_Jome17.SURF_POINT s "
+//							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID"
+//			+ "where "
+//				+ "j.GROUP_ID = ? ;";
+//				+ "and a.MEMBER_ID = ?;";
+		String sql = "select  a.MEMBER_ID, m.NICKNAME, m.GENDER, a.ATTENDER_NO, a.ATTEDN_STATUS, a.ROLE, "
+							+ "s.SURF_NAME, j.GROUP_ID, j.GROUP_NAME, j.ASSEMBLE_TIME, j.GROUP_END_TIME, "
+							+ "j.SIGN_UP_END, j.GROUP_LIMIT, j.NOTICE, j.GROUP_STATUS "
+					+ "from Tep101_Jome17.ATTENDER a "
+					+ "left join Tep101_Jome17.JOIN_GROUP j on j.GROUP_ID = a.GROUP_ID "
+					+ "left join Tep101_Jome17.MEMBERINFO m on m.ID = a.MEMBER_ID "
+					+ "left join Tep101_Jome17.SURF_POINT s on j.SURF_POINT_ID = s.SURF_POINT_ID "
+					+ "where j.GROUP_ID = ? ;";
+		
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			
 			pstmt.setString(1, groupId);
-			pstmt.setString(2, memberId);
+//			pstmt.setString(2, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			PersonalGroup pGroup = new PersonalGroup();
-			pGroup.setMemberId(rs.getString("MEMBER_ID"));
-			pGroup.setNickname(rs.getString("NICKNAME"));
-			pGroup.setMemberGender(rs.getInt(3));						//3
-			pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
-			pGroup.setAttenderStatus(rs.getInt("ATTEND_STATUS"));
-			pGroup.setRole(rs.getInt("ROLE"));							//6
-			pGroup.setSurfName(rs.getString("SURF_NAME"));
-			pGroup.setGroupId(rs.getString("GROUP_ID"));
-			pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
-			pGroup.setAssembleTime(rs.getString("ASSEMBLE_TIME"));
-			pGroup.setGroupEndTime(rs.getString("GROUP_END_TIME"));
-			pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
-			pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));
-			pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
-//			pGroup.setGender(rs.getInt("GENDER"));
-			pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
-			return pGroup;
+			if (rs.next()) {
+				pGroup.setMemberId(rs.getString("MEMBER_ID"));
+				pGroup.setNickname(rs.getString("NICKNAME"));
+				pGroup.setMemberGender(rs.getInt(3));						//3
+				pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
+				pGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
+				pGroup.setRole(rs.getInt("ROLE"));							//6
+				pGroup.setSurfName(rs.getString("SURF_NAME"));
+				pGroup.setGroupId(rs.getString("GROUP_ID"));
+				pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
+				pGroup.setAssembleTime(rs.getString("ASSEMBLE_TIME"));
+				pGroup.setGroupEndTime(rs.getString("GROUP_END_TIME"));
+				pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
+//				pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));
+				pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
+//				pGroup.setGender(rs.getInt("GENDER"));
+				pGroup.setNotice(rs.getString("NOTICE"));
+				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
+				return pGroup;
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

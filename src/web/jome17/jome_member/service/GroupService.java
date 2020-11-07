@@ -9,6 +9,7 @@ import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.GroupActivityDaoimpl;
 import web.jome17.jome_member.dao.ScoreDaoimpl;
 import web.jome17.jome_notify.bean.AttenderBean;
+import web.jome17.jome_notify.bean.Notify;
 import web.jome17.main.DateUtil;
 
 public class GroupService {
@@ -139,4 +140,19 @@ public class GroupService {
 		CommonDao<ScoreBean, String> ScoreDao = new ScoreDaoimpl();
 		return ScoreDao.selectAll(groupId);
 	}
+	
+	//更新某人某揪團的評分列表，並刪除先前的評分通知
+	public int updateScoreListAndDeleteNoti(List<ScoreBean> ratingResults, Notify notify) {
+		int successedCount = new ScoreDaoimpl().updateAndDelete(ratingResults, notify);
+		if (successedCount > 0) {
+			return 1;
+		}
+		return -1;
+	}
+	
+	//取得某人對某揪團的大家評分列表
+	public List<ScoreBean> ratingList(String groupID, String memberId) {
+		return new ScoreDaoimpl().selectRatingList(groupID, memberId);
+	}
+	 
 }

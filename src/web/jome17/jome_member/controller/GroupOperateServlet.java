@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -27,10 +28,14 @@ import com.google.firebase.FirebaseOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import web.jome17.jome_member.bean.PersonalGroup;
+import web.jome17.jome_member.bean.ScoreBean;
+import web.jome17.jome_member.dao.ScoreDaoimpl;
 import web.jome17.jome_member.service.GroupService;
+import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.service.NotifyService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.jome_member.service.SendFcmService;
@@ -119,11 +124,14 @@ public class GroupOperateServlet extends HttpServlet {
 				int getAResult = -1;
 				String groupId = jsonIn.get("groupId").getAsString();
 				PersonalGroup pGroup = gService.searchAGroup(groupId);
+System.out.println("pGroup.getGroupName(): " + pGroup.getGroupName());
 				if (pGroup != null) {
+System.out.println("pGroup != null");
 					jsonOut.addProperty("group", GSON.toJson(pGroup));
 					getAResult = 1;
 				}
 				jsonOut.addProperty("getAResult", getAResult);
+System.out.println("getAResult: " + getAResult);
 				break;
 			
 			//查我與揪團的關係
@@ -187,6 +195,11 @@ public class GroupOperateServlet extends HttpServlet {
 								System.out.println(attender.getNickname());
 							}
 							System.out.println("insertScoreTableCount: " + scoreTableCount+ "\t" + new Date());
+							
+							// 2.請團員評分
+							int notifyTableCount = new NotifyService().insertNotiForRating(attenders);
+							System.out.println("insertScoreTableCount: " + notifyTableCount+ "\t" + new Date());
+							
 							System.gc();
 							cancel();
 						}
@@ -196,6 +209,7 @@ public class GroupOperateServlet extends HttpServlet {
 				Timer groupEndTimer = new Timer();
 				groupEndTimer.schedule(groupEndTimeTask, new DateUtil().str2Date(inPGroup.getGroupEndTime()));
 				
+
 				jsonOut.addProperty("creatResult", creatResult);
 				break;
 				
@@ -255,6 +269,8 @@ public class GroupOperateServlet extends HttpServlet {
 				}
 				jsonOut.addProperty("myGroupsResult", myGroupsResult);
 				break;
+				
+			
 			
 //			// 測試Fcm發送，一支app只能有一支servlet連firebase
 //			case "testFcm":
@@ -269,11 +285,32 @@ public class GroupOperateServlet extends HttpServlet {
 //				messageId = new SendFcmService().sendSingleFcm(registrationToken, "teseTitle", "testBody");
 //				System.out.println("testOtherServletFcm: " + messageId);
 //				break;
-				
+
+			// 拿評分列表
+			case "getRatings":
+				String myselfId = jsonIn.get("memberId").getAsString();
+				String thisGroupId = jsonIn.get("groupId").getAsString();
+				List<ScoreBean> ratings = new ArrayList<>();
+				ratings = new GroupService().ratingList(thisGroupId, myselfId);
+				if (ratings != null) {
+					jsonOut.addProperty("ratings", GSON.toJson(ratings));
+				}
+				break;
+			// 送出評分
+			case "updateScoreList":
+				String ratingResultsStr = jsonIn.get("ratingResults").getAsString();
+				Notify notify = new Gson().fromJson(jsonIn.get("notify").getAsString(), Notify.class);
+				Type listType = new TypeToken<List<ScoreBean>>(){}.getType();
+				List<ScoreBean> ratingResults = new Gson().fromJson(ratingResultsStr, listType);
+				int resultCode = gService.updateScoreListAndDeleteNoti(ratingResults, notify);
+				jsonOut.addProperty("resultCode", resultCode);
+				break;
 			default:
 				break;
 			}
+			
 			outStr = jsonOut.toString();
+System.out.println("outStr: " + outStr);
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 		}
