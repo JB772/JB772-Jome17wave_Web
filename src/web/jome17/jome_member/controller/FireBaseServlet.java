@@ -5,10 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,6 +36,7 @@ import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.GroupService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.jome_member.service.SendFcmService;
+import web.jome17.main.DateUtil;
 
 @WebServlet("/jome_member/FcmBasicServlet")
 public class FireBaseServlet extends HttpServlet {
@@ -100,6 +105,47 @@ public class FireBaseServlet extends HttpServlet {
 			sendGroupFcm(jsonObject, registrationTokens);
 			writeText(resp, "Group FCMs are sent!");
 			break;
+		
+		case "timerGroupFcm":
+			String timerGroupId = jsonObject.get("timerGroupId").getAsString();
+			GroupService gService = new GroupService();
+			PersonalGroup timerGroup = null;
+			timerGroup = gService.searchAGroup(timerGroupId);
+			String groupEndTimeStr = timerGroup.getGroupEndTime();
+			DateUtil dateUtil = new DateUtil();
+			Date gEndTime = dateUtil.str2Date(groupEndTimeStr);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(gEndTime);
+			calendar.add(Calendar.MINUTE, 2);
+			Date endTimeAfter2Min = calendar.getTime();
+			
+			/*
+			 * 避免資料庫衝突，在結束後2分鐘timer才開始工作，發Fcm給所有團員，通知評分
+			 */
+			TimerTask groupEndTimeTask = new TimerTask() {
+				@Override
+				public void run() {
+					PersonalGroup endUpGroup = gService.searchAGroup(timerGroupId);
+					if(endUpGroup.getGroupStatus() ==0) {
+						System.out.println("Group has been canceled,timerTask is end.");
+					}else {
+						GroupService gService = new GroupService();
+						JomeMemberService mService = new JomeMemberService();
+						List<PersonalGroup> attenders = gService.getAllAttenders(timerGroupId);
+						for(PersonalGroup attender: attenders) {
+							registrationTokens.add(mService.selectMemberById(attender.getMemberId()).getToken_id());
+						}
+						sendGroupFcm(jsonObject, registrationTokens);
+						writeText(resp, "Group FCMs are sent!");
+					}
+					System.gc();
+					cancel();
+				}
+			};
+			Timer groupEndTimer = new Timer();
+			groupEndTimer.schedule(groupEndTimeTask, endTimeAfter2Min);
+			break;
+			
 		default:
 			break;
 		}

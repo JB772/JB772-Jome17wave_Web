@@ -133,7 +133,6 @@ System.out.println("getAResult: " + getAResult);
 				String imageCreateStr = jsonIn.get("imageBase64").getAsString();
 				imageCreate = Base64.getMimeDecoder().decode(imageCreateStr);
 			
-				
 				//處理 PersonalGroup資料
 				PersonalGroup inPGroup = GSON.fromJson(jsonIn.get("inGroup").getAsString(), PersonalGroup.class);
 				inPGroup.setgImage(imageCreate);
@@ -141,45 +140,44 @@ System.out.println("getAResult: " + getAResult);
 				creatResult = gService.creatGroup(inPGroup);
 
 				/*
-				 * 集合時間到：groupStatus = 2
+				 * 集合時間到：groupStatus == 3
 				 */
 				TimerTask assembleTime = new TimerTask() {
 					@Override
 					public void run() {
-						inPGroup.setGroupStatus(3);
-						gService.updateGroup(inPGroup, null);
+						PersonalGroup assembleGroup = gService.searchAGroup(createGroupId);
+						if(assembleGroup.getGroupStatus() != 0) {
+							inPGroup.setGroupStatus(3);
+							gService.updateGroup(inPGroup, null);
+						}
 					}
 				};
 				Timer assembleTimer = new Timer();
 				assembleTimer.schedule(assembleTime, new DateUtil().str2Date(inPGroup.getAssembleTime()));
 				/*
-				 * 結束時間到：1.建立評分表，2.請團員評分
+				 * 結束時間到：1.建立評分表，2.建立notify
 				 */
 				TimerTask groupEndTimeTask = new TimerTask() {
 					@Override
 					public void run() {
 						// 1.建立評分表
-//						GroupService groupService = new GroupService();
-						List<PersonalGroup> attenders = gService.getAllAttenders(createGroupId);
-						if(attenders == null) {
-							System.out.println("TimerTask is fail.");
-							System.gc();
-							cancel();
+						PersonalGroup endUpGroup = gService.searchAGroup(createGroupId);
+						if(endUpGroup.getGroupStatus() == 0) {
+							System.out.println("Group has been canceled, table Score couldn't build.");
 						}else {
+							List<PersonalGroup> attenders = gService.getAllAttenders(createGroupId);
 							int scoreTableCount = gService.createScoreTable(attenders);
 							for(PersonalGroup attender: attenders) {
 								System.out.println(attender.getNickname());
 							}
 							System.out.println("insertScoreTableCount: " + scoreTableCount+ "\t" + new Date());
 							
-							// 2.請團員評分
+							// 2.建立notify
 							int notifyTableCount = new NotifyService().insertNotiForRating(attenders);
 							System.out.println("insertScoreTableCount: " + notifyTableCount+ "\t" + new Date());
-							
-							System.gc();
-							cancel();
 						}
-
+						System.gc();
+						cancel();
 					}
 				};
 				Timer groupEndTimer = new Timer();
@@ -195,13 +193,6 @@ System.out.println("getAResult: " + getAResult);
 				PersonalGroup joinGroup = GSON.fromJson(jsonIn.get("groupBean").getAsString(), PersonalGroup.class);
 				jointResult = gService.joinGroup(joinGroup);
 				String groupHeadId = gService.getGroupHeadId(joinGroup.getGroupId());
-				//新增通知訊息
-//				notiInsertResult = new NotifyService().insertGroupNoti(joinGroup);
-//				if (notiInsertResult == 1) {
-//					System.out.println("Group Notification Inserted Successfully");
-//				}else {
-//					System.out.println("Group Notification Insert Failed");
-//				}
 				jsonOut.addProperty("joinResult", jointResult);
 				jsonOut.addProperty("groupHeadId", groupHeadId);
 				break;
