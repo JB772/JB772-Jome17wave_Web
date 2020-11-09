@@ -121,14 +121,14 @@ public class NotifyDaoImpl implements NotifyDao{
 	 * 刪除
 	 */
 	@Override
-	public int delete(int notificationId) {
+	public int delete(String notificationId) {
 		int count = 0;
 		String sql = "delete from Tep101_Jome17.NOTIFY where NOTIFICATION_ID = ?;";
 		try (
 			Connection connection = dataSource.getConnection();
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 		){
-			pstmt.setInt(1, notificationId);
+			pstmt.setString(1, notificationId);
 			count = pstmt.executeUpdate();
 		} catch (Exception e) {
 			 e.printStackTrace();
@@ -365,9 +365,57 @@ public class NotifyDaoImpl implements NotifyDao{
 	 */
 	@Override
 	public Group getGroupBean(String notificationBody) {
-		String sql = "";
-//		????
+
+		String sql = "SELECT * FROM Tep101_Jome17.JOIN_GROUP Where GROUP_ID = ?;";
+		try (
+				Connection connection = dataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(sql);
+			){
+				pstmt.setString(1, notificationBody);
+				ResultSet rs = pstmt.executeQuery();
+				if (rs.next()) {
+					Group bean = new Group();
+					bean.setGrouptId(rs.getString(1));
+					bean.setGroupName(rs.getString(2));
+					return bean;
+				}
+			} catch (Exception e) {
+				 e.printStackTrace();
+			}
 		return null;
+	}
+	
+	/*
+	 * 做交易控制：做多筆notify的insert，用於評分通知(type 3)
+	 */
+	public int insertNotiForRating(List<Notify> ratingNotifies) {
+		int successedCount = 0;
+		String sql = "Insert into Tep101_Jome17.NOTIFY (TYPE, NOTIFICATION_BODY, MEMBER_ID) values(3, ?, ?);";
+		try (
+			Connection conn = dataSource.getConnection(); 
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		){
+			conn.setAutoCommit(false);
+				try {
+					for (Notify notify : ratingNotifies) {
+						pstmt.setString(1, notify.getNotificationBody());
+						pstmt.setString(2, notify.getMemberId());
+						successedCount += pstmt.executeUpdate();
+						if (successedCount < (successedCount-1)) {
+							throw new SQLException("Table notify insert is error: Insert No." + successedCount);
+						}
+					}
+					conn.commit();
+				}catch (SQLException e) {
+					conn.rollback();
+					successedCount = -1;
+					e.printStackTrace();
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return successedCount;
 	}
 
 

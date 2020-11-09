@@ -13,7 +13,7 @@ public interface NotifyDao {
 	int insert(Notify bean);
 	int insertForFriendUpdate(FriendListBean bean);
 	//刪除
-	int delete(int notificationId);
+	int delete(String notificationId);
 	int delete2(FriendListBean bean);
 	//找到要刪除的那筆資料
 	int findNotificationId(Notify bean);

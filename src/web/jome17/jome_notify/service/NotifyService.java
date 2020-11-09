@@ -219,7 +219,7 @@ public class NotifyService {
 	// ----------------------- 以下為有交易控制區 ----------------------- //
 	
 	/*
-	 * 新增通知訊息 - 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
+	 * 新增通知訊息 - 2. 好友類型通知: 同意成為好友(雙方有通知)，使用交易控制的daoImpl
 	 * 
 	 */
 	public int insertBothNotiForBeFriend(FriendListBean agreeBean) {
@@ -248,7 +248,7 @@ public class NotifyService {
 	}
 	
 	/*
-	 * 新增通知訊息 - 好友類型通知: 邀請你成為好友(被邀請方單方有通知)，使用交易控制的daoImpl
+	 * 新增通知訊息 - 2. 好友類型通知: 邀請你成為好友(被邀請方單方有通知)，使用交易控制的daoImpl
 	 * 
 	 */
 	public int insertNotiForFriendInsert(FriendListBean checkList) {
@@ -269,6 +269,22 @@ public class NotifyService {
 		return resultCode;
 	}
 
+
+	/*
+	 * 新增通知訊息 - 3. 評分類型通知: 傳入該groupId所有的attender名單，建立評分通知，回傳成功建立資料筆數，使用交易控制的daoImpl
+	 * 
+	 */
+	public int insertNotiForRating(List<PersonalGroup> attenders) {
+		List<Notify> ratingNotifies = new ArrayList<Notify>();
+		for (PersonalGroup personalGroup : attenders) {
+			Notify notifyBean = new Notify();
+			notifyBean.setType(3);
+			notifyBean.setNotificationBody(personalGroup.getGroupId());
+			notifyBean.setMemberId(personalGroup.getMemberId());
+			ratingNotifies.add(notifyBean);
+		}
+		return new NotifyDaoImpl().insertNotiForRating(ratingNotifies);
+	}
 	
 }
 

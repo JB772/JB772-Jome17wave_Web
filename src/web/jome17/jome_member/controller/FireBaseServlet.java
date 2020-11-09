@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -26,6 +28,8 @@ import com.google.firebase.messaging.Notification;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import web.jome17.jome_member.bean.PersonalGroup;
+import web.jome17.jome_member.service.GroupService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.jome_member.service.SendFcmService;
 
@@ -86,6 +90,13 @@ public class FireBaseServlet extends HttpServlet {
 			break;
 			
 		case "groupFcm":
+			String disGroupId = jsonObject.get("disGroupId").getAsString();
+			GroupService groupService = new GroupService();
+			JomeMemberService memberService = new JomeMemberService();
+			List<PersonalGroup> allAttenders = groupService.getAllAttenders(disGroupId);
+			for(PersonalGroup attender: allAttenders) {
+				registrationTokens.add(memberService.selectMemberById(attender.getMemberId()).getToken_id());
+			}
 			sendGroupFcm(jsonObject, registrationTokens);
 			writeText(resp, "Group FCMs are sent!");
 			break;
@@ -123,10 +134,10 @@ public class FireBaseServlet extends HttpServlet {
 	
 	private void sendGroupFcm(JsonObject jsonObject, Set<String> registrationtokens) {
 		for(String retoken: registrationtokens) {
-			System.out.println("registrationtokens 119: " + retoken);
+			System.out.println("registrationtokens 137: " + retoken);
 		}
 		String title = jsonObject.get("title").getAsString();
-		String body = jsonObject.get("bodye").getAsString();
+		String body = jsonObject.get("body").getAsString();
 		String data = jsonObject.get("data").getAsString();
 		
 		Notification notification = Notification.builder()

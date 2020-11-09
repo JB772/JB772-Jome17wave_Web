@@ -43,19 +43,25 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	/*
 	 * 新增Attender表；增加成員(本人)，增加notify(團長)
 	 */
-	public int insertAtenderBean (AttenderBean bean) {
+	public int insertAtenderBean (AttenderBean bean, String groupHeadId) {
 		String sqlAttenderInsert =  "insert into Tep101_Jome17.ATTENDER "
-									+ "(Group_ID, ATTEND_STATUS, ROLE, MEMBER_ID) "
+									+ "(Group_ID, ATTEDN_STATUS, ROLE, MEMBER_ID) "
 								+ "values "
 									+ "(?,?,?,?) ;";
 		String sqlNotifyInsert = "Insert into Tep101_Jome17.NOTIFY "
 									+ "(TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID) "
 								+ "values "
 									+ "(1, ?, 3, ?);";
+		String sqlAttenderNoSelect = "Select "
+										+ "ATTENDER_NO "
+									+ "from Tep101_Jome17.ATTENDER "
+									+ "where "
+										+ "GROUP_ID = ? and MEMBER_ID = ? and ROLE = 2;";
 		int insertResult = 0;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlAttenderInsert);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyInsert);) {
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyInsert);
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlAttenderNoSelect);) {
 			conn.setAutoCommit(false);
 			try {
 				pstmt1.setString(1, bean.getGroupId());
@@ -63,10 +69,21 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 				pstmt1.setInt(3, bean.getRole());
 				pstmt1.setString(4, bean.getMemberId());
 				int insertAttenderResult = pstmt1.executeUpdate();
-				if(insertAttenderResult < 1) {
-					throw new SQLException("Table Attender insert error! ");
+System.out.println(pstmt1);				
+				
+				//取新增的attenderNO
+				int attenderNo = -1;
+				pstmt3.setString(1, bean.getGroupId());
+				pstmt3.setString(2, bean.getMemberId());
+				ResultSet rs = pstmt3.executeQuery();
+System.out.println(pstmt3);
+				while(rs.next()) {
+					attenderNo = rs.getInt(1);
 				}
-				pstmt2.setString(1, bean.getAttenderNo()+"");
+				if(insertAttenderResult < 1 || attenderNo < 1) {
+					throw new SQLException("Table Attender insert error! " + insertAttenderResult + attenderNo);
+				}
+				pstmt2.setString(1, attenderNo + "");
 				pstmt2.setString(2, bean.getMemberId());
 				int insertNotifyResult = pstmt2.executeUpdate();
 				if(insertNotifyResult < 1) {
