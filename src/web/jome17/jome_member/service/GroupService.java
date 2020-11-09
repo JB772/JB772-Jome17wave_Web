@@ -74,7 +74,8 @@ public class GroupService {
 	public int auditAttender(PersonalGroup auditGroup) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		AttenderBean auditAttender = new AttenderBean(auditGroup.getAttenderId(), auditGroup.getAttenderStatus(), auditGroup.getRole(), auditGroup.getMemberId(), auditGroup.getGroupId());
-		return attenderDao.updateAtender(auditAttender, "groupHeadId");
+		String gHeadId = attenderDao.selectGroupHeadId(auditGroup.getGroupId()).getMemberId();
+		return attenderDao.updateAtender(auditAttender, gHeadId);
 	}
 	
 	//拿到該團團長的id
