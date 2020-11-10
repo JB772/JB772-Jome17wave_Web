@@ -117,7 +117,7 @@ public class FindNewFriendServlet extends HttpServlet {
 						//新增通知訊息
 						Notify notify = new Notify();
 						notify.setType(2);
-						notify.setNotificationBody(checkList.getuId());
+						notify.setNotificationBody(String.valueOf(checkList.getuId()));
 						notify.setBodyStatus(checkList.getFriend_Status());
 						notify.setMemberId(checkList.getAccept_M_ID());
 						resultCode = new NotifyDaoImpl().insert(notify);

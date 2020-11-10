@@ -43,31 +43,50 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	/*
 	 * 新增Attender表；增加成員(本人)，增加notify(團長)
 	 */
-	public int insertAtenderBean (AttenderBean bean) {
+	public int insertAtenderBean (AttenderBean bean, String groupHeadId) {
 		String sqlAttenderInsert =  "insert into Tep101_Jome17.ATTENDER "
-									+ "(Group_ID, ATTEND_STATUS, ROLE, MEMBER_ID) "
+									+ "(Group_ID, ATTEDN_STATUS, ROLE, MEMBER_ID) "
 								+ "values "
 									+ "(?,?,?,?) ;";
 		String sqlNotifyInsert = "Insert into Tep101_Jome17.NOTIFY "
 									+ "(TYPE, NOTIFICATION_BODY, BODY_STATUS, MEMBER_ID) "
 								+ "values "
 									+ "(1, ?, 3, ?);";
+		String sqlAttenderNoSelect = "Select "
+										+ "ATTENDER_NO "
+									+ "from Tep101_Jome17.ATTENDER "
+									+ "where "
+										+ "GROUP_ID = ? and MEMBER_ID = ? and ROLE = 2;";
 		int insertResult = 0;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlAttenderInsert);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyInsert);) {
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyInsert);
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlAttenderNoSelect);) {
 			conn.setAutoCommit(false);
 			try {
 				pstmt1.setString(1, bean.getGroupId());
 				pstmt1.setInt(2, bean.getAttendStatus());
 				pstmt1.setInt(3, bean.getRole());
 				pstmt1.setString(4, bean.getMemberId());
-				int insertAttenderResult = pstmt1.executeUpdate();
-				if(insertAttenderResult < 1) {
-					throw new SQLException("Table Attender insert error! ");
+				int insertAttenderResult = pstmt1.executeUpdate();		
+				
+				//取新增的attenderNO
+				int attenderNo = -1;
+				pstmt3.setString(1, bean.getGroupId());
+				pstmt3.setString(2, bean.getMemberId());
+				ResultSet rs = pstmt3.executeQuery();
+				while(rs.next()) {
+					attenderNo = rs.getInt(1);
 				}
-				pstmt2.setInt(1, bean.getAttenderNo());
-				pstmt2.setString(2, bean.getMemberId());
+				if(insertAttenderResult < 1 || attenderNo < 1) {
+					System.out.println(pstmt1);
+					System.out.println( "insertAttenderResul: " + insertAttenderResult);
+					System.out.println(pstmt3);
+					System.out.println("attenderNo: " + attenderNo);
+					throw new SQLException("Table Attender insert error! " + insertAttenderResult + attenderNo);
+				}
+				pstmt2.setString(1, attenderNo + "");
+				pstmt2.setString(2, groupHeadId);
 				int insertNotifyResult = pstmt2.executeUpdate();
 				if(insertNotifyResult < 1) {
 					throw new SQLException("Table Notify insert error!");
@@ -87,11 +106,11 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 	
 	/**
 	 * 修改Attender表；團員變更參加狀態 (status3→1 , 3→2)→ delete notifiy(要求3)，增加notify(加入成功or失敗),
-	 * 								(status1→0		)→delete notifiy(成功1)，增加notify(團員 && 團長)
+	 * 								(status1→0		)→ delete notifiy(成功1)，增加notify(團員 && 團長)
 	 */
 	public int updateAtender(AttenderBean bean, String headId) {
 		String sqlAttenderUpdate = "update Tep101_Jome17.ATTENDER set "
-										+ "ATTEND_STATUS = ?, "
+										+ "ATTEDN_STATUS = ?, "
 										+ "ROLE = ? "
 									+"where "
 										+ "ATTENDER_NO = ?";
@@ -108,41 +127,48 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyDelete);
 			PreparedStatement pstmt3 = conn.prepareStatement(sqlNotifyInsert); 
 			PreparedStatement pstmt4 = conn.prepareStatement(sqlNotifyInsert);) {
-			conn.commit();
+			conn.setAutoCommit(false);
 			try{
 				pstmt1.setInt(1, bean.getAttendStatus());
 				pstmt1.setInt(2, bean.getRole());
 				pstmt1.setInt(3, bean.getAttenderNo());
 				int attenderUpdateResult = pstmt1.executeUpdate();
+
 				if (attenderUpdateResult < 1) {
+					System.out.println(pstmt1);
 					throw new SQLException("Table Attender update error! ");
 				}
 				pstmt2.setInt(1,bean.getAttenderNo());
 				int notifyDeleteResult = pstmt2.executeUpdate();
 				if(notifyDeleteResult < 1) {
+					System.out.println(pstmt2);
 					throw new SQLException("Table Notify delete error! ");
 				}
 				if(bean.getAttendStatus() == 0) {
-					pstmt3.setInt(1, bean.getAttenderNo());
+					pstmt3.setString(1, bean.getAttenderNo()+ "");
 					pstmt3.setInt(2, bean.getAttendStatus());
 					pstmt3.setString(3, headId);
 					int insertNotifyResultHead = pstmt3.executeUpdate();
 					if(insertNotifyResultHead < 1) {
+						System.out.println(pstmt3);
 						throw new SQLException("Table notify for groupHead insert error! ");
 					}
-					pstmt4.setInt(1, bean.getAttenderNo());
+					pstmt4.setString(1, bean.getAttenderNo()+ "");
 					pstmt4.setInt(2, bean.getAttendStatus());
 					pstmt4.setString(3, bean.getMemberId());
 					int insertNotifyResultSelf = pstmt4.executeUpdate();
 					if(insertNotifyResultSelf < 1) {
+						System.out.println(pstmt4);
 						throw new SQLException("Table notify for groupMemer insert error! ");
 					}
 				}else {
-					pstmt3.setInt(1, bean.getAttenderNo());
+					pstmt3.setString(1, bean.getAttenderNo()+ "");
 					pstmt3.setInt(2, bean.getAttendStatus());
 					pstmt3.setString(3, bean.getMemberId());
-					int insertNotifyResultSelf = pstmt4.executeUpdate();
+					int insertNotifyResultSelf = pstmt3.executeUpdate();
+					System.out.println(pstmt3);
 					if(insertNotifyResultSelf < 1) {
+						System.out.println(pstmt3);
 						throw new SQLException("Table notify for groupMember insert error! ");
 					}
 				}

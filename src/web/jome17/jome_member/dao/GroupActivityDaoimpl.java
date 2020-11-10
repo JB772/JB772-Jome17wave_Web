@@ -21,7 +21,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	//新增揪團活動；交易控制：同時新增團員名單；
 	@Override
 	public int insert(PersonalGroup bean) {
-		String sqlJoinGroup = "insert into Tep101_Jome17.JOIN_GROUP "
+		String sqlInsertGroup = "insert into Tep101_Jome17.JOIN_GROUP "
 						+ "(Group_ID, GROUP_NAME, ASSEMBLE_TIME,"			//3
 						+ " GROUP_END_TIME, SIGN_UP_END, SURF_POINT_ID,"	//6
 						+ " GROUP_LIMIT, GENDER, NOTICE,"					//9
@@ -31,7 +31,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ " ?, ?, ?, "		//6
 						+ "	?, ?, ?, "		//9
 						+ " ?, ?) ;";		//11
-		String sqlAttender = "insert into Tep101_Jome17.ATTENDER "
+		String sqlInsertAttender = "insert into Tep101_Jome17.ATTENDER "
 						+ "(Group_ID, ATTEDN_STATUS,"		//2
 						+ " ROLE, MEMBER_ID) "				//4
 					+ "values "
@@ -39,8 +39,8 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 						+ " ?, ?) ;";	//4
 		int insertResult =  0;
 		try(Connection conn = dataSource.getConnection();
-			PreparedStatement pstmt1 = conn.prepareStatement(sqlJoinGroup);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlAttender);) {
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlInsertGroup);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlInsertAttender);) {
 			conn.setAutoCommit(false);
 			try {
 				//新增group
@@ -91,6 +91,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 		int updateResult = 0;
 		if (groupImage == null) {
 			if(bean.getAttenderStatus() != 0) {
+				//團長更新資料
 				sql = "update Tep101_Jome17.JOIN_GROUP set "
 						+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
 						+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
@@ -100,6 +101,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 					+ " where "
 						+ "GROUP_ID = ?";								//10
 			}else {
+				//團長退團
 					sqlGroup = "update Tep101_Jome17.JOIN_GROUP set "
 									+ "GROUP_STATUS = 0"
 								+ " where "
@@ -110,6 +112,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 									+ "GROUP_ID = ?";
 			}		
 		}else {
+			//團長改圖
 			sql = "update Tep101_Jome17.JOIN_GROUP set "
 					+ " GROUP_NAME = ?, ASSEMBLE_TIME = ?,"			//2		
 					+ " GROUP_END_TIME = ?, SIGN_UP_END = ?,"		//4
@@ -172,8 +175,68 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 			}
 		}
 	}
+	
+	
+	//主揪按下退出揪團的按鈕 更新group及 attender與 notify
+	public int updateGroupAttenderNotify(String disGroupId, List<Integer> AllAttenderNo) {
+		StringBuilder sqlNotifyBuilder = new StringBuilder();				
+//				"update Tep101_Jome17.ATTENDER set ATTEDN_STATUS = 0 where GROUP_ID = ?; ";
+		String sqlBefore = "update Tep101_Jome17.NOTIFY set BODY_STATUS = 0 where NOTIFICATION_BODY in( ";
+		String sqlAfter = " );";
+		sqlNotifyBuilder.append(sqlBefore).append(AllAttenderNo.get(0));
+		for(Integer attenderNo : AllAttenderNo) {
+			if(attenderNo != AllAttenderNo.get(0)) {
+				sqlNotifyBuilder.append(", ").append(attenderNo);
+			}
+		}
+		sqlNotifyBuilder.append(sqlAfter);
+		
 
-	//主揪按下退出揪團的按鈕就是 刪除該groupId的揪團資料；交易控制：一併刪除ATTENDER表的該groupId資料。
+		String sqlGroupUpdate = "update Tep101_Jome17.JOIN_GROUP set GROUP_STATUS = 0 where GROUP_ID = ?; ";
+		String sqlAllAttendersUpdate = "update Tep101_Jome17.ATTENDER set ATTEDN_STATUS = 0 where GROUP_ID = ?; ";
+		String sqlNotifyUpdate = sqlNotifyBuilder.toString();
+		int updateResult = 0;
+		
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlGroupUpdate);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlAllAttendersUpdate);
+			PreparedStatement pstmt3 = conn.prepareStatement(sqlNotifyUpdate);) {
+			conn.setAutoCommit(false);
+			try {
+				pstmt1.setString(1, disGroupId);
+				int groupUpdateResult = pstmt1.executeUpdate();
+				if(groupUpdateResult < 1) {
+					System.out.println(pstmt1);
+					throw new SQLException("Table Group is update error");
+				}
+				pstmt2.setString(1, disGroupId);
+				int attenderUpdateResult = pstmt2.executeUpdate();
+				if(attenderUpdateResult < 1) {
+					System.out.println(pstmt2);
+					throw new SQLException("Table Attender are update error");
+				}
+				int notifyUpdateResult = pstmt3.executeUpdate();
+				if(notifyUpdateResult < 1) {
+					System.out.println(pstmt3);
+					throw new SQLException("Table Notify are update error");
+				}
+				conn.commit();
+				updateResult = 3;
+			}catch (SQLException e) {
+				conn.rollback();
+				updateResult = -1;
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return updateResult;
+	}
+	
+	//搜尋該GroupId的所有attenderNo及
+	
+	//主揪按下退出揪團的按鈕就是 刪除該groupId的揪團資料；交易控制：一併刪除ATTENDER表的該groupId資料。(會影響其它表，棄，不用，改updateGroupAttenderNotify)
 	@Override
 	public int deletaByKey(String groupId, String key) {
 		String sqlDelGroup = "DELETE from Tep101_Jome17.JOIN_GROUP where GROUP_ID = ? ;";
@@ -228,16 +291,6 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	//拿到主揪的次數 及 參加揪團的次數
 	@Override
 	public String getCount(String groupId) {
-//		String sqlAddGroupCount = "select count(*) "
-//								+ "from Tep101_Jome17.ATTENDER "
-//								+ "where "
-//									+ "MEMBER_ID = ? "
-//									+ "and ROLE = 1 and ATTEDN_STATUS = 1;" ;
-//		String sqlGroupCount = "select count(*) "
-//							+ "from Tep101_Jome17.ATTENDER "
-//							+ "where "
-//								+ "MEMBER_ID = ? "
-//								+ "and ROLE = 2 and ATTEDN_STATUS = 1;" ;
 		String sql = "select count(*) "
 					+ "from Tep101_Jome17.ATTENDER "
 					+ "where "
@@ -402,52 +455,43 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 	//搜尋某一場揪團的所有資料(含主揪、浪點)
 	@Override
 	public PersonalGroup selectByKey(String memberId, String groupId) {
-		String sql = "select "
-				+ "a.MEMBER_ID, "
-				+ "m.NICKNAME, "
-				+ "m.GENDER, "			//3
-				+ "a.ATTENDER_NO, "
-				+ "a.ATTEDN_STATUS, "	
-				+ "a.ROLE, "			//6
-				+ "s.SURF_NAME, "
-				+ "j.GROUP_ID, j.GROUP_NAME, "		//9
-				+ "j.ASSEMBLE_TIME, j.GROUP_END_TIME, "		//11
-				+ "j.SIGN_UP_END, j.GROUP_LIMIT, "			//13
-				+ "j.NOTICE, j.GROUP_STATUS "				//15
-			+ "from "
-				+ "Tep101_Jome17.ATTENDER a "
-					+ "left join Tep101_Jome17.JOIN_GROUP j "
-					+ "on j.GROUP_ID = a.GROUP_ID "
-						+ "left join Tep101_Jome17.MEMBERINFO m "
-						+ "on m.ID = a.MEMBER_ID "
-							+ "left join Tep101_Jome17.SURF_POINT s "
-							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID"
-			+ "where "
-				+ "j.GROUP_ID = ? "
-				+ "and a.MEMBER_ID = ?;";
+		String sql = "select  a.MEMBER_ID, m.NICKNAME, m.GENDER, a.ATTENDER_NO, a.ATTEDN_STATUS, a.ROLE, "
+							+ "s.SURF_NAME, j.GROUP_ID, j.GROUP_NAME, j.ASSEMBLE_TIME, j.GROUP_END_TIME, "
+							+ "j.SIGN_UP_END, j.GROUP_LIMIT, j.NOTICE, j.GROUP_STATUS "
+					+ "from Tep101_Jome17.ATTENDER a "
+					+ "left join Tep101_Jome17.JOIN_GROUP j on j.GROUP_ID = a.GROUP_ID "
+					+ "left join Tep101_Jome17.MEMBERINFO m on m.ID = a.MEMBER_ID "
+					+ "left join Tep101_Jome17.SURF_POINT s on j.SURF_POINT_ID = s.SURF_POINT_ID "
+					+ "where j.GROUP_ID = ? and a.ROLE = 1; ";
+		
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			
 			pstmt.setString(1, groupId);
-			pstmt.setString(2, memberId);
+//			pstmt.setString(2, memberId);
 			ResultSet rs = pstmt.executeQuery();
 			PersonalGroup pGroup = new PersonalGroup();
-			pGroup.setMemberId(rs.getString("MEMBER_ID"));
-			pGroup.setNickname(rs.getString("NICKNAME"));
-			pGroup.setMemberGender(rs.getInt(3));						//3
-			pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
-			pGroup.setAttenderStatus(rs.getInt("ATTEND_STATUS"));
-			pGroup.setRole(rs.getInt("ROLE"));							//6
-			pGroup.setSurfName(rs.getString("SURF_NAME"));
-			pGroup.setGroupId(rs.getString("GROUP_ID"));
-			pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
-			pGroup.setAssembleTime(rs.getString("ASSEMBLE_TIME"));
-			pGroup.setGroupEndTime(rs.getString("GROUP_END_TIME"));
-			pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
-			pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));
-			pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
-//			pGroup.setGender(rs.getInt("GENDER"));
-			pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
-			return pGroup;
+			if (rs.next()) {
+				pGroup.setMemberId(rs.getString("MEMBER_ID"));
+				pGroup.setNickname(rs.getString("NICKNAME"));
+				pGroup.setMemberGender(rs.getInt(3));						//3
+				pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
+				pGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
+				pGroup.setRole(rs.getInt("ROLE"));							//6
+				pGroup.setSurfName(rs.getString("SURF_NAME"));
+				pGroup.setGroupId(rs.getString("GROUP_ID"));
+				pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
+				pGroup.setAssembleTime(rs.getString("ASSEMBLE_TIME"));
+				pGroup.setGroupEndTime(rs.getString("GROUP_END_TIME"));
+				pGroup.setSignUpEnd(rs.getString("SIGN_UP_END"));			//12
+//				pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));
+				pGroup.setGroupLimit(rs.getInt("GROUP_LIMIT"));
+//				pGroup.setGender(rs.getInt("GENDER"));
+				pGroup.setNotice(rs.getString("NOTICE"));
+				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
+				return pGroup;
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

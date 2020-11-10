@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.ScoreBean;
+import web.jome17.jome_notify.bean.Notify;
 import web.jome17.main.ServiceLocator;
 
 public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
@@ -118,6 +119,82 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 	}
 	
 	/*
+	 * 做交易控制：做多筆score的update，並刪除先前的評分通知
+	 */
+	public int updateAndDelete(List<ScoreBean> ratingResults, Notify notify) {
+		int successedCount = 0;
+		
+		String sqlUpdate = "UPDATE Tep101_Jome17.SCORE SET RATING_SCORE = ? WHERE SCORE_ID = ?;";
+		String sqlDelete = "delete from Tep101_Jome17.NOTIFY where TYPE = ? and NOTIFICATION_BODY = ? and MEMBER_ID = ?;"; 
+		try (
+			Connection conn = dataSource.getConnection(); 
+			PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate);
+			PreparedStatement pstmtDelete = conn.prepareStatement(sqlDelete);
+		){
+			conn.setAutoCommit(false);
+				try {
+					for (ScoreBean aRated : ratingResults) {
+						pstmtUpdate.setInt(1, aRated.getRatingScore());
+						pstmtUpdate.setInt(2, aRated.getScoreId());
+						successedCount += pstmtUpdate.executeUpdate();
+						if (successedCount < (successedCount-1)) {
+							throw new SQLException("Table score update is error: Update No." + successedCount);
+						}
+					}
+					pstmtDelete.setInt(1, notify.getType());
+					pstmtDelete.setString(2, notify.getNotificationBody());
+					pstmtDelete.setString(3, notify.getMemberId());
+					successedCount += pstmtDelete.executeUpdate();
+					if (successedCount < (successedCount-1)) {
+						throw new SQLException("Table notify delete is error!");
+					}
+					conn.commit();
+				}catch (SQLException e) {
+					conn.rollback();
+					successedCount = -1;
+					e.printStackTrace();
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return successedCount;
+	}
+	
+	/*
+	 * 某個揪團某個人對大家的評分卷
+	 */
+	public List<ScoreBean> selectRatingList(String groupID, String memberId) {
+		String sql = "SELECT s.*, m.NICKNAME " + "FROM Tep101_Jome17.SCORE s "
+				+ "left join Tep101_Jome17.MEMBERINFO m on s.BE_RATED_ID = m.ID "
+				+ "WHERE GROUP_ID = ? and MEMBER_ID = ?;";
+		try (
+				Connection conn = dataSource.getConnection(); 
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+		){
+			pstmt.setString(1, groupID);
+			pstmt.setString(2, memberId);
+			ResultSet rs = pstmt.executeQuery();
+			List<ScoreBean> scoreDatas = new ArrayList<ScoreBean>();
+			while (rs.next()) {
+				ScoreBean scoreData = new ScoreBean();
+				scoreData.setScoreId(rs.getInt("SCORE_ID"));
+				scoreData.setMemberId(rs.getString("MEMBER_ID"));
+				scoreData.setBeRatedId(rs.getString("BE_RATED_ID"));
+				scoreData.setGroupId(rs.getString("GROUP_ID"));
+				scoreData.setRatingScore(rs.getInt("RATING_SCORE"));
+				scoreData.setBeRatedName(rs.getString("NICKNAME"));
+				scoreDatas.add(scoreData);
+			}
+			return scoreDatas;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	/*
 	 * 
 	 * 暫無用方法
 	 * 
@@ -140,16 +217,16 @@ public class ScoreDaoimpl implements CommonDao<ScoreBean, String> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public ScoreBean selectByKey(String keyword, String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public ScoreBean selectRelation(ScoreBean bean) {
 
+		return null;
+	}
+
+	@Override
+	public ScoreBean selectByKey(String keyword, String key) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

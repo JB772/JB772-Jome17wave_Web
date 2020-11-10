@@ -2,6 +2,7 @@ package web.jome17.jome_member.testUse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +56,21 @@ public class Test2Json {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
+		List<Integer> testNumbers = new ArrayList<Integer>();
+		testNumbers.add(1);
+		testNumbers.add(2);
+		testNumbers.add(3);
+		testNumbers.add(4);
+		testNumbers.add(5);
+		StringBuilder testStStringBuilder = new StringBuilder();
+		testStStringBuilder.append("test: ").append(testNumbers.get(0));
+		for(Integer testNumber: testNumbers) {
+			if(testNumber != testNumbers.get(0)) {
+				testStStringBuilder.append(", ").append(testNumber);
+			}
+		}
+		System.out.println(testStStringBuilder);
 	}
 
 }

@@ -72,7 +72,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				if(insertFriend < 1 || uid != -1) {
 					throw new SQLException("Table Friend insert error! ");
 				}
-				pstmt3.setInt(1, uid);
+				pstmt3.setString(1, uid+ "");
 				pstmt3.setString(2, friendList.getAccept_M_ID());
 				int insertNotify = pstmt3.executeUpdate();
 				if(insertNotify < 1) {
@@ -140,7 +140,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				if(updateResult < 1) {
 					throw new SQLException("update FriendeList is error!");
 				}
-				pstmt2.setInt(1, bean.getuId());
+				pstmt2.setString(1, bean.getuId()+ "");
 				int deleteResult = pstmt2.executeUpdate();
 				if(deleteResult < 1) {
 					throw new SQLException("delete notify is error!");
@@ -286,14 +286,14 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 								+ "and "
 								+ "ACCEPT_M_ID in(?, ?);";
 		String sqlRelation = "DELETE FROM Tep101_Jome17.FRIEND_LIST WHERE UID = ?;";
-		String sqlMessage = "DELETE FROM Tep101_Jome17.NOTIFY "
+		String sqlNotify = "DELETE FROM Tep101_Jome17.NOTIFY "
 							+ "WHERE TYPE = 2 and NOTIFICATION_BODY = ?;";
 		int uid = -1;
 		int deleteResult = -1;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt3 = conn.prepareStatement(sqlGetTableId);
 			PreparedStatement pstmt1 = conn.prepareStatement(sqlRelation);
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlMessage);) {
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotify);) {
 			pstmt3.setString(1, mId);
 			pstmt3.setString(2, mId1);
 			pstmt3.setString(3, mId);
@@ -310,7 +310,7 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				if(resultDelFriend < 1) {
 					throw new SQLException("table FRIEND_LIST is deleted in error!");
 				}
-				pstmt2.setInt(1, uid);
+				pstmt2.setString(1, uid+ "");
 				int resultDelNotify = pstmt2.executeUpdate();
 				if(resultDelNotify < 1) {
 					throw new SQLException("table NOTIFY is deleted in error!");

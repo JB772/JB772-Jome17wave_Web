@@ -1,5 +1,6 @@
 package web.jome17.jome_member.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import web.jome17.jome_member.bean.PersonalGroup;
@@ -9,7 +10,7 @@ import web.jome17.jome_member.dao.CommonDao;
 import web.jome17.jome_member.dao.GroupActivityDaoimpl;
 import web.jome17.jome_member.dao.ScoreDaoimpl;
 import web.jome17.jome_notify.bean.AttenderBean;
-import web.jome17.main.DateUtil;
+import web.jome17.jome_notify.bean.Notify;
 
 public class GroupService {
 	private CommonDao<PersonalGroup, String> dao;
@@ -21,7 +22,7 @@ public class GroupService {
 	//建立新的揪團
 	public int creatGroup(PersonalGroup pGroup) {
 		return dao.insert(pGroup);
-	}
+	}	
 	
 	//更新揪團資訊
 	public int updateGroup(PersonalGroup pGroup, byte[] image) {
@@ -35,18 +36,33 @@ public class GroupService {
 	public int joinGroup(PersonalGroup pGroup) {
 		pGroup.setRole(2);
 		pGroup.setAttenderStatus(3);
-		AttenderBean joinAttender = new AttenderBean(pGroup.getAttenderId(), pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
+		AttenderBean joinAttender = new AttenderBean(-1, pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
-		return attenderDao.insertAtenderBean(joinAttender);
+		String gHeadId = attenderDao.selectGroupHeadId(pGroup.getGroupId()).getMemberId();
+		return attenderDao.insertAtenderBean(joinAttender, gHeadId);
 	}
 	
 	//退團
 	public int dropGroup(PersonalGroup pGroup) {
 		if(pGroup.getRole() == 1) {
-			//是主揪就更新該GroupId的所有記錄含兩張Table
-			return dao.update(pGroup);
+			/*
+			 * 是主揪：	1.Update Table Group，該GroupId的Group_status，都改為0，
+			 * 		  	2.Update Table Attenders，該GroupId的所有Attedn_status = 0
+			 * 			3.Update Table Notify，所有Attenders的body_status都改為0
+			 * 			
+			 * 			交易控制 1, 2, 3
+			 */
+			String disGroupId = pGroup.getGroupId();
+			List<PersonalGroup> allAttenders = getAllAttenders(disGroupId);
+			List<Integer> AllAttenderNo = new ArrayList<Integer>();
+			for(PersonalGroup attender: allAttenders) {
+				AllAttenderNo.add(attender.getAttenderId());
+			}
+			return new GroupActivityDaoimpl().updateGroupAttenderNotify(disGroupId, AllAttenderNo);
 		}else {
-			//是團員就改ATTEND_STATUS = 0;
+			/*
+			 * 是團員：改ATTEND_STATUS = 0;
+			 */
 			AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 			AttenderBean memberAttender = new AttenderBean(pGroup.getAttenderId(), pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
 			String groupHeadId = attenderDao.selectGroupHeadId(pGroup.getGroupId()).getMemberId();
@@ -58,7 +74,15 @@ public class GroupService {
 	public int auditAttender(PersonalGroup auditGroup) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		AttenderBean auditAttender = new AttenderBean(auditGroup.getAttenderId(), auditGroup.getAttenderStatus(), auditGroup.getRole(), auditGroup.getMemberId(), auditGroup.getGroupId());
-		return attenderDao.updateAtender(auditAttender, "groupHeadId");
+		String gHeadId = attenderDao.selectGroupHeadId(auditGroup.getGroupId()).getMemberId();
+		return attenderDao.updateAtender(auditAttender, gHeadId);
+	}
+	
+	//拿到該團團長的id
+	public String getGroupHeadId(String groupId) {
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+		String groupHeadId = attenderDao.selectGroupHeadId(groupId).getMemberId();
+		return groupHeadId;
 	}
 	
 	//搜尋所有的揪團資料(含主揪人的mId及nickname)
@@ -143,4 +167,19 @@ public class GroupService {
 		CommonDao<ScoreBean, String> ScoreDao = new ScoreDaoimpl();
 		return ScoreDao.selectAll(groupId);
 	}
+	
+	//更新某人某揪團的評分列表，並刪除先前的評分通知
+	public int updateScoreListAndDeleteNoti(List<ScoreBean> ratingResults, Notify notify) {
+		int successedCount = new ScoreDaoimpl().updateAndDelete(ratingResults, notify);
+		if (successedCount > 0) {
+			return 1;
+		}
+		return -1;
+	}
+	
+	//取得某人對某揪團的大家評分列表
+	public List<ScoreBean> ratingList(String groupID, String memberId) {
+		return new ScoreDaoimpl().selectRatingList(groupID, memberId);
+	}
+	 
 }
