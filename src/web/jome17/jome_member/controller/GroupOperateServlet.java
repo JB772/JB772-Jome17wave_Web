@@ -90,6 +90,7 @@ public class GroupOperateServlet extends HttpServlet {
 									gService.updateGroup(pGroup, null);
 								}
 							}else {
+System.out.println(pGroup.getGroupName()+" surfPoint: "+ pGroup.getSurfPointId());
 								pGroup.setJoinCountNow(gService.getGroupCount(groupId));
 								if(pGroup.getGroupLimit() <= pGroup.getJoinCountNow()) {
 									if(pGroup.getGroupStatus() != 2) {
@@ -97,7 +98,6 @@ public class GroupOperateServlet extends HttpServlet {
 										gService.updateGroup(pGroup, null);
 									}
 								}else if(pGroups.get(i).getGroupLimit() > pGroups.get(i).getJoinCountNow()) {
-//System.out.println(pGroup.getGroupName() + "nowCount: "+ pGroup.getJoinCountNow());
 									if(pGroups.get(i).getGroupStatus() != 1) {
 										pGroups.get(i).setGroupStatus(1);
 										gService.updateGroup(pGroup, null);
@@ -245,6 +245,7 @@ System.out.println("getAResult: " + getAResult);
 			case "dropOutGroup":
 				int dropResult = -1;
 				PersonalGroup groupDrop = null;
+System.out.println(248 + jsonIn.get("auditAttender").getAsString());
 				groupDrop = GSON.fromJson(jsonIn.get("auditAttender").getAsString(), PersonalGroup.class);
 				dropResult = gService.dropGroup(groupDrop);
 				if(dropResult > 0) {

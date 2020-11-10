@@ -320,6 +320,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				+ "a.ATTENDER_NO, "
 				+ "a.ATTEDN_STATUS, "	
 				+ "a.ROLE, "			//6
+				+ "j.SURF_POINT_ID, "	//7
 				+ "s.SURF_NAME, "
 				+ "j.GROUP_ID, j.GROUP_NAME, "		//9
 				+ "j.ASSEMBLE_TIME, j.GROUP_END_TIME, "		//11
@@ -361,6 +362,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
 				pGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
 				pGroup.setRole(rs.getInt("ROLE"));							//6
+				pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));			//7
 				pGroup.setSurfName(rs.getString("SURF_NAME"));
 				pGroup.setGroupId(rs.getString("GROUP_ID"));
 				pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
@@ -402,6 +404,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				+ "a.ATTENDER_NO, "
 				+ "a.ATTEDN_STATUS, "	
 				+ "a.ROLE, "			//6
+				+ "j.SURF_POINT_ID, "	//7
 				+ "s.SURF_NAME, "
 				+ "j.GROUP_ID, j.GROUP_NAME, "		//9
 				+ "j.ASSEMBLE_TIME, j.GROUP_END_TIME, "		//11
@@ -432,6 +435,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 				pGroup.setAttenderId(rs.getInt("ATTENDER_NO"));
 				pGroup.setAttenderStatus(rs.getInt("ATTEDN_STATUS"));
 				pGroup.setRole(rs.getInt("ROLE"));							//6
+				pGroup.setSurfPointId(rs.getInt("SURF_POINT_ID"));			//7
 				pGroup.setSurfName(rs.getString("SURF_NAME"));
 				pGroup.setGroupId(rs.getString("GROUP_ID"));
 				pGroup.setGroupName(rs.getString("GROUP_NAME"));			//9
@@ -442,6 +446,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 //				pGroup.setGender(rs.getInt("GENDER"));
 				pGroup.setNotice(rs.getString("NOTICE"));
 				pGroup.setGroupStatus(rs.getInt("GROUP_STATUS"));			//15
+System.out.println(pGroup.getGroupName()+" :" + pGroup.getSurfPointId());
 				pGroups.add(pGroup);
 			}
 			return pGroups;
