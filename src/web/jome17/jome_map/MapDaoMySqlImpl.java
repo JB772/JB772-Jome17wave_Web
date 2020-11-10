@@ -25,18 +25,18 @@ public class MapDaoMySqlImpl implements MapDao{
 	public int inster(Map map, byte[] image) {
 		int count = 0;
 		String sql = "INSERT INTO SURF_POINT" + 
-				"(name, side, type, direction, level, tidal, latitude, longitude, image) "	+ 
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+				"(SURF_NAME, SURF_LAT, SURF_LNG, SURF_SIDE, SURF_TYPE, SURF_DIRECTION, LEVEL, TIDAL, IMAGE) "	+ 
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 		try (Connection connection = dataSource.getConnection();
 				PreparedStatement ps = connection.prepareStatement(sql);) {
-			ps.setString(1, map.getName());
-			ps.setString(2, map.getSide());
-			ps.setString(3, map.getType());
-			ps.setString(4, map.getDirection());
-			ps.setString(5, map.getLevel());
-			ps.setString(6, map.getTidal());
-			ps.setDouble(7, map.getLatitude());
-			ps.setDouble(8, map.getLongitude());
+			ps.setString(1,map.getName());
+			ps.setDouble(2, map.getLatitude());
+			ps.setDouble(3, map.getLongitude());
+			ps.setString(4, map.getSide());
+			ps.setString(5, map.getType());
+			ps.setString(6, map.getDirection());
+			ps.setString(7, map.getLevel());
+			ps.setString(8, map.getTidal());
 			ps.setBytes(9, image);
 			count = ps.executeUpdate();
 		} catch (SQLException e) {
@@ -47,14 +47,51 @@ public class MapDaoMySqlImpl implements MapDao{
 
 	@Override
 	public int update(Map map, byte[] image) {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		String sql = "";
+		
+		if (image != null) {
+			sql = "UPDATE SURF_POINT SET SURF_NAME = ?, SURF_LAT= ?, SURF_LNG= ?, SURF_SIDE = ?, SURF_TYPE = ?, "
+					+ "SURF_DIRECTION = ?, LEVEL = ?, TIDAL = ?, IMAGE = ? WHERE SURF_POINT_ID = ?;";
+		} else {
+			sql = "UPDATE SURF_POINT SET SURF_NAME = ?, SURF_LAT= ?, SURF_LNG= ?, SURF_SIDE = ?, SURF_TYPE = ?, "
+					+ "SURF_DIRECTION = ?, LEVEL = ?, TIDAL = ? WHERE SURF_POINT_ID = ?;";
+		}
+		try(Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql);) {
+			ps.setString(1, map.getName());
+			ps.setDouble(2, map.getLatitude());
+			ps.setDouble(3, map.getLongitude());
+			ps.setString(4, map.getSide());
+			ps.setString(5, map.getType());
+			ps.setString(6, map.getDirection());
+			ps.setString(7, map.getLevel());
+			ps.setString(8, map.getTidal());
+			if (image != null) {
+				ps.setBytes(9, image);
+				ps.setInt(10, map.getId());
+			} else {
+				ps.setInt(9, map.getId());
+			}
+			count = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	@Override
 	public int delete(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		String sql = "DELETE FROM SURF_POINT WHERE SURF_POINT_ID = ?;";
+		try(Connection connection = dataSource.getConnection();
+				PreparedStatement ps = connection.prepareStatement(sql);) {
+			ps.setInt(1, id);
+			count = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 	
 	@Override
