@@ -24,15 +24,18 @@ public class NotifyService {
 	public List<Notify> getNotifiesWordList(List<Notify> notifiesList, String myId) {
 //System.out.println("NotifyService 裡的 getNotifiesWordList");
 		AttenderBean attenderBean = new AttenderBean();
-		attenderBean = null;
+		
 		FriendListBean friendListBean = new FriendListBean();
-		friendListBean = null;
+		
 		Notify notify = new Notify();
 		List<Notify> notifiesWordList = new ArrayList<>();
-		String groupName = null;
-		String notificationDetail = null;
+		
 		for (Notify no : notifiesList) {
 			int type = no.getType();
+			attenderBean = null;
+			friendListBean = null;
+			String groupName = null;
+			String notificationDetail = null;
 			String notificationBody = no.getNotificationBody();
 			switch (type) {
 			case 1: // 揪團
