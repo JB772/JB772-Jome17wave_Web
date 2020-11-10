@@ -97,6 +97,7 @@ public class GroupService {
 	//搜尋某一memberId揪團狀態(單筆)
 	public PersonalGroup inquirePerGroups(String memberId, String groupId) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
+
 		return attenderDao.selectByKey(memberId, groupId);
 	}
 	//搜尋某一groupId的所有成員(多筆)

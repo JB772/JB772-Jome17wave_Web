@@ -13,7 +13,7 @@ public class PersonalGroup {
 	private String assembleTime = "";
 	private String groupEndTime = "";
 	private String signUpEnd = "";
-	private int surfPointId = -1;
+	private int surfPointId = -500;
 	private int groupLimit = -1;
 	private int joinCountNow = 1;
 	private int gender = -1;
