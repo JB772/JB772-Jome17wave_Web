@@ -74,19 +74,35 @@ public class GroupOperateServlet extends HttpServlet {
 			switch (action) {
 			// 查所有揪團
 			case "getAll":
-//				String myId = jsonIn.get("memberId").getAsString();
-//				List<PersonalGroup> mGroups = gService.getMemberAllGroups(myId);
 				List<PersonalGroup> pGroups = gService.getAllGroups();
+				DateUtil dateUtil = new DateUtil();
 				int getAllResult = 0;
 				if(pGroups != null) {
 					getAllResult = 1;
 					for(int i= 0; i < pGroups.size(); i++) {
-						if(pGroups.get(i).getGroupStatus() == 1) {
+						if(pGroups.get(i).getGroupStatus() != 3) {
 							String groupId = pGroups.get(i).getGroupId();
-							pGroups.get(i).setJoinCountNow(gService.getGroupCount(groupId));
-							if(pGroups.get(i).getGroupLimit() == pGroups.get(i).getJoinCountNow()) {
-								pGroups.get(i).setGroupStatus(2);
-								gService.updateGroup(pGroups.get(i), null);
+							PersonalGroup pGroup = pGroups.get(i);
+							if(dateUtil.str2Date(pGroup.getAssembleTime()).before(new Date())) {
+//System.out.println(new Date() + pGroup.getGroupName());
+								if(pGroup.getGroupStatus() != 3) {
+									pGroup.setGroupStatus(3);
+									gService.updateGroup(pGroup, null);
+								}
+							}else {
+								pGroup.setJoinCountNow(gService.getGroupCount(groupId));
+								if(pGroup.getGroupLimit() <= pGroup.getJoinCountNow()) {
+									if(pGroup.getGroupStatus() != 2) {
+										pGroup.setGroupStatus(2);
+										gService.updateGroup(pGroup, null);
+									}
+								}else if(pGroups.get(i).getGroupLimit() > pGroups.get(i).getJoinCountNow()) {
+//System.out.println(pGroup.getGroupName() + "nowCount: "+ pGroup.getJoinCountNow());
+									if(pGroups.get(i).getGroupStatus() != 1) {
+										pGroups.get(i).setGroupStatus(1);
+										gService.updateGroup(pGroup, null);
+									}
+								}
 							}
 						}
 					}
