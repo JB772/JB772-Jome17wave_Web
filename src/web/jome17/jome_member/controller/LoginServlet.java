@@ -61,6 +61,31 @@ public class LoginServlet extends HttpServlet{
 			resp.setContentType(CONTENT_TYPE);
 			writeJson(resp, outStr);
 			break;
+		
+		case "forgetPassword":
+			String selfAccount = jsonIn.get("account").getAsString();
+			String selfPhone = jsonIn.get("phone").getAsString();
+			MemberBean forgetPasswordMember = mService.selectMemberOne(selfAccount);
+			int checkResult = -1;
+			if(forgetPasswordMember != null && selfPhone.equals(forgetPasswordMember.getPhone_number())) {
+				checkResult = 1;
+				jsonOut.addProperty("selfMember", GSON.toJson(forgetPasswordMember));
+			}
+			jsonOut.addProperty("checkResult", checkResult);
+			outStr = jsonOut.toString();
+			System.out.println(outStr);
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+			
+		case "selfGet":
+			String selfId = jsonIn.get("selfId").getAsString();
+			member = mService.selectMemberById(selfId);
+			jsonOut.addProperty("selfMember", GSON.toJson(member));
+			outStr = jsonOut.toString();
+			System.out.println("jsonOut:" + outStr);
+			writeJson(resp, outStr);
+			break;
 			
 //			account得到member物件
 		case "loginGet":

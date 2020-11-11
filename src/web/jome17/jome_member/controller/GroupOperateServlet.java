@@ -84,13 +84,14 @@ public class GroupOperateServlet extends HttpServlet {
 							String groupId = pGroups.get(i).getGroupId();
 							PersonalGroup pGroup = pGroups.get(i);
 							if(dateUtil.str2Date(pGroup.getAssembleTime()).before(new Date())) {
-//System.out.println(new Date() + pGroup.getGroupName());
+//System.out.println(new Date() + pGroup.getGroupName() + " :" + pGroup.getAssembleTime());
 								if(pGroup.getGroupStatus() != 3) {
 									pGroup.setGroupStatus(3);
 									gService.updateGroup(pGroup, null);
 								}
 							}else {
-System.out.println(pGroup.getGroupName()+" surfPoint: "+ pGroup.getSurfPointId());
+//System.out.println(new Date() + pGroup.getGroupName() + " :" + pGroup.getAssembleTime());
+//System.out.println(pGroup.getGroupName()+" surfPoint: "+ pGroup.getSurfPointId());
 								pGroup.setJoinCountNow(gService.getGroupCount(groupId));
 								if(pGroup.getGroupLimit() <= pGroup.getJoinCountNow()) {
 									if(pGroup.getGroupStatus() != 2) {
