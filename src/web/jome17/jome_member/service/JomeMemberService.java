@@ -27,7 +27,7 @@ public class JomeMemberService {
 				return -1;
 			}
 		}
-		member.setMember_id(new DateUtil().getDateTimeId());
+		member.setMemberId(new DateUtil().getDateTimeId());
 		return dao.insert(member);
 	}
 	
@@ -71,7 +71,7 @@ public class JomeMemberService {
 	public String selectTokenById(String memberId) {
 		 MemberBean idMember = new MemberBean();
 		idMember = dao.selectByKey("ID", memberId);
-		 String tokenId = idMember.getToken_id();
+		 String tokenId = idMember.getTokenId();
 		 if(tokenId == null || tokenId.equals("noTokenId")) {
 			 return "noTokenId";
 		 }
@@ -113,6 +113,14 @@ public class JomeMemberService {
 		members = dao.selectAll(memberId);
 		return members;
 	}
+	
+	public List<MemberBean> selectAllMember(){
+		List<MemberBean> members = null;
+		members = dao.selectAllNoKey();
+		return members;
+	}
+	
+	
 	
 	/*
 	 * 前台用不到的方法

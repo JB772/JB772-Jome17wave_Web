@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Base64;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,6 +45,15 @@ public class LoginServlet extends HttpServlet{
 		JomeMemberService mService = new JomeMemberService();
 		switch (action) {
 		
+			//取得所有會員資料
+		case "getAllMembers":
+			List<MemberBean> members = mService.selectAllMember();
+			outStr = GSON.toJson(members);
+			System.out.println(GSON.toJson(members));
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, GSON.toJson(members));
+			break;
+		
 
 //			確認account, password
 		case "checkIsValid":
@@ -67,7 +77,7 @@ public class LoginServlet extends HttpServlet{
 			String selfPhone = jsonIn.get("phone").getAsString();
 			MemberBean forgetPasswordMember = mService.selectMemberOne(selfAccount);
 			int checkResult = -1;
-			if(forgetPasswordMember != null && selfPhone.equals(forgetPasswordMember.getPhone_number())) {
+			if(forgetPasswordMember != null && selfPhone.equals(forgetPasswordMember.getPhoneNumber())) {
 				checkResult = 1;
 				jsonOut.addProperty("selfMember", GSON.toJson(forgetPasswordMember));
 			}

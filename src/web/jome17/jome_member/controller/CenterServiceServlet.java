@@ -94,7 +94,7 @@ public class CenterServiceServlet extends HttpServlet{
 				if(members != null) {
 					List<MemberBean> users = new ArrayList<MemberBean>();
 					for(MemberBean member : members) {
-						if(!member.getMember_id().equals(mId)) {
+						if(!member.getMemberId().equals(mId)) {
 							users.add(member);
 						}
 					}
