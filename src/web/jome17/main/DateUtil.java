@@ -2,6 +2,7 @@ package web.jome17.main;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
@@ -31,5 +32,23 @@ public class DateUtil {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    //加2分鐘
+    public static String getGroupEndTime(String assembleStr){
+        Date assembleTime = str2Date(assembleStr);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(assembleTime);
+        calendar.add(Calendar.MINUTE, 2);
+        return date2StrHm (calendar.getTime());
+    }
+    
+    //減15分鐘
+    public static String getSignUpEnd(String assembleStr){
+        Date assembleTime = str2Date(assembleStr);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(assembleTime);
+        calendar.add(Calendar.MINUTE, -15);
+        return date2StrHm(calendar.getTime());
     }
 }
