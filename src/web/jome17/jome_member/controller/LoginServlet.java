@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Base64;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import web.jome17.jome_member.bean.MemberBean;
+import web.jome17.jome_member.bean.PersonalGroup;
 import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_member.service.JomeMemberService;
 import web.jome17.main.ImageUtil;
@@ -134,6 +136,13 @@ public class LoginServlet extends HttpServlet{
 			String memId = jsonIn.get("memberId").getAsString();
 			outStr = new JomeMemberService().getScoreCounts(memId);
 			System.out.println("scoreCountsStr :" + outStr);
+			writeJson(resp, outStr);
+			break;
+			
+		case "getAll":
+			List<MemberBean> members = new JomeMemberService().getAllMember();
+			outStr = GSON.toJson(members);
+			System.out.println("membersStr :" + outStr);
 			writeJson(resp, outStr);
 			break;
 			
