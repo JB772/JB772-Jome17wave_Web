@@ -266,7 +266,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String>{
 			MemberBean member = new MemberBean();
 			member.setMemberId(rs.getString("ID"));
 			member.setAccount(rs.getString("ACCOUNT"));
-			member.setAccount(rs.getString("PASSWORD"));				//3
+			member.setPassword(rs.getString("PASSWORD"));				//3
 			member.setNickname(rs.getString("NICKNAME"));
 			member.setAccountStatus(rs.getInt("ACCOUNT_STATUS"));
 			member.setPhoneNumber(rs.getString("PHONE_NUMBER"));
