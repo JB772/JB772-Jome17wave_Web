@@ -1,5 +1,6 @@
 package web.jome17.jome_member.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import web.jome17.jome_member.bean.FriendListBean;
@@ -130,6 +131,9 @@ public class JomeMemberService {
 		return dao.deletaByKey(account, key);
 	}
 
-	
+	//取得所有會員
+	public List<MemberBean> getAllMember() {
+		return new MemberDaoimpl().getAll();
+	}
 
 }
