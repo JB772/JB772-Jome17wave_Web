@@ -46,6 +46,15 @@ public class LoginServlet extends HttpServlet{
 		JomeMemberService mService = new JomeMemberService();
 		switch (action) {
 		
+			//取得所有會員資料
+		case "getAllMembers":
+			List<MemberBean> members = mService.selectAllMember();
+			outStr = GSON.toJson(members);
+			System.out.println(GSON.toJson(members));
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, GSON.toJson(members));
+			break;
+		
 
 //			確認account, password
 		case "checkIsValid":
@@ -61,6 +70,31 @@ public class LoginServlet extends HttpServlet{
 			outStr = jsonOut.toString();
 			System.out.println(outStr);
 			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+		
+		case "forgetPassword":
+			String selfAccount = jsonIn.get("account").getAsString();
+			String selfPhone = jsonIn.get("phone").getAsString();
+			MemberBean forgetPasswordMember = mService.selectMemberOne(selfAccount);
+			int checkResult = -1;
+			if(forgetPasswordMember != null && selfPhone.equals(forgetPasswordMember.getPhoneNumber())) {
+				checkResult = 1;
+				jsonOut.addProperty("selfMember", GSON.toJson(forgetPasswordMember));
+			}
+			jsonOut.addProperty("checkResult", checkResult);
+			outStr = jsonOut.toString();
+			System.out.println(outStr);
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+			
+		case "selfGet":
+			String selfId = jsonIn.get("selfId").getAsString();
+			member = mService.selectMemberById(selfId);
+			jsonOut.addProperty("selfMember", GSON.toJson(member));
+			outStr = jsonOut.toString();
+			System.out.println("jsonOut:" + outStr);
 			writeJson(resp, outStr);
 			break;
 			

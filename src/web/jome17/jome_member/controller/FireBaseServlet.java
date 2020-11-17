@@ -100,7 +100,7 @@ public class FireBaseServlet extends HttpServlet {
 			JomeMemberService memberService = new JomeMemberService();
 			List<PersonalGroup> allAttenders = groupService.getAllAttenders(disGroupId);
 			for(PersonalGroup attender: allAttenders) {
-				registrationTokens.add(memberService.selectMemberById(attender.getMemberId()).getToken_id());
+				registrationTokens.add(memberService.selectMemberById(attender.getMemberId()).getTokenId());
 			}
 			sendGroupFcm(jsonObject, registrationTokens);
 			writeText(resp, "Group FCMs are sent!");
@@ -133,7 +133,7 @@ public class FireBaseServlet extends HttpServlet {
 						JomeMemberService mService = new JomeMemberService();
 						List<PersonalGroup> attenders = gService.getAllAttenders(timerGroupId);
 						for(PersonalGroup attender: attenders) {
-							registrationTokens.add(mService.selectMemberById(attender.getMemberId()).getToken_id());
+							registrationTokens.add(mService.selectMemberById(attender.getMemberId()).getTokenId());
 						}
 						sendGroupFcm(jsonObject, registrationTokens);
 						writeText(resp, "Group FCMs are sent!");

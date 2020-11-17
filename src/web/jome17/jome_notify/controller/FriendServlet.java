@@ -68,7 +68,7 @@ public class FriendServlet extends HttpServlet {
 				
 				if (theStranger != null) {
 					FriendListBean checkList = new FriendListBean();
-					checkList.setAccept_M_ID(theStranger.getMember_id());
+					checkList.setAccept_M_ID(theStranger.getMemberId());
 					checkList.setInvite_M_ID(jsonIn.get("inviteId").getAsString());
 					String friendRelation = new FindFriendService().getFriendRelation(checkList);
 					jsonOut.addProperty("theStranger", GSON.toJson(theStranger));

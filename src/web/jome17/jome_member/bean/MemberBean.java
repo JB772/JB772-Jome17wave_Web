@@ -2,34 +2,34 @@ package web.jome17.jome_member.bean;
 
 
 public class MemberBean {
-	private String member_id = "noMemberId";
-	private int account_status = -1;
-	private String phone_number = "noPhoneNumber";
+	private String memberId = "noMemberId";
+	private int accountStatus = -1;
+	private String phoneNumber = "noPhoneNumber";
 	private String nickname = "noNickname";
-	private String account = "noAccount";
+	private String account = "noAccount";			//5
 	private String password = "noPassword";
 	private int gender = -1;
 	private double latitude = -1.0;
 	private double longitude = -1.0;
-	private String token_id = "noTokenId";
+	private String tokenId = "noTokenId";			//10
 	private byte[] image = null;
     private String friendCount = "0";
     private String scoreAverage = "0";
     private String beRankedCount = "0";
     private String groupCount = "0";
-    private String createGroupCount = "0";
+    private String createGroupCount = "0";			//16
 	
     
 
 	public MemberBean(String phone_number, String nickname, String account, String password, int gender,
 			String token_id) {
 		super();
-		this.phone_number = phone_number;
+		this.phoneNumber = phone_number;
 		this.nickname = nickname;
 		this.account = account;
 		this.password = password;
 		this.gender = gender;
-		this.token_id = token_id;
+		this.tokenId = token_id;
 	}
 
 
@@ -56,28 +56,28 @@ public class MemberBean {
 		this.image = image;
 	}
 
-	public String getMember_id() {
-		return member_id;
+	public String getMemberId() {
+		return memberId;
 	}
 
-	public void setMember_id(String member_id) {
-		this.member_id = member_id;
+	public void setMemberId(String member_id) {
+		this.memberId = member_id;
 	}
 
-	public int getAccount_status() {
-		return account_status;
+	public int getAccountStatus() {
+		return accountStatus;
 	}
 
-	public void setAccount_status(int account_status) {
-		this.account_status = account_status;
+	public void setAccountStatus(int account_status) {
+		this.accountStatus = account_status;
 	}
 
-	public String getPhone_number() {
-		return phone_number;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhone_number(String phone_number) {
-		this.phone_number = phone_number;
+	public void setPhoneNumber(String phone_number) {
+		this.phoneNumber = phone_number;
 	}
 
 	public String getNickname() {
@@ -128,12 +128,12 @@ public class MemberBean {
 		this.longitude = longitude;
 	}
 
-	public String getToken_id() {
-		return token_id;
+	public String getTokenId() {
+		return tokenId;
 	}
 
-	public void setToken_id(String token_id) {
-		this.token_id = token_id;
+	public void setTokenId(String token_id) {
+		this.tokenId = token_id;
 	}
 
 	public String getFriendCount() {

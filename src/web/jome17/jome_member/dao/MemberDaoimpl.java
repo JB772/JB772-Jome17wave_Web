@@ -23,15 +23,27 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 	@Override
 	public int insert(MemberBean bean) {
 		String sql = "insert into MEMBERINFO(ID, ACCOUNT, PASSWORD, NICKNAME, GENDER, PHONE_NUMBER) "
+<<<<<<< HEAD
 				+ "values	(?,?,?,?,?,?)";
 		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setObject(1, bean.getMember_id());
+=======
+					+ "values	(?,?,?,?,?,?)";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setObject(1, bean.getMemberId());
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 			pstmt.setObject(2, bean.getAccount());
 			pstmt.setObject(3, bean.getPassword());
 			pstmt.setObject(4, bean.getNickname());
 			pstmt.setObject(5, bean.getGender());
+<<<<<<< HEAD
 			pstmt.setObject(6, bean.getPhone_number());
 
+=======
+			pstmt.setObject(6, bean.getPhoneNumber());
+			
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,14 +76,20 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			// 取member基本資料
 			pstmt.setString(1, key);
 			ResultSet rs = pstmt.executeQuery();
+<<<<<<< HEAD
 			if (rs.next()) {
 				member.setMember_id(rs.getString("ID"));
+=======
+			if(rs.next()) {
+				member.setMemberId(rs.getString("ID"));
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 				member.setAccount(rs.getString("ACCOUNT"));
 				member.setPassword(rs.getString("PASSWORD"));
 				member.setNickname(rs.getString("NICKNAME"));
 				member.setGender(rs.getInt("GENDER"));
-				member.setPhone_number(rs.getString("PHONE_NUMBER"));
+				member.setPhoneNumber(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
+<<<<<<< HEAD
 				member.setLongitude(rs.getDouble("LONTITUDE"));
 				member.setToken_id(rs.getString("TOKEN_ID"));
 			} else {
@@ -81,6 +99,17 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			String memberId = member.getMember_id();
 			if (memberId != "null") {
 				// 取好友數
+=======
+				member.setLongitude(rs.getDouble("LONTITUDE"));	
+				member.setTokenId(rs.getString("TOKEN_ID"));
+			}else {
+				System.out.println("select: null");
+				return null;
+			}
+			String memberId = member.getMemberId();
+			if(memberId != "null") {
+				//取好友數
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 				pstmt1.setString(1, memberId);
 				pstmt1.setString(2, memberId);
 				ResultSet rs1 = pstmt1.executeQuery();
@@ -132,6 +161,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 					+ "LONTITUDE = ?, " + "TOKEN_ID = ?, " // 8
 					+ "IMAGE = ? " + "where " + "ID = ?"; // 10
 		}
+<<<<<<< HEAD
 		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, bean.getAccount());
 			pstmt.setString(2, bean.getPassword());
@@ -151,6 +181,23 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
+=======
+	try(Connection conn = dataSource.getConnection();
+		PreparedStatement pstmt = conn.prepareStatement(sql);) {
+		pstmt.setString(1, bean.getAccount());
+		pstmt.setString(2, bean.getPassword());
+		pstmt.setString(3, bean.getNickname());
+		pstmt.setInt(4, bean.getGender());
+		pstmt.setString(5, bean.getPhoneNumber());
+		pstmt.setDouble(6, bean.getLatitude());
+		pstmt.setDouble(7, bean.getLongitude());
+		pstmt.setString(8, bean.getTokenId());
+		if(image == null) {
+			pstmt.setString(9, bean.getMemberId());
+		}else {
+			pstmt.setBytes(9, image);
+			pstmt.setString(10, bean.getMemberId());
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 		}
 		return -1;
 	}
@@ -179,6 +226,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 		try (Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				ResultSet rs = pstmt.executeQuery();) {
+<<<<<<< HEAD
 			while (rs.next()) {
 				MemberBean member = new MemberBean();
 				member.setMember_id(rs.getString("ID"));
@@ -186,6 +234,19 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 				member.setLatitude(rs.getDouble("LATITUDE"));
 				member.setLongitude(rs.getDouble("LONTITUDE"));
 				members.add(member);
+=======
+				while(rs.next()) {
+					MemberBean member = new MemberBean();
+					member.setMemberId(rs.getString("ID"));
+					member.setNickname(rs.getString("NICKNAME"));
+					member.setLatitude(rs.getDouble("LATITUDE"));
+					member.setLongitude(rs.getDouble("LONTITUDE"));
+					members.add(member);
+				}
+				return members;
+			} catch (Exception e) {
+				e.printStackTrace();
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 			}
 			return members;
 		} catch (Exception e) {
@@ -216,6 +277,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 
 	@Override
 	public List<MemberBean> selectAllNoKey() {
+<<<<<<< HEAD
 		String sql = "SELECT " + "ID, " + "ACCOUNT, " + "NICKNAME, " + "LATITUDE, " + "LONTITUDE " + "FROM "
 				+ "Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
@@ -234,9 +296,30 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			return members;
 		} catch (Exception e) {
 			e.printStackTrace();
+=======
+		String sql = "select * from Tep101_Jome17.memberInfo;";
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();) {
+		List<MemberBean> members = new ArrayList<MemberBean>();
+		while(rs.next()) {
+			MemberBean member = new MemberBean();
+			member.setMemberId(rs.getString("ID"));
+			member.setAccount(rs.getString("ACCOUNT"));
+			member.setAccount(rs.getString("PASSWORD"));				//3
+			member.setNickname(rs.getString("NICKNAME"));
+			member.setAccountStatus(rs.getInt("ACCOUNT_STATUS"));
+			member.setPhoneNumber(rs.getString("PHONE_NUMBER"));
+			member.setGender(rs.getInt("GENDER"));						//6
+			member.setLatitude(rs.getDouble("LATITUDE"));
+			member.setLongitude(rs.getDouble("LONTITUDE"));
+			member.setTokenId(rs.getString("TOKEN_ID"));				//9
+			members.add(member);										//10
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 		}
 		return members;
 	}
+<<<<<<< HEAD
 	
 	//取得所有會員
 	public List<MemberBean> getAll() {
@@ -266,6 +349,9 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			// TODO: handle exception
 		}
 		return null;
+=======
+	return null;
+>>>>>>> 67efdea3e509f59bbac3e716e52f58047be9051a
 	}
 
 }

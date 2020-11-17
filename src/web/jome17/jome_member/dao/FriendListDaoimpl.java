@@ -69,7 +69,11 @@ public class FriendListDaoimpl implements CommonDao<FriendListBean, String> {
 				while(rs.next()) {
 					uid = rs.getInt(1);
 				}
-				if(insertFriend < 1 || uid != -1) {
+				if(insertFriend < 1 || uid == -1) {
+					System.out.println("insertFriend: " + insertFriend);
+					System.out.println(pstmt1);
+					System.out.println("selectUid : " + uid);
+					System.out.println(pstmt2);
 					throw new SQLException("Table Friend insert error! ");
 				}
 				pstmt3.setString(1, uid+ "");

@@ -28,11 +28,11 @@ public class FriendShipService {
 			if(friendShip.getFriend_Status() == 1) {
 				MemberBean friend = new MemberBean();
 				if(friendShip.getInvite_M_ID().equals(memberId)) {
-					friend.setMember_id(friendShip.getAccept_M_ID());
+					friend.setMemberId(friendShip.getAccept_M_ID());
 					friend.setNickname(friendShip.getAcceptName());
 				}
 				if(friendShip.getAccept_M_ID().equals(memberId)) {
-					friend.setMember_id(friendShip.getInvite_M_ID());
+					friend.setMemberId(friendShip.getInvite_M_ID());
 					friend.setNickname(friendShip.getInviteName());
 				}
 				friends.add(friend);
