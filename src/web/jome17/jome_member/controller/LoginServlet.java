@@ -174,8 +174,8 @@ public class LoginServlet extends HttpServlet{
 			break;
 			
 		case "getAll":
-			List<MemberBean> members = new JomeMemberService().getAllMember();
-			outStr = GSON.toJson(members);
+			List<MemberBean> getAllMembers = new JomeMemberService().getAllMember();
+			outStr = GSON.toJson(getAllMembers);
 			System.out.println("membersStr :" + outStr);
 			writeJson(resp, outStr);
 			break;
