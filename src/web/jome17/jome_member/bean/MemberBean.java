@@ -12,12 +12,13 @@ public class MemberBean {
 	private double latitude = -1.0;
 	private double longitude = -1.0;
 	private String tokenId = "noTokenId";			//10
+	private String modifyDate = "modifyDate";
 	private byte[] image = null;
     private String friendCount = "0";
     private String scoreAverage = "0";
-    private String beRankedCount = "0";
+    private String beRankedCount = "0";				//15
     private String groupCount = "0";
-    private String createGroupCount = "0";			//16
+    private String createGroupCount = "0";			//17
 	
     
 
@@ -134,6 +135,14 @@ public class MemberBean {
 
 	public void setTokenId(String token_id) {
 		this.tokenId = token_id;
+	}
+
+	public String getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(String modifyDate) {
+		this.modifyDate = modifyDate;
 	}
 
 	public String getFriendCount() {

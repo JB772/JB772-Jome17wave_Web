@@ -10,7 +10,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.google.api.client.util.Value;
+
 import web.jome17.jome_member.bean.MemberBean;
+import web.jome17.main.DateUtil;
 import web.jome17.main.ServiceLocator;
 
 public class MemberDaoimpl implements CommonDao<MemberBean, String> {
@@ -236,7 +239,10 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			member.setLatitude(rs.getDouble("LATITUDE"));
 			member.setLongitude(rs.getDouble("LONTITUDE"));
 			member.setTokenId(rs.getString("TOKEN_ID"));				//9
-			members.add(member);										//10
+			member.setModifyDate(DateUtil.date2Str4Swift(rs.getTimestamp("MODIFY_DATE")));		//10
+//			member.setModifyDate(String.valueOf(rs.getTimestamp("MODIFY_DATE")));
+System.out.println("member.setModifyDate~~~~~~~~~~~" + member.getModifyDate());
+			members.add(member);										
 			} // 10
 			return members;
 		} catch (Exception e) {
@@ -266,7 +272,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 				member.setLongitude(rs.getDouble("LONTITUDE"));
 				member.setTokenId(rs.getString("TOKEN_ID"));
 				members.add(member);
-			}
+			}								
 			return members;
 		} catch (Exception e) {
 			// TODO: handle exception

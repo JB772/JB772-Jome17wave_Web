@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtil {
 	
@@ -16,6 +18,14 @@ public class DateUtil {
     public static String date2Str (Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return String.valueOf(sdf.format(date));
+    }
+    
+    //TimeStamp轉字串
+    public static String date2Str4Swift (Date date){
+    	TimeZone gmtTZ = TimeZone.getTimeZone("GMT+8");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.TAIWAN);
+        sdf.setTimeZone(gmtTZ);
+        return sdf.format(date);
     }
 
     public static String date2StrHm (Date date){
