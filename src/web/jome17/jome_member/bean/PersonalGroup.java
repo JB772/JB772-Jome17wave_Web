@@ -9,7 +9,7 @@ public class PersonalGroup {
 	private int role = -1;
 	private String surfName = "noData";
 	private String groupId = "";
-	private String groupName = "";
+	private String groupName = "noGroupName";
 	private String assembleTime = "";
 	private String groupEndTime = "";
 	private String signUpEnd = "";

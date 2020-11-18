@@ -58,7 +58,7 @@ public class DateUtil {
         Date assembleTime = str2Date(assembleStr);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(assembleTime);
-        calendar.add(Calendar.MINUTE, -15);
+        calendar.add(Calendar.MINUTE, -1);
         return date2StrHm(calendar.getTime());
     }
 }
