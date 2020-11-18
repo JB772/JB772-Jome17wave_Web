@@ -308,7 +308,65 @@ System.out.println(248 + jsonIn.get("auditAttender").getAsString());
 				int resultCode = gService.updateScoreListAndDeleteNoti(ratingResults, notify);
 				jsonOut.addProperty("resultCode", resultCode);
 				break;
+			case "creatAGroupForIOS":
+				//處理Base64 轉 byte[]
+				byte[] imageIOS = null;
+				String imageCreateIOSStr = jsonIn.get("imageBase64").getAsString();
+				imageIOS = Base64.getMimeDecoder().decode(imageCreateIOSStr);
 				
+				PersonalGroup newGroup = new Gson().fromJson(jsonIn.get("insertGroup").getAsString(), PersonalGroup.class);
+				newGroup.setGroupEndTime(new DateUtil().getGroupEndTime(newGroup.getAssembleTime()));
+				newGroup.setSignUpEnd(new DateUtil().getSignUpEnd(newGroup.getAssembleTime()));
+				newGroup.setgImage(imageIOS);
+				int resultCodeIOS = gService.creatGroup(newGroup);
+				
+				/*
+				 * 集合時間到：groupStatus == 3
+				 */
+				TimerTask assembleTimeIOS = new TimerTask() {
+					@Override
+					public void run() {
+						PersonalGroup assembleGroup = gService.searchAGroup(newGroup.getGroupId());
+						if(assembleGroup.getGroupStatus() != 0) {
+							newGroup.setGroupStatus(3);
+							gService.updateGroup(newGroup, null);
+						}
+					}
+				};
+				Timer assembleTimerIOS = new Timer();
+				assembleTimerIOS.schedule(assembleTimeIOS, new DateUtil().str2Date(newGroup.getAssembleTime()));
+				
+				/*
+				 * 結束時間到：1.建立評分表，2.建立notify
+				 */
+				TimerTask groupEndTimeTaskIOS = new TimerTask() {
+					@Override
+					public void run() {
+						// 1.建立評分表
+						PersonalGroup endUpGroup = gService.searchAGroup(newGroup.getGroupId());
+						if(endUpGroup.getGroupStatus() == 0) {
+							System.out.println("Group has been canceled, table Score couldn't build.");
+						}else {
+							List<PersonalGroup> attenders = gService.getAllAttenders(newGroup.getGroupId());
+							int scoreTableCount = gService.createScoreTable(attenders);
+							for(PersonalGroup attender: attenders) {
+								System.out.println(attender.getNickname());
+							}
+							System.out.println("insertScoreTableCount: " + scoreTableCount+ "\t" + new Date());
+							
+							// 2.建立notify
+							int notifyTableCount = new NotifyService().insertNotiForRating(attenders);
+							System.out.println("insertScoreTableCount: " + notifyTableCount+ "\t" + new Date());
+						}
+						System.gc();
+						cancel();
+					}
+				};
+				Timer groupEndTimerIOS = new Timer();
+				groupEndTimerIOS.schedule(groupEndTimeTaskIOS, new DateUtil().str2Date(newGroup.getGroupEndTime()));
+	
+				jsonOut.addProperty("resultCode", resultCodeIOS);
+				break;
 			default:
 				break;
 			}
