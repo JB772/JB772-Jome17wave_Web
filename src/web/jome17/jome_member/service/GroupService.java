@@ -70,6 +70,10 @@ public class GroupService {
 		}
 	}
 	
+	public int cancelGroupIOS(String groupId) {
+		return new GroupActivityDaoimpl().deletaByKey(groupId, groupId);
+	}
+	
 	//審核(更新團員狀態)
 	public int auditAttender(PersonalGroup auditGroup) {
 		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
