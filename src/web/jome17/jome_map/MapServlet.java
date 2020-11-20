@@ -48,7 +48,7 @@ public class MapServlet extends HttpServlet{
 		
 		if (action.equals("getAll")) {
 			List<Map> maps = mapDao.getAll();
-//			System.out.println("jsonOut:"+gson.toJson(maps).toString());
+			System.out.println("jsonOut:"+gson.toJson(maps).toString());
 			writeText(response, gson.toJson(maps).toString());
 		} else if (action.equals("getImage")) {
 			// 要輸出byte使用OutputStream

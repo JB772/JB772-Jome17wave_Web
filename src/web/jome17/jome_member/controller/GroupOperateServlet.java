@@ -367,6 +367,29 @@ System.out.println(248 + jsonIn.get("auditAttender").getAsString());
 	
 				jsonOut.addProperty("resultCode", resultCodeIOS);
 				break;
+			// 修改揪團
+			case "updateGroupForIOS":
+				//處理Base64 轉 byte[]
+				byte[] imageUpdateIOS = null;
+				String imageUpdateIOSStr = jsonIn.get("imageBase64").getAsString();
+				imageUpdateIOS = Base64.getMimeDecoder().decode(imageUpdateIOSStr);
+				
+				PersonalGroup newUpdateGroup = new Gson().fromJson(jsonIn.get("updateGroup").getAsString(), PersonalGroup.class);
+				newUpdateGroup.setGroupEndTime(new DateUtil().getGroupEndTime(newUpdateGroup.getAssembleTime()));
+				newUpdateGroup.setSignUpEnd(new DateUtil().getSignUpEnd(newUpdateGroup.getAssembleTime()));
+				newUpdateGroup.setgImage(imageUpdateIOS);
+
+				int updateResultCodeIOS = gService.updateGroup(newUpdateGroup, imageUpdateIOS);
+//	System.out.println("updateResultCodeIOS: " + updateResultCodeIOS);
+				jsonOut.addProperty("resultCode", updateResultCodeIOS);
+				break;
+			case "cancelGroup":
+				String cancelGroupId = jsonIn.get("cancelGroupId").getAsString();
+System.out.println("cancelGroupId: " + cancelGroupId);
+				int cancelResultCode = gService.cancelGroupIOS(cancelGroupId);
+System.out.println("cancelResultCode: " + cancelResultCode);
+				jsonOut.addProperty("resultCode", cancelResultCode);
+				break;
 			default:
 				break;
 			}
