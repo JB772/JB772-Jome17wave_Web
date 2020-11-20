@@ -10,8 +10,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.google.api.client.util.Value;
-
 import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.main.DateUtil;
 import web.jome17.main.ServiceLocator;

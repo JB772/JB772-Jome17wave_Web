@@ -1,6 +1,5 @@
 package web.jome17.jome_member.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import web.jome17.jome_member.bean.FriendListBean;
