@@ -2,10 +2,10 @@ package web.jome17.jome_member.bean;
 
 public class FriendListBean {
 	private int uId = 0;
-	private String invite_M_ID = "";
-	private String inviteName = "";
-	private String accept_M_ID = "";
-	private String acceptName = "";
+	private String invite_M_ID = "noInviteId";
+	private String inviteName = "noName";
+	private String accept_M_ID = "noAcceptId";
+	private String acceptName = "noName";
 	private int friend_Status = -1;
 
     public FriendListBean(int uId, String invite_M_ID, String inviteName, String accept_M_ID, int friend_Status) {

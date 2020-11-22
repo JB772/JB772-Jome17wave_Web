@@ -156,6 +156,8 @@ public class FriendServlet extends HttpServlet {
 		FriendListBean afterRelation = new FriendListDaoimpl().selectRelation(new FriendListBean(mainId, acceptId));
 		if(afterRelation != null) {
 			jsonOut.addProperty("afterRelation", new Gson().toJson(afterRelation));
+		}else {
+			jsonOut.addProperty("afterRelation", new Gson().toJson(new FriendListBean()));
 		}
 		outStr = jsonOut.toString();
 System.out.println("outStr: " + outStr);

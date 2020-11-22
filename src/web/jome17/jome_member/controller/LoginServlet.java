@@ -157,6 +157,7 @@ public class LoginServlet extends HttpServlet{
 				}
 			}
 			member = GSON.fromJson(jsonIn.get("memberUp").getAsString(), MemberBean.class);
+System.out.println("~~~~~~~~memberStatus: " + member.getAccountStatus());
 			int resultCode = -1;
 			resultCode = new JomeMemberService().updateMember(member, imageUpdate);
 			jsonOut.addProperty("resultCode", resultCode);
