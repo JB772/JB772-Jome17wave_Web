@@ -34,12 +34,17 @@ public class GroupService {
 	
 	//入團
 	public int joinGroup(PersonalGroup pGroup) {
+		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		pGroup.setRole(2);
 		pGroup.setAttenderStatus(3);
 		AttenderBean joinAttender = new AttenderBean(-1, pGroup.getAttenderStatus(), pGroup.getRole(), pGroup.getMemberId(), pGroup.getGroupId());
-		AttenderDaoimpl attenderDao = new AttenderDaoimpl();
 		String gHeadId = attenderDao.selectGroupHeadId(pGroup.getGroupId()).getMemberId();
-		return attenderDao.insertAtenderBean(joinAttender, gHeadId);
+		int insertAttenderBean = -1;
+		int hasJoinDeleteResult = attenderDao.hasJoinDelete(joinAttender, gHeadId);
+		if(hasJoinDeleteResult == 1 || hasJoinDeleteResult ==-1) {
+			insertAttenderBean = attenderDao.insertAtenderBean(joinAttender, gHeadId);
+		}
+		return insertAttenderBean;
 	}
 	
 	//退團

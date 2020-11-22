@@ -104,6 +104,65 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		return insertResult;
 	}
 	
+	/*
+	 * 如果曾入團退團，現又再加入，先刪除前次的Attender 及 Notify
+	 */
+	public int hasJoinDelete (AttenderBean bean, String groupHeadId) {
+		String sqlAttenderNoSelect = "Select "
+										+ "ATTENDER_NO "
+									+ "from Tep101_Jome17.ATTENDER "
+										+ "where "
+									+ "GROUP_ID = ? and MEMBER_ID = ? and ROLE = 2;";
+		
+		String sqlAttenderDelete = "DELETE from Tep101_Jome17.ATTENDER where ATTENDER_NO = ? ;";
+		
+		String sqlNotifyDelete = "DELETE from Tep101_Jome17.NOTIFY where TYPE = 1 and NOTIFICATION_BODY = ? and BODY_STATUS = 0;";
+		int deleteResult = 0;
+		try(Connection conn = dataSource.getConnection();
+			PreparedStatement pstmt0 = conn.prepareStatement(sqlAttenderNoSelect);
+			PreparedStatement pstmt1 = conn.prepareStatement(sqlAttenderDelete);
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlNotifyDelete);) {
+			conn.setAutoCommit(false);
+			try {
+				int attenderNo = -1;
+				pstmt0.setString(1, bean.getGroupId());
+				pstmt0.setString(2, bean.getMemberId());
+				ResultSet rs0 = pstmt0.executeQuery();
+				while(rs0.next()) {
+					attenderNo = rs0.getInt(1);
+				}
+				if(attenderNo < 0) {
+					System.out.println(pstmt0);
+					deleteResult = -1;
+					throw new SQLException("Table AttenderNo select error! " + deleteResult);
+				}
+				pstmt1.setInt(1, attenderNo);
+				int deleteAttenderResult = pstmt1.executeUpdate();
+				if(deleteAttenderResult < 1) {
+					System.out.println(pstmt1);
+					deleteResult = -2;
+					throw new SQLException("Table Attender delete error! " + deleteResult);
+				}
+				pstmt2.setInt(1, attenderNo);
+				int deletNotifyResult = pstmt2.executeUpdate();
+				if(deletNotifyResult < 1) {
+					System.out.println(pstmt2);
+					deleteResult = -2;
+					throw new SQLException("Table Notify delete error! " + deleteResult);
+				}
+				conn.commit();
+				deleteResult = 1;
+			}catch (SQLException e) {
+				conn.rollback();
+				e.printStackTrace();
+			}	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return deleteResult;
+	}
+	
 	/**
 	 * 修改Attender表；團員變更參加狀態 (status3→1 , 3→2)→ delete notifiy(要求3)，增加notify(加入成功or失敗),
 	 * 								(status1→0		)→ delete notifiy(成功1)，增加notify(團員 && 團長)
@@ -300,7 +359,7 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 							+ "left join Tep101_Jome17.SURF_POINT s "
 							+ "on j.SURF_POINT_ID = s.SURF_POINT_ID "
 					+ "where "
-						+ "a.MEMBER_ID = ? "
+						+ "a.MEMBER_ID = ?  and a.ATTEDN_STATUS = 1 "
 					+ "order by "
 						+ "j.GROUP_END_TIME desc;";
 		try(Connection conn = dataSource.getConnection();
