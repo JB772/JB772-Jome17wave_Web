@@ -107,7 +107,7 @@ public class GroupActivityDaoimpl implements CommonDao<PersonalGroup, String>{
 								+ " where "
 									+ "GROUP_ID = ?";
 					sqlAttender = "update Tep101_Jome17.ATTENDER set "
-									+ "ATTEND_STATUS = 2"
+									+ "ATTEDN_STATUS = 2"
 								+ " where "
 									+ "GROUP_ID = ?";
 			}		

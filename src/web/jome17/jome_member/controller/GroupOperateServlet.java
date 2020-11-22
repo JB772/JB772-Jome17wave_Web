@@ -80,7 +80,8 @@ public class GroupOperateServlet extends HttpServlet {
 				if(pGroups != null) {
 					getAllResult = 1;
 					for(int i= 0; i < pGroups.size(); i++) {
-						if(pGroups.get(i).getGroupStatus() != 3) {
+						if(pGroups.get(i).getGroupStatus() != 3  && pGroups.get(i).getGroupStatus() != 0) {
+System.out.println("i:~~~~~~~~" + i);
 							String groupId = pGroups.get(i).getGroupId();
 							PersonalGroup pGroup = pGroups.get(i);
 							if(dateUtil.str2Date(pGroup.getAssembleTime()).before(new Date())) {
