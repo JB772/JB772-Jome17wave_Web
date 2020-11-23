@@ -71,17 +71,17 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 				member.setAccount(rs.getString("ACCOUNT"));
 				member.setPassword(rs.getString("PASSWORD"));
 				member.setNickname(rs.getString("NICKNAME"));
+				member.setAccountStatus(rs.getInt("ACCOUNT_STATUS"));
 				member.setGender(rs.getInt("GENDER"));
 				member.setPhoneNumber(rs.getString("PHONE_NUMBER"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
 				member.setLongitude(rs.getDouble("LONTITUDE"));	
 				member.setTokenId(rs.getString("TOKEN_ID"));
 			}else {
-				System.out.println("select: null");
 				return null;
 			}
 			String memberId = member.getMemberId();
-			if(memberId != "null") {
+			if(memberId != "noMemberId") {
 				//取好友數
 				pstmt1.setString(1, memberId);
 				pstmt1.setString(2, memberId);
@@ -177,8 +177,9 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 
 	@Override
 	public List<MemberBean> selectAll(String memberId) {
-		String sql = "SELECT " + "ID, " + "NICKNAME, " + "LATITUDE, " + "LONTITUDE " + "FROM "
-				+ "Tep101_Jome17.MEMBERINFO;";
+		String sql = "SELECT * "
+					+ "FROM "
+					+ "Tep101_Jome17.MEMBERINFO;";
 		List<MemberBean> members = new ArrayList<MemberBean>();
 		try (Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -188,6 +189,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 				MemberBean member = new MemberBean();
 				member.setMemberId(rs.getString("ID"));
 				member.setNickname(rs.getString("NICKNAME"));
+				member.setAccountStatus(rs.getInt("ACCOUNT_STATUS"));
 				member.setLatitude(rs.getDouble("LATITUDE"));
 				member.setLongitude(rs.getDouble("LONTITUDE"));
 				members.add(member);
@@ -274,7 +276,7 @@ System.out.println("member.setModifyDate~~~~~~~~~~~" + member.getModifyDate());
 			}								
 			return members;
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return null;
 	}

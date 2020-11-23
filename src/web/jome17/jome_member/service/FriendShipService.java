@@ -42,6 +42,13 @@ public class FriendShipService {
 	}
 	
 	/*
+	 *  查詢好友人數
+	 */
+	public String selectFriendCount(String memberId) {
+		return dao.getCount(memberId);
+	}
+	
+	/*
 	 * 	搜尋陌生人
 	 */
 	public MemberBean searchStranger(FriendListBean checkList) {

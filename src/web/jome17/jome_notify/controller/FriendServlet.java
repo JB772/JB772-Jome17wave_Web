@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import web.jome17.jome_member.bean.FriendListBean;
 import web.jome17.jome_member.bean.MemberBean;
 import web.jome17.jome_member.dao.FriendListDaoimpl;
+import web.jome17.jome_member.service.FriendShipService;
 import web.jome17.jome_notify.bean.Notify;
 import web.jome17.jome_notify.dao.FriendInvitationDaoImpl;
 import web.jome17.jome_notify.dao.NotifyDaoImpl;
@@ -45,6 +46,7 @@ public class FriendServlet extends HttpServlet {
 		String outStr = "";
 		String mainId = "";
 		String acceptId = "";
+		String friendId = "";
 		JsonObject jsonOut = new JsonObject();
 		switch(action) {
 			/*
@@ -85,6 +87,7 @@ public class FriendServlet extends HttpServlet {
 			 * 					 包裝Json:{結果代碼, FriendList物件}
 			 */
 			case "addNewFriend":
+				friendId = jsonIn.get("friendId").getAsString();
 				FriendListBean checkList = new Gson().fromJson(jsonIn.get("addNewFriend").getAsString(), FriendListBean.class);
 				// checkList裡inviteId是自己，acceptId是對方，friendStatus是3(待審)
 				mainId = checkList.getInvite_M_ID();
@@ -101,6 +104,7 @@ public class FriendServlet extends HttpServlet {
 			 *  							包裝Json:{結果代碼, FriendList物件}
 			 */
 			case "clickAgree":
+				friendId = jsonIn.get("friendId").getAsString();
 				FriendListBean agreeBean = new Gson().fromJson(jsonIn.get("agreeBean").getAsString(), FriendListBean.class);
 				// agreeBean裡inviteId是對方，acceptId是自己
 				mainId = agreeBean.getInvite_M_ID();
@@ -118,6 +122,7 @@ public class FriendServlet extends HttpServlet {
 			 *  
 			 */
 			case "clickDecline":
+				friendId = jsonIn.get("friendId").getAsString();
 				FriendListBean declineBean = new Gson().fromJson(jsonIn.get("declineBean").getAsString(), FriendListBean.class);
 				resultCode = new FindFriendService().changeFriendList(declineBean, "clickDecline");
 				break;
@@ -126,8 +131,21 @@ public class FriendServlet extends HttpServlet {
 			 *  按“刪除"好友
 			 */
 			case "deleteRelation":
+				friendId = jsonIn.get("friendId").getAsString();
 				FriendListBean deleteFriend = new Gson().fromJson(jsonIn.get("deleteFriend").getAsString(), FriendListBean.class);
 				resultCode = new FindFriendService().deletRelation(deleteFriend);
+				break;
+			
+			/*
+			 * 查詢好友的數量	
+			 */
+			case"getFriendCount":
+				friendId = jsonIn.get("friendId").getAsString();
+				if(!friendId.isEmpty() || friendId != null) {
+					FriendShipService fService = new FriendShipService();
+					String friendCount = fService.selectFriendCount(friendId);
+					jsonOut.addProperty("friendCount", friendCount);
+				}
 				break;
 				
 			/*
@@ -159,6 +177,14 @@ public class FriendServlet extends HttpServlet {
 		}else {
 			jsonOut.addProperty("afterRelation", new Gson().toJson(new FriendListBean()));
 		}
+		
+		//再查一次好友人數
+		if(!friendId.isEmpty() || friendId != null) {
+			FriendShipService fService = new FriendShipService();
+			String friendCount = fService.selectFriendCount(friendId);
+			jsonOut.addProperty("friendCount", friendCount);
+		}
+
 		outStr = jsonOut.toString();
 System.out.println("outStr: " + outStr);
 		resp.setContentType(CONTENT_TYPE);

@@ -180,6 +180,23 @@ System.out.println("~~~~~~~~memberStatus: " + member.getAccountStatus());
 			writeJson(resp, outStr);
 			break;
 			
+		case "adminLogin":
+			String adminAccount = jsonIn.get("account").getAsString();
+			String adminPassword = jsonIn.get("password").getAsString();
+			int adminLoginResultCode = -1;
+			if (adminAccount.equals("admin00") || adminAccount.equals("adminsam") || adminAccount.equals("adminkarena")) {
+				member = mService.login(adminAccount, adminPassword);
+				if(member != null) {
+					adminLoginResultCode = 1;		//account & password correct
+				}
+				jsonOut.addProperty("resultCode", adminLoginResultCode);
+			}
+			outStr = jsonOut.toString();
+			System.out.println(outStr);
+			resp.setContentType(CONTENT_TYPE);
+			writeJson(resp, outStr);
+			break;
+			
 		default:
 			member = new MemberBean();
 			outStr = GSON.toJson(member);
