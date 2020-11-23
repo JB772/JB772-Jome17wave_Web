@@ -132,7 +132,8 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 			sql = "update Tep101_Jome17.MEMBERINFO set " + "ACCOUNT = ?, " + "PASSWORD = ?, " + "NICKNAME = ?, " // 3
 					+ "GENDER = ?, " + "PHONE_NUMBER = ?, " + "LATITUDE = ?, " // 6
 					+ "LONTITUDE = ?, " + "TOKEN_ID = ?, ACCOUNT_STATUS = ? " // 9
-					+ "IMAGE = ? " + "where " + "ID = ? ;"; // 11
+
+					+ ",IMAGE = ? " + "where " + "ID = ? ;"; // 11
 		}
 
 		try (Connection conn = dataSource.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
@@ -151,7 +152,7 @@ public class MemberDaoimpl implements CommonDao<MemberBean, String> {
 				pstmt.setBytes(10, image);
 				pstmt.setString(11, bean.getMemberId());
 			}
-System.out.println(pstmt);
+
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
