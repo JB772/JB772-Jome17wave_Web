@@ -41,7 +41,6 @@ public class JomeMemberService {
 		memberLogin = dao.selectByKey("ACCOUNT", account);
 		if(memberLogin != null) {
 			if(password.equals(memberLogin.getPassword())) {
-System.out.println("JomeMemberService accountStatus 44: " + memberLogin.getAccountStatus());
 				return memberLogin;
 			}
 		}

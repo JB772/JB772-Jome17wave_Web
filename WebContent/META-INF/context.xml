@@ -2,10 +2,11 @@
 <Context docBase="Jome17wave_web" path="/Jome17wave_web"
 	reloadable="true">
 	
-<!-- 		url="jdbc:mysql://localhost:3306/Tep101_Jome17?useUnicode=yes&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Taipei"  -->
+	<!-- url="jdbc:mysql://localhost:3306/Tep101_Jome17" -->
+
 	<Resource name="jdbc/Tep101_Jome17" 
 		auth="Container"
-		url="jdbc:mysql://localhost:3306/Tep101_Jome17"
+		url="jdbc:mysql://localhost:3306/Tep101_Jome17?useUnicode=yes&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Taipei"
 		type="javax.sql.DataSource" 
 		driverClassName="com.mysql.cj.jdbc.Driver"
 		username="root"

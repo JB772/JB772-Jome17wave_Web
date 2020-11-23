@@ -53,7 +53,7 @@ public class DateUtil {
         return date2StrHm (calendar.getTime());
     }
     
-    //減15分鐘
+    //減1分鐘
     public static String getSignUpEnd(String assembleStr){
         Date assembleTime = str2Date(assembleStr);
         Calendar calendar = Calendar.getInstance();
