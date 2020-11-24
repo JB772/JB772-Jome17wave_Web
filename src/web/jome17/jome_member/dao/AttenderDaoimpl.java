@@ -116,7 +116,9 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 		
 		String sqlAttenderDelete = "DELETE from Tep101_Jome17.ATTENDER where ATTENDER_NO = ? ;";
 		
-		String sqlNotifyDelete = "DELETE from Tep101_Jome17.NOTIFY where TYPE = 1 and NOTIFICATION_BODY = ? and BODY_STATUS = 0;";
+//		String sqlNotifyDelete = "DELETE from Tep101_Jome17.NOTIFY where TYPE = 1 and NOTIFICATION_BODY = ? and BODY_STATUS = 0;";
+		
+		String sqlNotifyDelete = "DELETE from Tep101_Jome17.NOTIFY where TYPE = 1 and NOTIFICATION_BODY = ? ;";
 		int deleteResult = 0;
 		try(Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt0 = conn.prepareStatement(sqlAttenderNoSelect);
@@ -141,14 +143,14 @@ public class AttenderDaoimpl implements CommonDao<PersonalGroup, String>{
 				if(deleteAttenderResult < 1) {
 					System.out.println(pstmt1);
 					deleteResult = -2;
-					throw new SQLException("Table Attender delete error! " + deleteResult);
+					throw new SQLException("Table Attender delete error! " + deleteAttenderResult);
 				}
 				pstmt2.setInt(1, attenderNo);
 				int deletNotifyResult = pstmt2.executeUpdate();
 				if(deletNotifyResult < 1) {
 					System.out.println(pstmt2);
 					deleteResult = -2;
-					throw new SQLException("Table Notify delete error! " + deleteResult);
+					throw new SQLException("Table Notify delete error! " + deletNotifyResult);
 				}
 				conn.commit();
 				deleteResult = 1;
